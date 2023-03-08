@@ -28,4 +28,10 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Staffs\" />
+    <Folder Include="Tasks\" />
+    <Folder Include="TaskTypes\" />
+  </ItemGroup>
+
 </Project>

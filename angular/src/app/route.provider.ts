@@ -15,6 +15,12 @@ function configureRoutes(routesService: RoutesService) {
         order: 1,
         layout: eLayoutType.application,
       },
+      {
+        path: '/taskTypes',
+        name: '::Menu:TaskTypes',
+        parentName: '::Menu:TaskType',
+        layout: eLayoutType.application,
+      },
     ]);
   };
 }
