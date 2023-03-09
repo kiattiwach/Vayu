@@ -14,8 +14,6 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { APP_ROUTE_PROVIDER } from './route.provider';
-import { FeatureManagementModule } from '@abp/ng.feature-management';
-import { AbpOAuthModule } from '@abp/ng.oauth';
 
 @NgModule({
   imports: [
@@ -26,7 +24,6 @@ import { AbpOAuthModule } from '@abp/ng.oauth';
       environment,
       registerLocaleFn: registerLocale(),
     }),
-    AbpOAuthModule.forRoot(),
     ThemeSharedModule.forRoot(),
     AccountConfigModule.forRoot(),
     IdentityConfigModule.forRoot(),
@@ -34,7 +31,6 @@ import { AbpOAuthModule } from '@abp/ng.oauth';
     SettingManagementConfigModule.forRoot(),
     ThemeLeptonXModule.forRoot(),
     SideMenuLayoutModule.forRoot(),
-    FeatureManagementModule.forRoot(),
   ],
   declarations: [AppComponent],
   providers: [APP_ROUTE_PROVIDER],

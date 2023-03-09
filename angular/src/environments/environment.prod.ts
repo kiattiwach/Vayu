@@ -10,7 +10,7 @@ export const environment = {
     logoUrl: '',
   },
   oAuthConfig: {
-    issuer: 'https://localhost:44376/',
+    issuer: 'https://localhost:44375/',
     redirectUri: baseUrl,
     clientId: 'Vayu_App',
     responseType: 'code',
@@ -19,7 +19,7 @@ export const environment = {
   },
   apis: {
     default: {
-      url: 'https://localhost:44376',
+      url: 'https://localhost:44375',
       rootNamespace: 'Vayu',
     },
   },

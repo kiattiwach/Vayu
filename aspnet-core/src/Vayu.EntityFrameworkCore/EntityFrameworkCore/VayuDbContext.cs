@@ -1,13 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vayu.Staffs;
-using Vayu.Tasks;
-using Vayu.TaskTypes;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -56,9 +52,6 @@ public class VayuDbContext :
 
     #endregion
 
-    public DbSet<Task> Tasks { get; set; }
-    public DbSet<TaskType> TaskTypes { get; set; }
-
     public VayuDbContext(DbContextOptions<VayuDbContext> options)
         : base(options)
     {
@@ -82,56 +75,11 @@ public class VayuDbContext :
 
         /* Configure your own tables/entities inside here */
 
-        builder.Entity<Task>(b =>
-        {
-            b.ToTable(VayuConsts.DbTablePrefix + "Tasks", VayuConsts.DbSchema);
-            b.ConfigureByConvention(); //auto configure for the base class props
-
-            b.Property(x => x.Name).IsRequired().HasMaxLength(TaskConsts.MaxNameLength);
-            b.Property(x => x.Description).HasMaxLength(TaskConsts.MaxDescriptionLength);
-            b.Property(x => x.Note).HasMaxLength(TaskConsts.MaxNoteLength);
-            b.Property(x => x.ContactPerson).HasMaxLength(TaskConsts.MaxContactPersonLength);
-            b.Property(x => x.ContactNumber).HasMaxLength(TaskConsts.MaxContactPersonNumberLength);
-            b.HasIndex(x => new { x.Name, x.TaskTypeId }).IsUnique();
-            b.HasOne(x => x.Staff).WithMany().HasForeignKey(x => x.LeaderId);
-
-            b.ApplyObjectExtensionMappings();
-        });
-
-        builder.Entity<TaskType>(b =>
-        {
-            b.ToTable(VayuConsts.DbTablePrefix + "TaskTypes", VayuConsts.DbSchema);
-            b.ConfigureByConvention(); //auto configure for the base class props
-
-            b.Property(x => x.Name).IsRequired().HasMaxLength(TaskTypeConsts.MaxNameLength);
-            b.HasIndex(x => new { x.Name, x.Type }).IsUnique();
-
-            b.ApplyObjectExtensionMappings();
-        });
-
-        builder.Entity<Staff>(b =>
-        {
-            b.ToTable(VayuConsts.DbTablePrefix + "Staffs", VayuConsts.DbSchema);
-            b.ConfigureByConvention(); //auto configure for the base class props
-
-            b.Property(x => x.Name).IsRequired().HasMaxLength(StaffConsts.MaxNameLength);
-            b.Property(x => x.CodeName).IsRequired().HasMaxLength(StaffConsts.MaxCodeNameLength);
-            b.Property(x => x.ContactNumber).IsRequired().HasMaxLength(StaffConsts.MaxContactNumberLength);
-
-            b.ApplyObjectExtensionMappings();
-        });
-
-        builder.Entity<TaskStaff>(b =>
-        {
-            b.ToTable(VayuConsts.DbTablePrefix + "TaskStaffs", VayuConsts.DbSchema);
-            b.ConfigureByConvention(); //auto configure for the base class props
-
-            b.HasKey(x => new { x.TaskId, x.StaffId});
-            b.HasIndex(x => new { x.TaskId, x.StaffId }).IsUnique();
-            b.HasOne<Task>().WithMany(x => x.TaskStaffs).HasForeignKey(x => x.TaskId).IsRequired().OnDelete(DeleteBehavior.NoAction);
-            b.HasOne<Staff>().WithMany().HasForeignKey(x => x.StaffId).IsRequired().OnDelete(DeleteBehavior.NoAction);
-
-            b.ApplyObjectExtensionMappings();
-        });
+        //builder.Entity<YourEntity>(b =>
+        //{
+        //    b.ToTable(VayuConsts.DbTablePrefix + "YourEntities", VayuConsts.DbSchema);
+        //    b.ConfigureByConvention(); //auto configure for the base class props
+        //    //...
+        //});
     }
 }
