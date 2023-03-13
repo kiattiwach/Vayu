@@ -155,10 +155,10 @@ public class VayuHttpApiHostModule : AbpModule
     {
         Configure<AbpLocalizationOptions>(options =>
         {
-            options.Languages.Add(new LanguageInfo("ar", "ar", "العربية"));
-            options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));
+            /*options.Languages.Add(new LanguageInfo("ar", "ar", "العربية"));
+            options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));*/
             options.Languages.Add(new LanguageInfo("en", "en", "English"));
-            options.Languages.Add(new LanguageInfo("en-GB", "en-GB", "English (UK)"));
+            /*options.Languages.Add(new LanguageInfo("en-GB", "en-GB", "English (UK)"));
             options.Languages.Add(new LanguageInfo("fi", "fi", "Finnish"));
             options.Languages.Add(new LanguageInfo("fr", "fr", "Français"));
             options.Languages.Add(new LanguageInfo("hi", "hi", "Hindi", "in"));
@@ -174,7 +174,8 @@ public class VayuHttpApiHostModule : AbpModule
             options.Languages.Add(new LanguageInfo("zh-Hant", "zh-Hant", "繁體中文"));
             options.Languages.Add(new LanguageInfo("de-DE", "de-DE", "Deutsch", "de"));
             options.Languages.Add(new LanguageInfo("es", "es", "Español", "es"));
-            options.Languages.Add(new LanguageInfo("el", "el", "Ελληνικά"));
+            options.Languages.Add(new LanguageInfo("el", "el", "Ελληνικά"));*/
+            options.Languages.Add(new LanguageInfo("th", "th", "ไทย"));
         });
     }
 
