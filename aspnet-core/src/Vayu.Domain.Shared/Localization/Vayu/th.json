@@ -2,7 +2,21 @@
   "culture": "th",
   "texts": {
     "Menu:Home": "หน้าหลัก",
+    "Menu:Setting": "ตั้งค่า",
     "Welcome": "ยินดีต้อนรับ",
-    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io."
+    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
+    "Menu:TaskTypes": "ประเภทงาน",
+    "Actions": "ดำเนินการ",
+    "Close": "ปิด",
+    "Delete": "",
+    "Edit": "แก้ไข",
+    "NewTaskType": "เพิ่มประเภทงานใหม่",
+    "Name": "ชื่อ",
+    "Type": "ประเภท",
+    "CreationTime": "วันที่เพิ่ม",
+    "AreYouSure": "ต้องการดำเนินการหรือไม่?",
+    "AreYouSureToDelete": "คุณต้องการลบรายการนี้หรือไม่?",
+    "Enum:TaskTypeEnum:0": "งานภายใน",
+    "Enum:TaskTypeEnum:1": "งานภายนอก"
   }
 }

@@ -2,7 +2,21 @@
   "culture": "en",
   "texts": {
     "Menu:Home": "Home",
+    "Menu:Setting": "Setting",
     "Welcome": "Welcome",
-    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io."
+    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
+    "Menu:TaskTypes": "Task Type",
+    "Actions": "Action",
+    "Close": "Close",
+    "Delete": "Delete",
+    "Edit": "Edit",
+    "NewTaskType": "New Task Type",
+    "Name": "Name",
+    "Type": "Type",
+    "CreationTime": "Createtion Date",
+    "AreYouSure": "Are you sure?",
+    "AreYouSureToDelete": "Are you sure you want to delete this item?",
+    "Enum:TaskTypeEnum:0": "Internal",
+    "Enum:TaskTypeEnum:1": "External"
   }
 }
