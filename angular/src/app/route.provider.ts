@@ -16,10 +16,16 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application,
       },
       {
+        name:'::Menu:Setting',
+        iconClass:'fas fa-cogs',
+        order:2,
+        layout: eLayoutType.application
+      },
+      {
         path: '/task-types',
-        name: '::Menu:TaskType',
+        name: '::Menu:TaskTypes',
         iconClass: 'fas fa-list-alt',
-        order: 2,
+        parentName: '::Menu:Setting',
         layout: eLayoutType.application,
       }
     ]);
