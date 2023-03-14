@@ -17,6 +17,9 @@
     "AreYouSure": "ต้องการดำเนินการหรือไม่?",
     "AreYouSureToDelete": "คุณต้องการลบรายการนี้หรือไม่?",
     "Enum:TaskTypeEnum:0": "งานภายใน",
-    "Enum:TaskTypeEnum:1": "งานภายนอก"
+    "Enum:TaskTypeEnum:1": "งานภายนอก",
+    "Enum:TaskTypeEnum:Internal": "งานภายใน",
+    "Enum:TaskTypeEnum:External": "งานภายนอก",
+    "SelectTaskTypeEnum": "เลือกประเภทงาน"
   }
 }
