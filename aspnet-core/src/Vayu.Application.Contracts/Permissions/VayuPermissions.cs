@@ -1,9 +1,17 @@
 ﻿namespace Vayu.Permissions;
 
-public static class VayuPermissions
+public class VayuPermissions
 {
     public const string GroupName = "Vayu";
 
     //Add your own permission names. Example:
     //public const string MyPermission1 = GroupName + ".MyPermission1";
+
+    public static class TaskTypes
+    {
+        public const string Default = GroupName + ".TaskType";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
+    }
 }

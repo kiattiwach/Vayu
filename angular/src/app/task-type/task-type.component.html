@@ -8,7 +8,7 @@
       </div>
       <div class="text-end col col-md-6">
         <div class="text-lg-end pt-2">
-          <button id="create" class="btn btn-primary" type="button" (click)="createTaskType()">
+          <button *abpPermission="'Vayu.TaskTypes.Create'" id="create" class="btn btn-primary" type="button" (click)="createTaskType()">
             <i class="fa fa-plus me-1"></i>
             <span>{{ "::NewTaskType" | abpLocalization }}</span>
           </button>

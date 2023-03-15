@@ -27,6 +27,7 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-list-alt',
         parentName: '::Menu:Setting',
         layout: eLayoutType.application,
+        requiredPolicy: 'Vayu.TaskTypes'
       }
     ]);
   };

@@ -1,6 +1,13 @@
 {
   "culture": "th",
   "texts": {
+
+    "Permission:Vayu": "วายุ",
+    "Permission:TaskTypes": "การจัดการประเภทงาน",
+    "Permission:TaskTypes.Create": "การเพิ่มประเภทงานใหม่",
+    "Permission:TaskTypes.Edit": "การแก้ไขประเภทงาน",
+    "Permission:TaskTypes.Delete": "การลบประเภทงาน",
+
     "Menu:Home": "หน้าหลัก",
     "Menu:Setting": "ตั้งค่า",
     "Welcome": "ยินดีต้อนรับ",
