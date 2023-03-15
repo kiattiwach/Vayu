@@ -26,15 +26,15 @@ public class TaskTypeService : ApplicationService, ITaskTypeService
 
     public async Task<PagedResultDto<TaskTypeDto>> GetListAsync(TaskTypeFilterDto input)
     {
-        var count = await _taskTypeRepository.GetCountAsync(input.filter, input.Type);
-        var items = await _taskTypeRepository.GetListAsync(input.filter, input.Type);
+        var count = await _taskTypeRepository.GetCountAsync(input.filter, input.TaskCategory);
+        var items = await _taskTypeRepository.GetListAsync(input.filter, input.TaskCategory);
         return new PagedResultDto<TaskTypeDto>
             { TotalCount = count, Items = ObjectMapper.Map<List<TaskType>, List<TaskTypeDto>>(items) };
     }
 
     public async Task<TaskTypeDto> CreateAsync(TaskTypeCreateUpdateDto input)
     {
-        var result= await _taskTypeRepository.InsertAsync(new TaskType(input.Name, input.Type));
+        var result= await _taskTypeRepository.InsertAsync(new TaskType(input.Name, input.TaskCategory));
         return ObjectMapper.Map<TaskType, TaskTypeDto>(result);
     }
 
@@ -42,7 +42,7 @@ public class TaskTypeService : ApplicationService, ITaskTypeService
     {
         var taskType = await _taskTypeRepository.GetAsync(input.Id);
         taskType.Name = input.Name;
-        taskType.Type = input.Type;
+        taskType.TaskCategory = input.TaskCategory;
 
         var result = await _taskTypeRepository.UpdateAsync(taskType);
         return ObjectMapper.Map<TaskType, TaskTypeDto>(result);

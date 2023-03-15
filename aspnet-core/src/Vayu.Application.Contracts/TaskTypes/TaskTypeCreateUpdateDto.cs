@@ -12,5 +12,5 @@ public class TaskTypeCreateUpdateDto : EntityDto<Guid>
     public string Name { get; set; }
 
     [Required]
-    public TaskTypeEnum Type { get; set; }
+    public TaskCategory TaskCategory { get; set; }
 }

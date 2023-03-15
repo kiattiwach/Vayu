@@ -104,7 +104,7 @@ public class VayuDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
 
             b.Property(x => x.Name).IsRequired().HasMaxLength(TaskTypeConsts.MaxNameLength);
-            b.HasIndex(x => new { x.Name, x.Type }).IsUnique();
+            b.HasIndex(x => new { x.Name, Type = x.TaskCategory }).IsUnique();
 
             b.ApplyObjectExtensionMappings();
         });

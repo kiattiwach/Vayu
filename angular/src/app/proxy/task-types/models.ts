@@ -1,17 +1,17 @@
 import type { EntityDto, FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
-import type { TaskTypeEnum } from './task-type-enum.enum';
+import type { TaskCategory } from './task-category.enum';
 
 export interface TaskTypeCreateUpdateDto extends EntityDto<string> {
   name: string;
-  type: TaskTypeEnum;
+  taskCategory: TaskCategory;
 }
 
 export interface TaskTypeDto extends FullAuditedEntityDto<string> {
   name?: string;
-  type: TaskTypeEnum;
+  taskCategory: TaskCategory;
 }
 
 export interface TaskTypeFilterDto extends PagedAndSortedResultRequestDto {
   filter?: string;
-  type: TaskTypeEnum;
+  taskCategory: TaskCategory;
 }

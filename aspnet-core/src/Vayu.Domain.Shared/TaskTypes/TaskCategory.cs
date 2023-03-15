@@ -1,6 +1,6 @@
 ﻿namespace Vayu.TaskTypes;
 
-public enum TaskTypeEnum
+public enum TaskCategory
 {
     Internal,
     External

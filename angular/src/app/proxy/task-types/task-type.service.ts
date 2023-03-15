@@ -12,9 +12,9 @@ export class TaskTypeService {
 
   create = (input: TaskTypeCreateUpdateDto) =>
     this.restService.request<any, TaskTypeDto>({
-      method: 'GET',
+      method: 'POST',
       url: `/api/task-type/create/${input}`,
-      params: { name: input.name, type: input.type, id: input.id },
+      body: input,
     },
     { apiName: this.apiName });
   
@@ -39,16 +39,16 @@ export class TaskTypeService {
     this.restService.request<any, PagedResultDto<TaskTypeDto>>({
       method: 'GET',
       url: `/api/task-type/get-list/${input}`,
-      params: { filter: input.filter, type: input.type, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      params: { filter: input.filter, taskCategory: input.taskCategory, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName });
   
 
   update = (input: TaskTypeCreateUpdateDto) =>
     this.restService.request<any, TaskTypeDto>({
-      method: 'GET',
+      method: 'POST',
       url: `/api/task-type/update/${input}`,
-      params: { name: input.name, type: input.type, id: input.id },
+      body: input,
     },
     { apiName: this.apiName });
 

@@ -6,5 +6,5 @@ namespace Vayu.TaskTypes;
 public class TaskTypeDto : FullAuditedEntityDto<Guid>
 {
     public string Name { get; set; }
-    public TaskTypeEnum Type { get; set; }
+    public TaskCategory TaskCategory { get; set; }
 }

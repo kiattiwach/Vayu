@@ -28,13 +28,13 @@ public class TaskTypeController : VayuController, ITaskTypeService
         return _taskTypeService.GetListAsync(input);
     }
 
-    [HttpGet("create/{input}")]
+    [HttpPost("create/{input}")]
     public Task<TaskTypeDto> CreateAsync(TaskTypeCreateUpdateDto input)
     {
         return _taskTypeService.CreateAsync(input);
     }
 
-    [HttpGet("update/{input}")]
+    [HttpPost("update/{input}")]
     public Task<TaskTypeDto> UpdateAsync(TaskTypeCreateUpdateDto input)
     {
         return _taskTypeService.UpdateAsync(input);

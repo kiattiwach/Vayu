@@ -8,18 +8,22 @@
     "Menu:TaskTypes": "ประเภทงาน",
     "Actions": "ดำเนินการ",
     "Close": "ปิด",
-    "Delete": "",
+    "Delete": "ลบ",
     "Edit": "แก้ไข",
     "NewTaskType": "เพิ่มประเภทงานใหม่",
     "Name": "ชื่อ",
     "Type": "ประเภท",
     "CreationTime": "วันที่เพิ่ม",
     "AreYouSure": "ต้องการดำเนินการหรือไม่?",
+    "AreYouSureDeleteTaskType": "คุณกำลังจะลบประเภทงาน",
     "AreYouSureToDelete": "คุณต้องการลบรายการนี้หรือไม่?",
-    "Enum:TaskTypeEnum:0": "งานภายใน",
-    "Enum:TaskTypeEnum:1": "งานภายนอก",
-    "Enum:TaskTypeEnum:Internal": "งานภายใน",
-    "Enum:TaskTypeEnum:External": "งานภายนอก",
-    "SelectTaskTypeEnum": "เลือกประเภทงาน"
+    "Enum:TaskCategory:0": "งานภายใน",
+    "Enum:TaskCategory:1": "งานภายนอก",
+    "Enum:TaskCategory:Internal": "งานภายใน",
+    "Enum:TaskCategory:External": "งานภายนอก",
+    "SelectTaskCategory": "เลือกหมวดหมู่งาน",
+    "Category": "หมวดหมู่",
+    "No": "ไม่",
+    "Yes": "ใช่"
   }
 }
