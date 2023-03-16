@@ -1,4 +1,4 @@
-import {ListService, LocalizationService, PagedResultDto} from '@abp/ng.core';
+import {ListService, LocalizationService, PagedResultDto, PermissionService} from '@abp/ng.core';
 import { Component, OnInit } from '@angular/core';
 import {FormGroup, FormBuilder, Validators, FormControl, Form} from '@angular/forms';
 import {TaskTypeDto, taskCategoryOptions, TaskTypeService, TaskTypeCreateUpdateDto} from "@proxy/task-types";
@@ -20,12 +20,14 @@ export class TaskTypeComponent implements OnInit {
   taskCategoryControl: FormControl;
   yesText: string;
   confirmationTitle: string;
+  isDisplayActionMenu: boolean;
 
   constructor(public readonly list: ListService,
               private taskTypeService: TaskTypeService,
               private fb: FormBuilder,
               private confirmation: ConfirmationService,
-              private localizationService: LocalizationService) {
+              private localizationService: LocalizationService,
+              private permissionService: PermissionService) {
   }
 
   ngOnInit(): void {
@@ -33,6 +35,7 @@ export class TaskTypeComponent implements OnInit {
     this.list.hookToQuery(taskTypeStreamCreator)?.subscribe((response) => this.taskType = response);
     this.localizationService.get('::Yes').subscribe(s => this.yesText = s);
     this.localizationService.get('::AreYouSureDeleteTaskType').subscribe(s => this.confirmationTitle = s);
+    this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.TaskTypes.Edit') || this.permissionService.getGrantedPolicy('Vayu.TaskTypes.Delete')
   }
 
   createTaskType() {
