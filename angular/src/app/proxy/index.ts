@@ -1,2 +1,4 @@
+import * as Roles from './roles';
+import * as Shared from './shared';
 import * as TaskTypes from './task-types';
-export { TaskTypes };
+export { Roles, Shared, TaskTypes };

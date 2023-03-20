@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Vayu.Roles;
 using Vayu.Staffs;
 using Vayu.Tasks;
 using Vayu.TaskTypes;
@@ -114,9 +116,20 @@ public class VayuDbContext :
             b.ToTable(VayuConsts.DbTablePrefix + "Staffs", VayuConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
 
-            b.Property(x => x.Name).IsRequired().HasMaxLength(StaffConsts.MaxNameLength);
-            b.Property(x => x.CodeName).IsRequired().HasMaxLength(StaffConsts.MaxCodeNameLength);
-            b.Property(x => x.ContactNumber).IsRequired().HasMaxLength(StaffConsts.MaxContactNumberLength);
+            b.Property(x => x.Code).HasColumnName(nameof(Staff.Code)).IsRequired().HasMaxLength(StaffConsts.MaxCodeLength);
+            b.Property(x => x.Name).HasColumnName(nameof(Staff.Name)).IsRequired().HasMaxLength(StaffConsts.MaxNameLength);
+            b.Property(x => x.CodeName).HasColumnName(nameof(Staff.CodeName)).IsRequired().HasMaxLength(StaffConsts.MaxCodeNameLength);
+            b.Property(x => x.Email).HasColumnName(nameof(Staff.Email)).HasMaxLength(StaffConsts.MaxEmailLength);
+            b.Property(x => x.Address).HasColumnName(nameof(Staff.Address)).HasMaxLength(StaffConsts.MaxAddressLength);
+            b.Property(x => x.RadioCode).HasColumnName(nameof(Staff.RadioCode)).HasMaxLength(StaffConsts.MaxRadioCodeLength);
+            b.Property(x => x.ContactNumber).HasColumnName(nameof(Staff.ContactNumber)).IsRequired().HasMaxLength(StaffConsts.MaxContactNumberLength);
+            b.Property(x => x.ContactPerson).HasColumnName(nameof(Staff.ContactPerson)).HasMaxLength(StaffConsts.MaxNameLength);
+            b.Property(x => x.ContactPersonNumber).HasColumnName(nameof(Staff.ContactPersonNumber)).HasMaxLength(StaffConsts.MaxContactNumberLength);
+            b.Property(x => x.Line).HasColumnName(nameof(Staff.Line)).HasMaxLength(StaffConsts.MaxEmailLength);
+            b.Property(x => x.Facebook).HasColumnName(nameof(Staff.Facebook)).HasMaxLength(StaffConsts.MaxEmailLength);
+
+            b.HasIndex(x => new { x.Code, x.RadioCode }).IsUnique();
+            b.HasOne<Role>().WithMany().HasForeignKey(x => x.RoleId).IsRequired();
 
             b.ApplyObjectExtensionMappings();
         });
@@ -130,6 +143,18 @@ public class VayuDbContext :
             b.HasIndex(x => new { x.TaskId, x.StaffId }).IsUnique();
             b.HasOne<Task>().WithMany(x => x.TaskStaffs).HasForeignKey(x => x.TaskId).IsRequired().OnDelete(DeleteBehavior.NoAction);
             b.HasOne<Staff>().WithMany().HasForeignKey(x => x.StaffId).IsRequired().OnDelete(DeleteBehavior.NoAction);
+
+            b.ApplyObjectExtensionMappings();
+        });
+
+        builder.Entity<Role>(b =>
+        {
+            b.ToTable(VayuConsts.DbTablePrefix + "Roles", VayuConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+
+            b.Property(x => x.Name).HasMaxLength(RoleConsts.MaxNameLength).HasColumnName(nameof(Role.Name));
+            b.Property(x => x.Description).HasMaxLength(RoleConsts.MaxDescriptionLength).HasColumnName(nameof(Role.Description));
+            b.HasIndex(x => x.Name).IsUnique();
 
             b.ApplyObjectExtensionMappings();
         });

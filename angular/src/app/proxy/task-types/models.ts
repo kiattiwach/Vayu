@@ -13,5 +13,5 @@ export interface TaskTypeDto extends FullAuditedEntityDto<string> {
 
 export interface TaskTypeFilterDto extends PagedAndSortedResultRequestDto {
   filter?: string;
-  taskCategory: TaskCategory;
+  taskCategory?: TaskCategory;
 }

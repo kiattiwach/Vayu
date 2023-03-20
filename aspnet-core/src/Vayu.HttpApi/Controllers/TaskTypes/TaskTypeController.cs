@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Vayu.Shared;
 using Vayu.TaskTypes;
 using Volo.Abp.Application.Dtos;
 
@@ -22,7 +25,7 @@ public class TaskTypeController : VayuController, ITaskTypeService
         return _taskTypeService.GetAsync(id);
     }
 
-    [HttpGet("get-list/{input}")]
+    [HttpPost("get-list/{input}")]
     public Task<PagedResultDto<TaskTypeDto>> GetListAsync(TaskTypeFilterDto input)
     {
         return _taskTypeService.GetListAsync(input);
@@ -44,5 +47,11 @@ public class TaskTypeController : VayuController, ITaskTypeService
     public Task DeleteAsync(Guid id)
     {
         return _taskTypeService.DeleteAsync(id);
+    }
+
+    [HttpGet("getTaskCategoryList")]
+    public Task<PagedResultDto<LookupDto<TaskCategory>>> GetTaskCategoryListAsync(LookupRequestDto input)
+    {
+        return _taskTypeService.GetTaskCategoryListAsync(input);
     }
 }

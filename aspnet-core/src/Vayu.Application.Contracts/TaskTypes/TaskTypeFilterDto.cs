@@ -4,6 +4,6 @@ namespace Vayu.TaskTypes;
 
 public class TaskTypeFilterDto : PagedAndSortedResultRequestDto
 {
-    public string filter { get; set; }
-    public TaskCategory TaskCategory { get; set; }
+    public string Filter { get; set; }
+    public TaskCategory? TaskCategory { get; set; }
 }

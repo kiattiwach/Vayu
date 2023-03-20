@@ -8,6 +8,7 @@ import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import {BaseThemeSharedModule} from "@abp/ng.theme.shared";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgbDropdownModule} from "@ng-bootstrap/ng-bootstrap";
+import { CommercialUiModule, AdvancedEntityFiltersModule } from '@volo/abp.commercial.ng.ui';
 
 
 @NgModule({
@@ -22,7 +23,9 @@ import {NgbDropdownModule} from "@ng-bootstrap/ng-bootstrap";
         BaseThemeSharedModule,
         ReactiveFormsModule,
         NgbDropdownModule,
-        CoreModule
+        CoreModule,
+        CommercialUiModule,
+        AdvancedEntityFiltersModule
     ]
 })
 export class TaskTypeModule { }

@@ -1,7 +1,9 @@
 import type { TaskTypeCreateUpdateDto, TaskTypeDto, TaskTypeFilterDto } from './models';
+import type { TaskCategory } from './task-category.enum';
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
+import type { LookupDto, LookupRequestDto } from '../shared/models';
 
 @Injectable({
   providedIn: 'root',
@@ -37,9 +39,18 @@ export class TaskTypeService {
 
   getList = (input: TaskTypeFilterDto) =>
     this.restService.request<any, PagedResultDto<TaskTypeDto>>({
-      method: 'GET',
+      method: 'POST',
       url: `/api/task-type/get-list/${input}`,
-      params: { filter: input.filter, taskCategory: input.taskCategory, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      body: input,
+    },
+    { apiName: this.apiName });
+  
+
+  getTaskCategoryList = (input: LookupRequestDto) =>
+    this.restService.request<any, PagedResultDto<LookupDto<TaskCategory>>>({
+      method: 'GET',
+      url: '/api/task-type/getTaskCategoryList',
+      params: { filter: input.filter, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName });
   

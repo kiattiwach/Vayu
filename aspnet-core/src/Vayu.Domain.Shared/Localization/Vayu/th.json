@@ -7,19 +7,34 @@
     "Permission:TaskTypes.Create": "การเพิ่มประเภทงานใหม่",
     "Permission:TaskTypes.Edit": "การแก้ไขประเภทงาน",
     "Permission:TaskTypes.Delete": "การลบประเภทงาน",
+    "Permission:Roles": "การจัดการหน้าที่",
+    "Permission:Roles.Create": "การเพิ่มหน้าที่ใหม่",
+    "Permission:Roles.Edit": "การแก้ไขหน้าที่",
+    "Permission:Roles.Delete": "การลบหน้าที่",
+
+    "Welcome": "ยินดีต้อนรับ",
+    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
+
+    "SearchPlaceholder": "ป้อนคำค้นหา",
+    "SeeAdvancedFilters": "ค้นหาขั้นสูง",
 
     "Menu:Home": "หน้าหลัก",
     "Menu:Setting": "ตั้งค่า",
-    "Welcome": "ยินดีต้อนรับ",
-    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
     "Menu:TaskTypes": "ประเภทงาน",
+    "Menu:Roles": "หน้าที่/ตำแหน่ง",
+
     "Actions": "ดำเนินการ",
     "Close": "ปิด",
     "Delete": "ลบ",
     "Edit": "แก้ไข",
+
     "NewTaskType": "เพิ่มประเภทงานใหม่",
     "Name": "ชื่อ",
     "Type": "ประเภท",
+    "Search": "ค้นหา",
+
+    "Clear": "ล้าง",
+    "Refresh": "รีเฟรชข้อมูล",
     "CreationTime": "วันที่เพิ่ม",
     "AreYouSure": "ต้องการดำเนินการหรือไม่?",
     "AreYouSureDeleteTaskType": "คุณกำลังจะลบประเภทงาน",
@@ -31,6 +46,22 @@
     "SelectTaskCategory": "เลือกหมวดหมู่งาน",
     "Category": "หมวดหมู่",
     "No": "ไม่",
-    "Yes": "ใช่"
+    "Yes": "ใช่",
+
+    "AreYouSureDeleteRole": "คุณกำลังจะลบหน้าที่/ตำแหน่ง",
+    "Role": "หน้าที่/ตำแหน่ง",
+    "NewRole": "เพิ่มหน้าที่/ตำแหน่งใหม่",
+    "Description": "คำอธิบาย",
+
+    "Code": "รหัส",
+    "CodeName": "ชื่อรหัส",
+    "Email": "อีเมลล์",
+    "Address": "ที่อยู่",
+    "RadioCode": "รหัสวิทยุ",
+    "ContactNumber": "เบอร์โทรฯ ติดต่อ",
+    "ContactPerson": "ชื่อผุ้ติดต่อ",
+    "ContactPersonNumber": "เบอร์โทรฯ ชื่อผุ้ติดต่อ",
+    "Line": "ไลน์",
+    "Facebook": "เฟสบุค"
   }
 }

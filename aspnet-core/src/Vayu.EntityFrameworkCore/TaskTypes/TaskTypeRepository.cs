@@ -18,14 +18,14 @@ public class TaskTypeRepository : EfCoreRepository<VayuDbContext, TaskType, Guid
     {
     }
 
-    public async Task<int> GetCountAsync(string filter = null, TaskCategory type = default,
+    public async Task<int> GetCountAsync(string filter = null, TaskCategory? type = default,
         CancellationToken cancellationToken = default)
     {
         var queryable = await GetQuery(filter, type);
         return await queryable.CountAsync(GetCancellationToken(cancellationToken)); ;
     }
 
-    public async Task<List<TaskType>> GetListAsync(string filter = null, TaskCategory type = default, int maxResultCount = Int32.MaxValue,
+    public async Task<List<TaskType>> GetListAsync(string filter = null, TaskCategory? type = default, int maxResultCount = Int32.MaxValue,
         int skipCount = 0, string sorting = null, CancellationToken cancellationToken = default)
     {
         var queryable = await GetQuery(filter, type);
@@ -35,10 +35,10 @@ public class TaskTypeRepository : EfCoreRepository<VayuDbContext, TaskType, Guid
             .ToListAsync(GetCancellationToken(cancellationToken));
     }
 
-    private async Task<IQueryable<TaskType>> GetQuery(string filter = null, TaskCategory type = default)
+    private async Task<IQueryable<TaskType>> GetQuery(string filter = null, TaskCategory? type = default)
     {
         return (await GetDbSetAsync())
-            .WhereIf(type != default, x => x.TaskCategory == type)
+            .WhereIf(type != null, x => x.TaskCategory == type)
             .WhereIf(!string.IsNullOrEmpty(filter), x => x.Name.Contains(filter));
     }
 }

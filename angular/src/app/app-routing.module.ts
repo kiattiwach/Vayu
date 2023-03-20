@@ -26,6 +26,7 @@ const routes: Routes = [
       import('@abp/ng.setting-management').then(m => m.SettingManagementModule.forLazy()),
   },
   { path: 'task-types', loadChildren: () => import('./task-type/task-type.module').then(m => m.TaskTypeModule) },
+  { path: 'roles', loadChildren: () => import('./role/role.module').then(m => m.RoleModule) },
 ];
 
 @NgModule({

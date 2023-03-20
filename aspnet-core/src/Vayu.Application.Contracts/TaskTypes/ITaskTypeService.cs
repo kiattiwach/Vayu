@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Vayu.Shared;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
@@ -16,4 +17,6 @@ public interface ITaskTypeService : IApplicationService
     Task<TaskTypeDto> UpdateAsync(TaskTypeCreateUpdateDto input);
 
     Task DeleteAsync(Guid id);
+
+    Task<PagedResultDto<LookupDto<TaskCategory>>> GetTaskCategoryListAsync(LookupRequestDto input);
 }

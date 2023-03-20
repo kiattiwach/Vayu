@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Vayu.Roles;
+using Vayu.Staffs;
 using Vayu.TaskTypes;
 using Volo.Abp.Uow;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -13,6 +15,8 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using Volo.Abp.Data;
+using Volo.Abp;
 
 namespace Vayu.EntityFrameworkCore;
 
@@ -43,6 +47,8 @@ public class VayuEntityFrameworkCoreModule : AbpModule
                  * default repositories only for aggregate roots */
             options.AddDefaultRepositories(includeAllEntities: true);
             options.AddRepository<TaskType, TaskTypeRepository>();
+            options.AddRepository<Role, RoleRepository>();
+            options.AddRepository<Staff, StaffRepository>();
         });
 
         Configure<AbpDbContextOptions>(options =>
@@ -50,6 +56,11 @@ public class VayuEntityFrameworkCoreModule : AbpModule
                 /* The main point to change your DBMS.
                  * See also VayuMigrationsDbContextFactory for EF Core tooling. */
             options.UseSqlServer();
+        });
+
+        Configure<AbpDataFilterOptions>(options =>
+        {
+            options.DefaultStates[typeof(ISoftDelete)] = new DataFilterState(isEnabled: true);
         });
 
     }

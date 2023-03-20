@@ -26,7 +26,12 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice.
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-##Generate proxy
+## Generate component
+cmd on Angular folder
+
+yarn ng generate module role --module app --routing --route roles
+
+## Generate proxy
 cmd on Angular folder
 
 abp generate-proxy -t ng -url https://localhost:44375 --module vayu

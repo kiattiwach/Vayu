@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper.Internal.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Localization;
+using Vayu.Localization;
 using Vayu.Permissions;
+using Vayu.Shared;
 using Vayu.TaskTypes;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -15,10 +19,12 @@ namespace Vayu.TaskTypes;
 public class TaskTypeService : ApplicationService, ITaskTypeService
 {
     private readonly ITaskTypeRepository _taskTypeRepository;
+    private readonly IStringLocalizer<VayuResource> _stringLocalize;
 
-    public TaskTypeService(ITaskTypeRepository taskTypeRepository)
+    public TaskTypeService(ITaskTypeRepository taskTypeRepository,IStringLocalizer<VayuResource> stringLocalize)
     {
         _taskTypeRepository = taskTypeRepository;
+        _stringLocalize = stringLocalize;
     }
 
     [Authorize(VayuPermissions.TaskTypes.Default)]
@@ -30,8 +36,9 @@ public class TaskTypeService : ApplicationService, ITaskTypeService
     [Authorize(VayuPermissions.TaskTypes.Default)]
     public async Task<PagedResultDto<TaskTypeDto>> GetListAsync(TaskTypeFilterDto input)
     {
-        var count = await _taskTypeRepository.GetCountAsync(input.filter, input.TaskCategory);
-        var items = await _taskTypeRepository.GetListAsync(input.filter, input.TaskCategory);
+        var count = await _taskTypeRepository.GetCountAsync(input.Filter, input.TaskCategory);
+        var items = await _taskTypeRepository.GetListAsync(input.Filter, input.TaskCategory,
+            input.MaxResultCount, input.SkipCount);
         return new PagedResultDto<TaskTypeDto>
             { TotalCount = count, Items = ObjectMapper.Map<List<TaskType>, List<TaskTypeDto>>(items) };
     }
@@ -58,5 +65,24 @@ public class TaskTypeService : ApplicationService, ITaskTypeService
     public Task DeleteAsync(Guid id)
     {
         return _taskTypeRepository.DeleteAsync(id);
+    }
+
+    public Task<PagedResultDto<LookupDto<TaskCategory>>> GetTaskCategoryListAsync(LookupRequestDto input)
+    {
+        
+        var taskCategories = Enum.GetValues(typeof(TaskCategory))
+            .Cast<TaskCategory>()
+            .WhereIf(input.Filter != null, x => _stringLocalize["Enum:TaskCategory:" + x.ToString()].ToString().Contains(input.Filter))
+            .Select(s => new LookupDto<TaskCategory>()
+            {
+                Id = s,
+                DisplayName = _stringLocalize["Enum:TaskCategory:" + s.ToString()]
+            }).ToList();
+
+        return Task.FromResult(new PagedResultDto<LookupDto<TaskCategory>>()
+        {
+            TotalCount = taskCategories.Count,
+            Items = taskCategories
+        });
     }
 }

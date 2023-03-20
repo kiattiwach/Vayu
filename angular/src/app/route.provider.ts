@@ -28,6 +28,14 @@ function configureRoutes(routesService: RoutesService) {
         parentName: '::Menu:Setting',
         layout: eLayoutType.application,
         requiredPolicy: 'Vayu.TaskTypes'
+      },
+      {
+        path: '/roles',
+        name: '::Menu:Roles',
+        iconClass: 'fas fa-user-tag',
+        parentName: '::Menu:Setting',
+        layout: eLayoutType.application,
+        requiredPolicy: 'Vayu.Roles'
       }
     ]);
   };

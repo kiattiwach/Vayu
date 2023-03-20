@@ -1,8 +1,15 @@
-import {ListService, LocalizationService, PagedResultDto, PermissionService} from '@abp/ng.core';
+import {ABP, ListService, LocalizationService, PagedResultDto, PermissionService} from '@abp/ng.core';
 import { Component, OnInit } from '@angular/core';
 import {FormGroup, FormBuilder, Validators, FormControl, Form} from '@angular/forms';
-import {TaskTypeDto, taskCategoryOptions, TaskTypeService, TaskTypeCreateUpdateDto} from "@proxy/task-types";
-import { ConfirmationService, Confirmation } from '@abp/ng.theme.shared';
+import {
+  TaskTypeDto,
+  taskCategoryOptions,
+  TaskTypeService,
+  TaskTypeCreateUpdateDto,
+  TaskTypeFilterDto
+} from "@proxy/task-types";
+import { Confirmation } from '@abp/ng.theme.shared';
+import {VayuServiceService} from "../services/vayu-service.service";
 
 @Component({
   selector: 'app-task-type',
@@ -11,6 +18,7 @@ import { ConfirmationService, Confirmation } from '@abp/ng.theme.shared';
   providers: [ListService]
 })
 export class TaskTypeComponent implements OnInit {
+  filters = {} as TaskTypeFilterDto;
   taskType = {items: [], totalCount: 0 } as PagedResultDto<TaskTypeDto>;
   selectTaskType = {} as TaskTypeDto;
   isModalOpen = false;
@@ -18,33 +26,33 @@ export class TaskTypeComponent implements OnInit {
   form: FormGroup;
   nameControl: FormControl;
   taskCategoryControl: FormControl;
-  yesText: string;
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
 
   constructor(public readonly list: ListService,
-              private taskTypeService: TaskTypeService,
+              public taskTypeService: TaskTypeService,
               private fb: FormBuilder,
-              private confirmation: ConfirmationService,
+              private vayuServiceService: VayuServiceService,
               private localizationService: LocalizationService,
               private permissionService: PermissionService) {
   }
 
   ngOnInit(): void {
-    const taskTypeStreamCreator = (query) => this.taskTypeService.getList(query);
-    this.list.hookToQuery(taskTypeStreamCreator)?.subscribe((response) => this.taskType = response);
-    this.localizationService.get('::Yes').subscribe(s => this.yesText = s);
+    const streamCreator = (query) => this.taskTypeService.getList({...query,
+      ...this.filters});
+    this.list.hookToQuery(streamCreator)?.subscribe((response) => this.taskType = response);
+
     this.localizationService.get('::AreYouSureDeleteTaskType').subscribe(s => this.confirmationTitle = s);
     this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.TaskTypes.Edit') || this.permissionService.getGrantedPolicy('Vayu.TaskTypes.Delete')
   }
 
-  createTaskType() {
+  create() {
     this.selectTaskType = {} as TaskTypeDto;
     this.buildForm();
     this.isModalOpen = true;
   }
 
-  editTaskType(id: string){
+  edit(id: string){
     this.taskTypeService.get(id).subscribe(s => {
       this.selectTaskType = s;
       this.buildForm();
@@ -53,21 +61,7 @@ export class TaskTypeComponent implements OnInit {
   }
 
   delete(id: string, name: string) {
-    const options: Partial<Confirmation.Options> = {
-      hideCancelBtn: false,
-      hideYesBtn: false,
-      dismissible: false,
-      cancelText: "::No",
-      yesText: '<i class="fa fa-trash-alt me-1 text-danger"></i>'+this.yesText,
-      icon: 'fa fa-trash-alt'
-      /*messageLocalizationParams: ["Demo"],
-      titleLocalizationParams: [],*/
-      // You can customize icon
-      // icon: 'fa fa-exclamation-triangle', // or
-      // iconTemplate : '<img src="custom-image-path.jpg" alt=""/>'
-    };
-
-    this.confirmation.warn('::AreYouSureToDelete', this.confirmationTitle +' '+ name, options).subscribe((status) => {
+    this.vayuServiceService.displayConfirmDelete(this.confirmationTitle,name).subscribe((status) =>{
       if (status === Confirmation.Status.confirm) {
         this.taskTypeService.delete(id).subscribe(() => this.list.get());
       }
@@ -98,6 +92,12 @@ export class TaskTypeComponent implements OnInit {
       this.form.reset();
       this.list.get();
     });
+  }
+
+  clearFilters() {
+    this.filters = {} as TaskTypeFilterDto;
+
+    this.list.get();
   }
 
 }
