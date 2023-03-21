@@ -7,11 +7,6 @@ public class TaskType : FullAuditedEntity<Guid>
 {
     public string Name { get; set; }
     public TaskCategory TaskCategory { get; set; }
-
-    public TaskType()
-    {
-
-    }
     public TaskType(string name, TaskCategory taskCategory)
     {
         Name = name;

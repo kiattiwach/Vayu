@@ -27,7 +27,6 @@ namespace Vayu.Migrations
             modelBuilder.Entity("Vayu.Roles.Role", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationTime")
@@ -66,6 +65,7 @@ namespace Vayu.Migrations
                         .HasColumnName("LastModifierId");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)")
                         .HasColumnName("Name");
@@ -73,8 +73,7 @@ namespace Vayu.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("VayuRoles", (string)null);
                 });
