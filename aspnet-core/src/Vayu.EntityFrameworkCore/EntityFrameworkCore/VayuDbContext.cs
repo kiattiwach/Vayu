@@ -58,6 +58,7 @@ public class VayuDbContext :
 
     #endregion
 
+    public DbSet<Role> VayuRoles { get; set; }
     public DbSet<Task> Tasks { get; set; }
     public DbSet<TaskType> TaskTypes { get; set; }
 

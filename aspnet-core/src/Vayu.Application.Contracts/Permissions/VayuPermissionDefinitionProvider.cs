@@ -16,9 +16,9 @@ public class VayuPermissionDefinitionProvider : PermissionDefinitionProvider
         taskTypePermission.AddChild(VayuPermissions.TaskTypes.Delete, L("Permission:TaskTypes.Delete"));
 
         var rolePermission = vayuGroup.AddPermission(VayuPermissions.Roles.Default, L("Permission:Roles"));
-        taskTypePermission.AddChild(VayuPermissions.Roles.Create, L("Permission:Roles.Create"));
-        taskTypePermission.AddChild(VayuPermissions.Roles.Edit, L("Permission:Roles.Edit"));
-        taskTypePermission.AddChild(VayuPermissions.Roles.Delete, L("Permission:Roles.Delete"));
+        rolePermission.AddChild(VayuPermissions.Roles.Create, L("Permission:Roles.Create"));
+        rolePermission.AddChild(VayuPermissions.Roles.Edit, L("Permission:Roles.Edit"));
+        rolePermission.AddChild(VayuPermissions.Roles.Delete, L("Permission:Roles.Delete"));
     }
 
     private static LocalizableString L(string name)
