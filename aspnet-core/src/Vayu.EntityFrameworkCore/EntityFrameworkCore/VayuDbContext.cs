@@ -59,6 +59,7 @@ public class VayuDbContext :
     #endregion
 
     public DbSet<Role> VayuRoles { get; set; }
+    public DbSet<Staff> Staffs { get; set; }
     public DbSet<Task> Tasks { get; set; }
     public DbSet<TaskType> TaskTypes { get; set; }
 
@@ -153,7 +154,7 @@ public class VayuDbContext :
             b.ToTable(VayuConsts.DbTablePrefix + "Roles", VayuConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
 
-            b.Property(x => x.Name).HasMaxLength(RoleConsts.MaxNameLength).HasColumnName(nameof(Role.Name));
+            b.Property(x => x.Name).HasMaxLength(RoleConsts.MaxNameLength).HasColumnName(nameof(Role.Name)).IsRequired();
             b.Property(x => x.Description).HasMaxLength(RoleConsts.MaxDescriptionLength).HasColumnName(nameof(Role.Description));
             b.HasIndex(x => x.Name).IsUnique();
 
