@@ -1,0 +1,48 @@
+import type { AuditedEntityDto, EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
+import type { RoleDto } from '../roles/models';
+
+export interface StaffCreateUpdateDto extends EntityDto<string> {
+  code: string;
+  name: string;
+  codeName: string;
+  email?: string;
+  address?: string;
+  radioCode?: string;
+  contactNumber: string;
+  contactPerson?: string;
+  contactPersonNumber?: string;
+  line?: string;
+  facebook?: string;
+  roleId: string;
+}
+
+export interface StaffDto extends AuditedEntityDto<string> {
+  code?: string;
+  name?: string;
+  codeName?: string;
+  email?: string;
+  address?: string;
+  radioCode?: string;
+  contactNumber?: string;
+  contactPerson?: string;
+  contactPersonNumber?: string;
+  line?: string;
+  facebook?: string;
+  role: RoleDto;
+}
+
+export interface StaffFilterDto extends PagedAndSortedResultRequestDto {
+  filter?: string;
+  code?: string;
+  name?: string;
+  codeName?: string;
+  email?: string;
+  address?: string;
+  radioCode?: string;
+  contactNumber?: string;
+  contactPerson?: string;
+  contactPersonNumber?: string;
+  line?: string;
+  facebook?: string;
+  roleId?: string;
+}

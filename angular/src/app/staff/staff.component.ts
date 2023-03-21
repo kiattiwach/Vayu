@@ -1,0 +1,127 @@
+import { Component, OnInit } from '@angular/core';
+import {ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {VayuServiceService} from "../services/vayu-service.service";
+import {StaffCreateUpdateDto, StaffDto, StaffFilterDto, StaffService} from "@proxy/staffs";
+import {Confirmation} from "@abp/ng.theme.shared";
+
+@Component({
+  selector: 'app-staff',
+  templateUrl: './staff.component.html',
+  styleUrls: ['./staff.component.scss'],
+  providers: [ListService]
+})
+export class StaffComponent implements OnInit {
+  filters = {} as StaffFilterDto;
+  staffs = {items: [], totalCount: 0 } as PagedResultDto<StaffDto>;
+  selectStaff = {} as StaffDto;
+  isModalOpen = false;
+  form: FormGroup;
+
+  codeControl: FormControl;
+  nameControl: FormControl;
+  codeNameControl: FormControl;
+  emailControl: FormControl;
+  addressControl: FormControl;
+  radioCodeControl: FormControl;
+  contactNumberControl: FormControl;
+  contactPersonControl: FormControl;
+  contactPersonNumberControl: FormControl;
+  lineControl: FormControl;
+  facebookControl: FormControl;
+  roleControl: FormControl;
+
+  confirmationTitle: string;
+  isDisplayActionMenu: boolean;
+  constructor(public readonly list: ListService,
+              public staffService: StaffService,
+              private fb: FormBuilder,
+              private vayuServiceService: VayuServiceService,
+              private localizationService: LocalizationService,
+              private permissionService: PermissionService) { }
+
+  ngOnInit(): void {
+    const streamCreator = (query) => this.staffService.getList({...query,
+      ...this.filters});
+    this.list.hookToQuery(streamCreator)?.subscribe((response) => this.staffs = response);
+
+    this.localizationService.get('::AreYouSureDeleteStaff').subscribe(s => this.confirmationTitle = s);
+    this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.Staffs.Edit') || this.permissionService.getGrantedPolicy('Vayu.Staffs.Delete')
+  }
+
+  create() {
+    this.selectStaff = {} as StaffDto;
+    this.buildForm();
+    this.isModalOpen = true;
+  }
+
+  buildForm() {
+
+    this.codeControl=  new FormControl(this.selectStaff.code || null,[Validators.required]);
+    this.nameControl=  new FormControl(this.selectStaff.name || null,[Validators.required]);
+    this.codeNameControl=  new FormControl(this.selectStaff.codeName || null,[Validators.required]);
+    this.emailControl=  new FormControl(this.selectStaff.email || null,[]);
+    this.addressControl=  new FormControl(this.selectStaff.address || null,[]);
+    this.radioCodeControl=  new FormControl(this.selectStaff.radioCode || null,[]);
+    this.contactNumberControl=  new FormControl(this.selectStaff.contactNumber || null,[]);
+    this.contactPersonControl=  new FormControl(this.selectStaff.contactPerson || null,[]);
+    this.contactPersonNumberControl=  new FormControl(this.selectStaff.contactPersonNumber || null,[]);
+    this.lineControl=  new FormControl(this.selectStaff.line || null,[]);
+    this.facebookControl=  new FormControl(this.selectStaff.facebook || null,[]);
+    this.roleControl=  new FormControl(this.selectStaff.role || null,[]);
+
+    this.form = this.fb.group({
+      code: this.codeControl,
+      name: this.nameControl,
+      codeName: this.codeNameControl,
+      email: this.emailControl,
+      address: this.addressControl,
+      radioCode: this.radioCodeControl,
+      contactNumber: this.contactNumberControl,
+      contactPerson: this.contactPersonControl,
+      contactPersonNumber: this.contactPersonNumberControl,
+      line: this.lineControl,
+      facebook: this.facebookControl,
+      roleId: this.roleControl
+    });
+  }
+
+  edit(id: string){
+    this.staffService.get(id).subscribe(s => {
+      this.selectStaff = s;
+      this.buildForm();
+      this.isModalOpen  = true;
+    });
+  }
+
+  delete(id: string, name: string) {
+    this.vayuServiceService.displayConfirmDelete(this.confirmationTitle,name).subscribe((status) =>{
+      if (status === Confirmation.Status.confirm) {
+        this.staffService.delete(id).subscribe(() => this.list.get());
+      }
+    });
+  }
+
+  save() {
+    if (this.form.invalid) {
+      return;
+    }
+    let updateDto = <StaffCreateUpdateDto>this.form.value;
+    updateDto.id = this.selectStaff.id;
+    const request = this.selectStaff.id
+      ? this.staffService.update(updateDto)
+      :this.staffService.create(this.form.value);
+
+    request.subscribe(() => {
+      this.isModalOpen = false;
+      this.form.reset();
+      this.list.get();
+    });
+  }
+
+  clearFilters() {
+    this.filters = {} as StaffFilterDto;
+
+    this.list.get();
+  }
+}

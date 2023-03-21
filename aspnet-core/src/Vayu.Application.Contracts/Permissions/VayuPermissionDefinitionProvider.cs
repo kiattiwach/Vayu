@@ -19,6 +19,11 @@ public class VayuPermissionDefinitionProvider : PermissionDefinitionProvider
         rolePermission.AddChild(VayuPermissions.Roles.Create, L("Permission:Roles.Create"));
         rolePermission.AddChild(VayuPermissions.Roles.Edit, L("Permission:Roles.Edit"));
         rolePermission.AddChild(VayuPermissions.Roles.Delete, L("Permission:Roles.Delete"));
+
+        var staffPermission = vayuGroup.AddPermission(VayuPermissions.Staffs.Default, L("Permission:Staffs"));
+        staffPermission.AddChild(VayuPermissions.Staffs.Create, L("Permission:Staffs.Create"));
+        staffPermission.AddChild(VayuPermissions.Staffs.Edit, L("Permission:Staffs.Edit"));
+        staffPermission.AddChild(VayuPermissions.Staffs.Delete, L("Permission:Staffs.Delete"));
     }
 
     private static LocalizableString L(string name)

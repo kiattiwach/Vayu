@@ -27,15 +27,33 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-list-alt',
         parentName: '::Menu:Setting',
         layout: eLayoutType.application,
-        requiredPolicy: 'Vayu.TaskTypes'
+        requiredPolicy: 'Vayu.TaskTypes',
+        order:1
+      },
+      {
+        name: '::Menu:StaffRole',
+        iconClass: 'fas fa-user-cog',
+        parentName: '::Menu:Setting',
+        layout: eLayoutType.application,
+        order:2
       },
       {
         path: '/roles',
         name: '::Menu:Roles',
         iconClass: 'fas fa-user-tag',
-        parentName: '::Menu:Setting',
+        parentName: '::Menu:StaffRole',
         layout: eLayoutType.application,
-        requiredPolicy: 'Vayu.Roles'
+        requiredPolicy: 'Vayu.Roles',
+        order: 1
+      },
+      {
+        path: '/staffs',
+        name: '::Menu:Staffs',
+        iconClass: 'fas fa-users',
+        parentName: '::Menu:StaffRole',
+        layout: eLayoutType.application,
+        requiredPolicy: 'Vayu.Staffs',
+        order: 2
       }
     ]);
   };

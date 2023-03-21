@@ -22,7 +22,8 @@
     "Menu:Setting": "ตั้งค่า",
     "Menu:TaskTypes": "ประเภทงาน",
     "Menu:Roles": "หน้าที่/ตำแหน่ง",
-
+    "Menu:StaffRole": "เจ้าหน้าที่/หน้าที่",
+    "Menu:Staffs": "เจ้าหน้าที่",
     "Actions": "ดำเนินการ",
     "Close": "ปิด",
     "Delete": "ลบ",
