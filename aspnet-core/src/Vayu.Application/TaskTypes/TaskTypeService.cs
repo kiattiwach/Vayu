@@ -16,7 +16,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace Vayu.TaskTypes;
 
-public class TaskTypeService : ApplicationService, ITaskTypeService
+public class TaskTypeService : VayuAppService, ITaskTypeService
 {
     private readonly ITaskTypeRepository _taskTypeRepository;
     private readonly IStringLocalizer<VayuResource> _stringLocalize;

@@ -8,7 +8,7 @@ using Volo.Abp.Application.Services;
 
 namespace Vayu.Roles;
 
-public class RoleService : ApplicationService, IRoleService
+public class RoleService : VayuAppService, IRoleService
 {
     private readonly IRoleRepository _roleRepository;
 
