@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Vayu.EntityFrameworkCore;
+using Vayu.Roles;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -20,31 +21,36 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
     public async Task<int> GetCountAsync(string filter = null, string code = null, string name = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
-        Guid? roleId = default, CancellationToken cancellationToken = default)
+        Guid? roleId = null, CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(filter, code, name, codeName, email, address, radioCode, contactNumber,
             contactPerson, contactPersonNumber, line, facebook, roleId);
         return await query.CountAsync(cancellationToken);
     }
 
-    public async Task<List<Staff>> GetListAsync(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<List<StaffWithRoleQueryReultItem>> GetListAsync(string filter = null, string code = null, string name = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
-        Guid? roleId = default, int maxResultCount = Int32.MaxValue, int skipCount = 0, string sorting = null,
+        Guid? roleId = null, int maxResultCount = Int32.MaxValue, int skipCount = 0, string sorting = null,
         CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(filter, code, name, codeName, email, address, radioCode, contactNumber,
             contactPerson, contactPersonNumber, line, facebook, roleId);
-        query = query.OrderBy(sorting.IsNullOrEmpty() ? $"{nameof(Staff.Name)} desc" : sorting);
+        query = query.OrderBy(x => x.Staff.Name);
         return await query.Skip(skipCount).Take(maxResultCount).ToListAsync(cancellationToken);
     }
 
-    public async Task<IQueryable<Staff>> GetQuery(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<Staff> GetByRadioCode(string radioCode)
+    {
+        return (await GetDbSetAsync()).FirstOrDefault(x => x.RadioCode.Equals(radioCode));
+    }
+
+    public async Task<IQueryable<StaffWithRoleQueryReultItem>> GetQuery(string filter = null, string code = null, string name = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
         Guid? roleId = default)
     {
-        return (await GetDbSetAsync())
+        var staffQuery = (await GetDbSetAsync())
             .WhereIf(!string.IsNullOrWhiteSpace(filter), x =>
                 x.Code.Contains(filter) || x.Name.Contains(filter) || x.CodeName.Contains(filter) ||
                 x.Email.Contains(filter) || x.Address.Contains(filter) || x.RadioCode.Contains(filter) ||
@@ -62,6 +68,16 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
             .WhereIf(!string.IsNullOrWhiteSpace(contactPersonNumber), x => x.ContactPersonNumber.Contains(contactPersonNumber))
             .WhereIf(!string.IsNullOrWhiteSpace(line), x => x.Line.Contains(line))
             .WhereIf(!string.IsNullOrWhiteSpace(facebook), x => x.Facebook.Contains(facebook))
-            .WhereIf(roleId != default, x => x.RoleId == roleId);
+            .WhereIf(roleId != Guid.Empty && roleId is { }, x => x.RoleId == roleId);
+
+        var result =  from staff in staffQuery
+            join role in (await GetDbContextAsync()).Set<Role>() on staff.RoleId equals role.Id
+            select new StaffWithRoleQueryReultItem()
+            {
+                Staff = staff,
+                Role = role
+            };
+
+        return result;
     }
 }

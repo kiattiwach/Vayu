@@ -11,6 +11,10 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using Microsoft.Extensions.Localization;
+using Vayu.Localization;
+using Volo.Abp;
+using Volo.Abp.ObjectMapping;
 
 namespace Vayu.Staffs;
 
@@ -18,17 +22,29 @@ public class StaffService : VayuAppService, IStaffService
 {
     private readonly IStaffRepository _staffRepository;
     private readonly IRepository<Role, Guid> _roleRepository;
+    private readonly IStringLocalizer<VayuResource> _stringLocalize;
 
-    public StaffService(IStaffRepository staffRepository, IRepository<Role,Guid> roleRepository)
+    public StaffService(IStaffRepository staffRepository, 
+        IRepository<Role,Guid> roleRepository,
+        IStringLocalizer<VayuResource> stringLocalize)
     {
         _staffRepository = staffRepository;
         _roleRepository = roleRepository;
+        _stringLocalize = stringLocalize;
     }
 
     [Authorize(VayuPermissions.Staffs.Default)]
     public async Task<StaffDto> GetAsync(Guid id)
     {
-        return ObjectMapper.Map<Staff, StaffDto>(await _staffRepository.GetAsync(id));
+        var staff = await _staffRepository.GetAsync(id);
+        var staffDto = ObjectMapper.Map<Staff, StaffDto>(staff);
+        staffDto.Role = await GetStaffRole(staff);
+        return staffDto;
+    }
+
+    private async Task<RoleDto> GetStaffRole(Staff staff)
+    {
+        return ObjectMapper.Map<Role, RoleDto>(await _roleRepository.GetAsync(staff.RoleId));
     }
 
     [Authorize(VayuPermissions.Staffs.Default)]
@@ -40,21 +56,43 @@ public class StaffService : VayuAppService, IStaffService
         var items = await _staffRepository.GetListAsync(input.Filter, input.Code, input.Name, input.CodeName,
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
             input.ContactPersonNumber, input.Line, input.Facebook, input.RoleId,input.MaxResultCount,input.SkipCount);
-        return new PagedResultDto<StaffDto>(count, ObjectMapper.Map<List<Staff>, List<StaffDto>>(items));
+        
+        return new PagedResultDto<StaffDto>(count, items.Select(s =>
+        {
+            var staff = ObjectMapper.Map<Staff, StaffDto>(s.Staff);
+            staff.Role = ObjectMapper.Map<Role, RoleDto>(s.Role);
+            return staff;
+        }).ToList());
     }
 
     [Authorize(VayuPermissions.Staffs.Create)]
     public async Task<StaffDto> CreateAsync(StaffCreateUpdateDto input)
     {
+        var staffUsedRadioCode = await _staffRepository.GetByRadioCode(input.RadioCode);
+        if (staffUsedRadioCode != null)
+        {
+            throw new UserFriendlyException(
+                _stringLocalize["RadioCodeIsUsed", staffUsedRadioCode.Name, input.RadioCode]);
+        }
+
         var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name, input.CodeName, input.Email,
             input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson, input.ContactPersonNumber,
             input.Line, input.Facebook, input.RoleId));
-        return ObjectMapper.Map<Staff, StaffDto>(result);
+        var staff = ObjectMapper.Map<Staff, StaffDto>(result);
+        staff.Role = await GetStaffRole(result);
+        return staff;
     }
 
     [Authorize(VayuPermissions.Staffs.Edit)]
     public async Task<StaffDto> UpdateAsync(StaffCreateUpdateDto input)
     {
+        var staffUsedRadioCode = await _staffRepository.GetByRadioCode(input.RadioCode);
+        if (staffUsedRadioCode != null && !staffUsedRadioCode.Name.Equals(input.Name))
+        {
+            throw new UserFriendlyException(
+                _stringLocalize["RadioCodeIsUsed", staffUsedRadioCode.Name, input.RadioCode]);
+        }
+
         var staff = await _staffRepository.GetAsync(input.Id);
         staff.Code = input.Code;
         staff.Name = input.Name;
@@ -70,7 +108,9 @@ public class StaffService : VayuAppService, IStaffService
         staff.RoleId = input.RoleId;
 
         var result = await _staffRepository.UpdateAsync(staff);
-        return ObjectMapper.Map<Staff,StaffDto>(result);
+        var staffDto = ObjectMapper.Map<Staff,StaffDto>(result);
+        staffDto.Role = await GetStaffRole(result);
+        return staffDto;
     }
 
     [Authorize(VayuPermissions.Staffs.Delete)]

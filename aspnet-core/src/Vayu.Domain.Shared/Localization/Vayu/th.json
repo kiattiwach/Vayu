@@ -63,6 +63,7 @@
     "ContactPerson": "ชื่อผุ้ติดต่อ",
     "ContactPersonNumber": "เบอร์โทรฯ ชื่อผุ้ติดต่อ",
     "Line": "ไลน์",
-    "Facebook": "เฟสบุค"
+    "Facebook": "เฟสบุค",
+    "RadioCodeIsUsed": "{0} ใช้รหัสวิทยุ {1} แล้ว"
   }
 }

@@ -130,7 +130,8 @@ public class VayuDbContext :
             b.Property(x => x.Line).HasColumnName(nameof(Staff.Line)).HasMaxLength(StaffConsts.MaxEmailLength);
             b.Property(x => x.Facebook).HasColumnName(nameof(Staff.Facebook)).HasMaxLength(StaffConsts.MaxEmailLength);
 
-            b.HasIndex(x => new { x.Code, x.RadioCode }).IsUnique();
+            b.HasIndex(x => x.Code).IsUnique();
+            
             b.HasOne<Role>().WithMany().HasForeignKey(x => x.RoleId).IsRequired();
 
             b.ApplyObjectExtensionMappings();

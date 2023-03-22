@@ -124,6 +124,14 @@ namespace Vayu.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("CreatorId");
 
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletionTime");
+
                     b.Property<string>("Email")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)")
@@ -133,6 +141,12 @@ namespace Vayu.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)")
                         .HasColumnName("Facebook");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2")
@@ -163,11 +177,10 @@ namespace Vayu.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("Code")
+                        .IsUnique();
 
-                    b.HasIndex("Code", "RadioCode")
-                        .IsUnique()
-                        .HasFilter("[RadioCode] IS NOT NULL");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("VayuStaffs", (string)null);
                 });

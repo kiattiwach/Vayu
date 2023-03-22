@@ -15,17 +15,17 @@ import {NgbDropdownModule} from "@ng-bootstrap/ng-bootstrap";
   declarations: [
     StaffComponent
   ],
-  imports: [
-    CommonModule,
-    StaffRoutingModule,
-    LocalizationModule,
-    NgxDatatableModule,
-    BaseThemeSharedModule,
-    ReactiveFormsModule,
-    NgbDropdownModule,
-    CoreModule,
-    CommercialUiModule,
-    AdvancedEntityFiltersModule
-  ]
+    imports: [
+        CommonModule,
+        StaffRoutingModule,
+        LocalizationModule,
+        NgxDatatableModule,
+        BaseThemeSharedModule,
+        ReactiveFormsModule,
+        NgbDropdownModule,
+        CoreModule,
+        CommercialUiModule,
+        AdvancedEntityFiltersModule
+    ]
 })
 export class StaffModule { }

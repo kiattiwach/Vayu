@@ -1,10 +1,11 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Vayu.Roles;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Vayu.Staffs;
 
-public class Staff : AuditedEntity<Guid>
+public class Staff : FullAuditedEntity<Guid>
 {
     public string Code { get; set; }
     public string Name { get; set; }
@@ -17,7 +18,6 @@ public class Staff : AuditedEntity<Guid>
     public string ContactPersonNumber {get; set; }
     public string Line { get; set; }
     public string Facebook { get; set; }
-
     public Guid RoleId { get; set; }
 
     public Staff()

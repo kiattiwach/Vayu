@@ -20,10 +20,10 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
         string contactPersonNumber = null, 
         string line = null, 
         string facebook = null,
-        Guid? roleId = default,
+        Guid? roleId = null,
         CancellationToken cancellationToken = default);
 
-    Task<List<Staff>> GetListAsync(string filter = null,
+    Task<List<StaffWithRoleQueryReultItem>> GetListAsync(string filter = null,
         string code = null,
         string name = null,
         string codeName = null,
@@ -35,9 +35,11 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
         string contactPersonNumber = null,
         string line = null,
         string facebook = null,
-        Guid? roleId = default,
+        Guid? roleId = null,
         int maxResultCount = int.MaxValue,
         int skipCount = 0,
         string sorting = null,
         CancellationToken cancellationToken = default);
+
+    Task<Staff> GetByRadioCode(string radioCode);
 }

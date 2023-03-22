@@ -4,6 +4,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {StaffCreateUpdateDto, StaffDto, StaffFilterDto, StaffService} from "@proxy/staffs";
 import {Confirmation} from "@abp/ng.theme.shared";
+import {emailPattern, phonePattern} from "../shared/pattern";
 
 @Component({
   selector: 'app-staff',
@@ -12,6 +13,8 @@ import {Confirmation} from "@abp/ng.theme.shared";
   providers: [ListService]
 })
 export class StaffComponent implements OnInit {
+  phonePattern = phonePattern;
+  emailPattern = emailPattern;
   filters = {} as StaffFilterDto;
   staffs = {items: [], totalCount: 0 } as PagedResultDto<StaffDto>;
   selectStaff = {} as StaffDto;
@@ -56,19 +59,18 @@ export class StaffComponent implements OnInit {
   }
 
   buildForm() {
-
     this.codeControl=  new FormControl(this.selectStaff.code || null,[Validators.required]);
     this.nameControl=  new FormControl(this.selectStaff.name || null,[Validators.required]);
     this.codeNameControl=  new FormControl(this.selectStaff.codeName || null,[Validators.required]);
-    this.emailControl=  new FormControl(this.selectStaff.email || null,[]);
+    this.emailControl=  new FormControl(this.selectStaff.email || null,[Validators.pattern(this.emailPattern)]);
     this.addressControl=  new FormControl(this.selectStaff.address || null,[]);
     this.radioCodeControl=  new FormControl(this.selectStaff.radioCode || null,[]);
-    this.contactNumberControl=  new FormControl(this.selectStaff.contactNumber || null,[Validators.pattern('^[0-9]*$')]);
+    this.contactNumberControl=  new FormControl(this.selectStaff.contactNumber || null,[Validators.required, Validators.pattern(this.phonePattern)]);
     this.contactPersonControl=  new FormControl(this.selectStaff.contactPerson || null,[]);
-    this.contactPersonNumberControl=  new FormControl(this.selectStaff.contactPersonNumber || null,[]);
+    this.contactPersonNumberControl=  new FormControl(this.selectStaff.contactPersonNumber || null,[Validators.pattern(this.phonePattern)]);
     this.lineControl=  new FormControl(this.selectStaff.line || null,[]);
     this.facebookControl=  new FormControl(this.selectStaff.facebook || null,[]);
-    this.roleControl=  new FormControl(this.selectStaff.role || null,[Validators.required]);
+    this.roleControl=  new FormControl(this.selectStaff.role?.id || null,[Validators.required]);
 
     this.form = this.fb.group({
       code: this.codeControl,
