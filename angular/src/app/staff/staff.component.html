@@ -86,10 +86,17 @@
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column [name]="'::Code' | abpLocalization" prop="code"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::CodeName' | abpLocalization" prop="codeName"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::CodeName' | abpLocalization" prop="codeName"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Email' | abpLocalization" prop="email"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Address' | abpLocalization" prop="address"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::RadioCode' | abpLocalization" prop="radioCode"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::ContactNumber' | abpLocalization" prop="contactNumber"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::ContactPerson' | abpLocalization" prop="contactPerson"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::ContactPersonNumber' | abpLocalization" prop="contactPersonNumber"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Line' | abpLocalization" prop="line"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Facebook' | abpLocalization" prop="facebook"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Role' | abpLocalization" prop="role.name"></ngx-datatable-column>
-
       <!--<ngx-datatable-column [name]="'::CreationTime' | abpLocalization" prop="creationTime">
         <ng-template let-row="row" ngx-datatable-cell-template>
           {{ row?.creationTime | date }}
@@ -107,22 +114,57 @@
   <ng-template #abpBody>
     <form [formGroup]="form" (ngSubmit)="save()">
       <div class="form-group">
-        <label for="name">{{ '::Name'| abpLocalization}}</label><span> * </span>
-        <input type="text" id="name" class="form-control" autofocus [formControl]="nameControl" />
-      </div>
-      <div class="form-group">
         <label for="roleId">{{ '::Role'| abpLocalization}}</label><span> * </span>
-        <!--<select class="form-control" id="roleId" [formControl]="taskCategoryControl">
-          <option [ngValue]="null">{{'::SelectTaskCategory' | abpLocalization}}</option>
-          <option [ngValue]="type.value" *ngFor="let type of categoryOptions"> {{ '::Enum:TaskCategory:' + type.key | abpLocalization }}</option>
-        </select>-->
-
         <abp-lookup-select
           id="roleId"
+          autofocus="true"
           [getFn]="staffService.getRoleLookup"
           [formControl]="roleControl">
         </abp-lookup-select>
-
+      </div>
+      <div class="form-group">
+        <label for="Code">{{ '::Code'| abpLocalization}}</label><span> * </span>
+        <input type="text" id="Code" class="form-control" [formControl]="codeControl" />
+      </div>
+      <div class="form-group">
+        <label for="Name">{{ '::Name'| abpLocalization}}</label><span> * </span>
+        <input type="text" id="Name" class="form-control" [formControl]="nameControl" />
+      </div>
+      <div class="form-group">
+        <label for="CodeName">{{ '::CodeName'| abpLocalization}}</label><span> * </span>
+        <input type="text" id="CodeName" class="form-control" [formControl]="codeNameControl" />
+      </div>
+      <div class="form-group">
+        <label for="Email">{{ '::Email'| abpLocalization}}</label>
+        <input type="text" id="Email" class="form-control" [formControl]="emailControl" />
+      </div>
+      <div class="form-group">
+        <label for="Address">{{ '::Address'| abpLocalization}}</label>
+        <input type="text" id="Address" class="form-control" [formControl]="addressControl" />
+      </div>
+      <div class="form-group">
+        <label for="RadioCode">{{ '::RadioCode'| abpLocalization}}</label>
+        <input type="text" id="RadioCode" class="form-control" [formControl]="radioCodeControl" />
+      </div>
+      <div class="form-group">
+        <label for="ContactNumber">{{ '::ContactNumber'| abpLocalization}}</label>
+        <input type="text" id="ContactNumber" class="form-control" [formControl]="contactNumberControl" />
+      </div>
+      <div class="form-group">
+        <label for="ContactPerson">{{ '::ContactPerson'| abpLocalization}}</label>
+        <input type="text" id="ContactPerson" class="form-control" [formControl]="contactPersonControl" />
+      </div>
+      <div class="form-group">
+        <label for="ContactPersonNumber">{{ '::ContactPersonNumber'| abpLocalization}}</label>
+        <input type="text" id="ContactPersonNumber" class="form-control" [formControl]="contactPersonNumberControl" />
+      </div>
+      <div class="form-group">
+        <label for="Line">{{ '::Line'| abpLocalization}}</label>
+        <input type="text" id="Line" class="form-control" [formControl]="lineControl" />
+      </div>
+      <div class="form-group">
+        <label for="Facebook">{{ '::Facebook'| abpLocalization}}</label>
+        <input type="text" id="Facebook" class="form-control" [formControl]="facebookControl" />
       </div>
     </form>
   </ng-template>
