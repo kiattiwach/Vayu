@@ -63,12 +63,12 @@ export class StaffComponent implements OnInit {
     this.emailControl=  new FormControl(this.selectStaff.email || null,[]);
     this.addressControl=  new FormControl(this.selectStaff.address || null,[]);
     this.radioCodeControl=  new FormControl(this.selectStaff.radioCode || null,[]);
-    this.contactNumberControl=  new FormControl(this.selectStaff.contactNumber || null,[]);
+    this.contactNumberControl=  new FormControl(this.selectStaff.contactNumber || null,[Validators.pattern('^[0-9]*$')]);
     this.contactPersonControl=  new FormControl(this.selectStaff.contactPerson || null,[]);
     this.contactPersonNumberControl=  new FormControl(this.selectStaff.contactPersonNumber || null,[]);
     this.lineControl=  new FormControl(this.selectStaff.line || null,[]);
     this.facebookControl=  new FormControl(this.selectStaff.facebook || null,[]);
-    this.roleControl=  new FormControl(this.selectStaff.role || null,[]);
+    this.roleControl=  new FormControl(this.selectStaff.role || null,[Validators.required]);
 
     this.form = this.fb.group({
       code: this.codeControl,
