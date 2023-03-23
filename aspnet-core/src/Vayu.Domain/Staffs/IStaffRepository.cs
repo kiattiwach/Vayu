@@ -28,7 +28,7 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
         Guid? roleId = null,
         CancellationToken cancellationToken = default);
 
-    Task<List<StaffWithRoleQueryReultItem>> GetListAsync(string filter = null,
+    Task<List<StaffWithRoleQueryResultItem>> GetListAsync(string filter = null,
         string code = null,
         string name = null,
         string codeName = null,
