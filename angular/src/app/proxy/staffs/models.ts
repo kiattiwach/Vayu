@@ -32,7 +32,7 @@ export interface StaffDto extends AuditedEntityDto<string> {
   contactPersonNumber?: string;
   line?: string;
   facebook?: string;
-  role: RoleDto;
+  roleId?: string;
 }
 
 export interface StaffFilterDto extends PagedAndSortedResultRequestDto {
@@ -53,4 +53,9 @@ export interface StaffFilterDto extends PagedAndSortedResultRequestDto {
   maxStartDate?: string;
   minPassAssessmentDate?: string;
   maxPassAssessmentDate?: string;
+}
+
+export interface StaffWithNavigatePropertiesDto {
+  staff: StaffDto;
+  role: RoleDto;
 }

@@ -30,7 +30,7 @@ public class StaffCreateUpdateDto : EntityDto<Guid>, IValidatableObject
     [Required]
     public DateTime StartDate { get; set; }
 
-    public DateTime PassAssessmentDate { get; set; }
+    public DateTime? PassAssessmentDate { get; set; }
 
     [DynamicMaxLength(typeof(StaffConsts), nameof(StaffConsts.MaxEmailLength))]
     public string Email { get; set; }

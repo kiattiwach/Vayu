@@ -2,21 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import {ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
-import {StaffCreateUpdateDto, StaffDto, StaffFilterDto, StaffService} from "@proxy/staffs";
+import {
+  StaffCreateUpdateDto, StaffDto,
+  StaffFilterDto,
+  StaffService,
+  StaffWithNavigatePropertiesDto
+} from "@proxy/staffs";
 import {Confirmation} from "@abp/ng.theme.shared";
 import {emailPattern, phonePattern} from "../shared/pattern";
+import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-staff',
   templateUrl: './staff.component.html',
   styleUrls: ['./staff.component.scss'],
-  providers: [ListService]
+  providers: [ListService,
+    { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
 })
 export class StaffComponent implements OnInit {
   phonePattern = phonePattern;
   emailPattern = emailPattern;
   filters = {} as StaffFilterDto;
-  staffs = {items: [], totalCount: 0 } as PagedResultDto<StaffDto>;
+  staffs = {items: [], totalCount: 0 } as PagedResultDto<StaffWithNavigatePropertiesDto>;
   selectStaff = {} as StaffDto;
   isModalOpen = false;
   form: FormGroup;
@@ -73,9 +80,9 @@ export class StaffComponent implements OnInit {
     this.contactPersonNumberControl=  new FormControl(this.selectStaff.contactPersonNumber || null,[Validators.pattern(this.phonePattern)]);
     this.lineControl=  new FormControl(this.selectStaff.line || null,[]);
     this.facebookControl=  new FormControl(this.selectStaff.facebook || null,[]);
-    this.roleControl=  new FormControl(this.selectStaff.role?.id || null,[Validators.required]);
-    this.startDateControl = new FormControl(this.selectStaff.startDate || null,[Validators.required]);
-    this.passAssessmentDateControl = new FormControl(this.selectStaff.passAssessmentDate || null, []);
+    this.roleControl=  new FormControl(this.selectStaff.roleId || null,[Validators.required]);
+    this.startDateControl = new FormControl(this.selectStaff.startDate ? new Date(this.selectStaff.startDate) : null,[Validators.required]);
+    this.passAssessmentDateControl = new FormControl(this.selectStaff.passAssessmentDate ? new Date(this.selectStaff.passAssessmentDate) : null, []);
     this.copyStartDateControl = new FormControl();
 
     this.form = this.fb.group({
@@ -117,6 +124,7 @@ export class StaffComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+
     let updateDto = <StaffCreateUpdateDto>this.form.value;
     updateDto.id = this.selectStaff.id;
     const request = this.selectStaff.id
@@ -142,5 +150,4 @@ export class StaffComponent implements OnInit {
     else
       this.passAssessmentDateControl.setValue(null,{emitEvent: false});
   }
-
 }

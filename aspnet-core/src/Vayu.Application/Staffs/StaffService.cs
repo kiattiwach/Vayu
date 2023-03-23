@@ -36,19 +36,11 @@ public class StaffService : VayuAppService, IStaffService
     [Authorize(VayuPermissions.Staffs.Default)]
     public async Task<StaffDto> GetAsync(Guid id)
     {
-        var staff = await _staffRepository.GetAsync(id);
-        var staffDto = ObjectMapper.Map<Staff, StaffDto>(staff);
-        staffDto.Role = await GetStaffRole(staff);
-        return staffDto;
-    }
-
-    private async Task<RoleDto> GetStaffRole(Staff staff)
-    {
-        return ObjectMapper.Map<Role, RoleDto>(await _roleRepository.GetAsync(staff.RoleId));
+        return ObjectMapper.Map<Staff, StaffDto>(await _staffRepository.GetAsync(id));
     }
 
     [Authorize(VayuPermissions.Staffs.Default)]
-    public async Task<PagedResultDto<StaffDto>> GetListAsync(StaffFilterDto input)
+    public async Task<PagedResultDto<StaffWithNavigatePropertiesDto>> GetListAsync(StaffFilterDto input)
     {
         var count = await _staffRepository.GetCountAsync(input.Filter, input.Code, input.Name, input.CodeName,
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
@@ -59,35 +51,36 @@ public class StaffService : VayuAppService, IStaffService
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
             input.ContactPersonNumber, input.Line, input.Facebook,
             input.MinStartDate, input.MaxStartDate, input.MinPassAssessmentDate, input.MaxPassAssessmentDate,
-            input.RoleId,input.MaxResultCount,input.SkipCount);
-        
-        return new PagedResultDto<StaffDto>(count, items.Select(s =>
-        {
-            var staff = ObjectMapper.Map<Staff, StaffDto>(s.Staff);
-            staff.Role = ObjectMapper.Map<Role, RoleDto>(s.Role);
-            return staff;
-        }).ToList());
+            input.RoleId,input.MaxResultCount,input.SkipCount, input.Sorting);
+
+        return new PagedResultDto<StaffWithNavigatePropertiesDto>(count, items.Select(s =>
+            new StaffWithNavigatePropertiesDto()
+            {
+                Staff = ObjectMapper.Map<Staff, StaffDto>(s.Staff),
+                Role = ObjectMapper.Map<Role, RoleDto>(s.Role),
+
+            }).ToList());
     }
 
     [Authorize(VayuPermissions.Staffs.Create)]
     public async Task<StaffDto> CreateAsync(StaffCreateUpdateDto input)
     {
+        await CheckUnUsedCode(input.Code);
         await CheckUnUsedRadioCode(input.RadioCode);
         await CheckUnUsedCodeName(input.CodeName);
 
         var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name, input.CodeName, input.Email,
             input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson, input.ContactPersonNumber,
             input.Line, input.Facebook,input.StartDate, input.PassAssessmentDate, input.RoleId));
-        var staff = ObjectMapper.Map<Staff, StaffDto>(result);
-        staff.Role = await GetStaffRole(result);
-        return staff;
+        
+        return ObjectMapper.Map<Staff, StaffDto>(result);
     }
 
     [Authorize(VayuPermissions.Staffs.Edit)]
     public async Task<StaffDto> UpdateAsync(StaffCreateUpdateDto input)
     {
-        await CheckUnUsedRadioCode(input.RadioCode, input.Code);
-        await CheckUnUsedCodeName(input.CodeName, input.Code);
+        await CheckUnUsedCodeName(input.CodeName, input.Id);
+        await CheckUnUsedRadioCode(input.RadioCode, input.Id);
 
         var staff = await _staffRepository.GetAsync(input.Id);
         staff.Code = input.Code;
@@ -106,14 +99,13 @@ public class StaffService : VayuAppService, IStaffService
         staff.PassAssessmentDate = input.PassAssessmentDate;
 
         var result = await _staffRepository.UpdateAsync(staff);
-        var staffDto = ObjectMapper.Map<Staff,StaffDto>(result);
-        staffDto.Role = await GetStaffRole(result);
-        return staffDto;
+        
+        return ObjectMapper.Map<Staff, StaffDto>(result);
     }
 
-    private async Task CheckUnUsedRadioCode(string radioCode, string code = null)
+    private async Task CheckUnUsedRadioCode(string radioCode, Guid? id = null)
     {
-        var staffUsedRadioCode = await _staffRepository.GetByRadioCode(radioCode, code);
+        var staffUsedRadioCode = await _staffRepository.GetByRadioCode(radioCode, id);
         if (staffUsedRadioCode != null)
         {
             throw new UserFriendlyException(
@@ -121,13 +113,23 @@ public class StaffService : VayuAppService, IStaffService
         }
     }
 
-    private async Task CheckUnUsedCodeName(string codeName, string code = null)
+    private async Task CheckUnUsedCodeName(string codeName, Guid? id = null)
     {
-        var staffUsedCodeName = await _staffRepository.GetByCodeName(codeName, code);
+        var staffUsedCodeName = await _staffRepository.GetByCodeName(codeName, id);
         if (staffUsedCodeName != null)
         {
             throw new UserFriendlyException(
                 _stringLocalize["CodeNameIsUsed", staffUsedCodeName.Name, codeName]);
+        }
+    }
+
+    private async Task CheckUnUsedCode(string code, Guid? id = null)
+    {
+        var staffUsedCodeName = await _staffRepository.GetByCode(code, id);
+        if (staffUsedCodeName != null)
+        {
+            throw new UserFriendlyException(
+                _stringLocalize["CodeIsUsed", staffUsedCodeName.Name, code]);
         }
     }
 

@@ -1,4 +1,4 @@
-import type { StaffCreateUpdateDto, StaffDto, StaffFilterDto } from './models';
+import type { StaffCreateUpdateDto, StaffDto, StaffFilterDto, StaffWithNavigatePropertiesDto } from './models';
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
@@ -37,7 +37,7 @@ export class StaffService {
   
 
   getList = (input: StaffFilterDto) =>
-    this.restService.request<any, PagedResultDto<StaffDto>>({
+    this.restService.request<any, PagedResultDto<StaffWithNavigatePropertiesDto>>({
       method: 'POST',
       url: `/api/staff/get-list/${input}`,
       body: input,

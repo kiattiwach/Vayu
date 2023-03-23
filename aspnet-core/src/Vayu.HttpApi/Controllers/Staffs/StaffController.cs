@@ -24,7 +24,7 @@ public class StaffController : VayuController, IStaffService
     }
 
     [HttpPost("get-list/{input}")]
-    public Task<PagedResultDto<StaffDto>> GetListAsync(StaffFilterDto input)
+    public Task<PagedResultDto<StaffWithNavigatePropertiesDto>> GetListAsync(StaffFilterDto input)
     {
         return _staffService.GetListAsync(input);
     }

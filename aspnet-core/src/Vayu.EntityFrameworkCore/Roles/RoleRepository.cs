@@ -29,7 +29,7 @@ public class RoleRepository : EfCoreRepository<VayuDbContext, Role, Guid>, IRole
         CancellationToken cancellationToken = default)
     {
         var queryable = await GetQuery(filter, name, description);
-        queryable = queryable.OrderBy(sorting.IsNullOrEmpty() ? $"{nameof(Role.Name)} desc" : sorting);
+        queryable = queryable.OrderBy(sorting.IsNullOrEmpty() ? $"{nameof(Role.Name)}" : sorting);
         return await queryable.Skip(skipCount)  
             .Take(maxResultCount)
             .ToListAsync(GetCancellationToken(cancellationToken));

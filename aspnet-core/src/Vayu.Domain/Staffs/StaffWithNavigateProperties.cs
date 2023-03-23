@@ -2,7 +2,7 @@
 
 namespace Vayu.Staffs;
 
-public class StaffWithRoleQueryResultItem
+public class StaffWithNavigateProperties
 {
     public Staff Staff { get; set; }
     public Role Role { get; set; }

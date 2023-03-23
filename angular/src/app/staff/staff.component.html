@@ -19,7 +19,206 @@
             </abp-lookup-select>
           </div>
         </div>
-
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="codeFilter">
+              {{ '::Code' | abpLocalization }}
+            </label>
+            <input
+              id="codeFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.code"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="nameFilter">
+              {{ '::Name' | abpLocalization }}
+            </label>
+            <input
+              id="nameFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.name"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="codeNameFilter">
+              {{ '::CodeName' | abpLocalization }}
+            </label>
+            <input
+              id="codeNameFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.codeName"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="emailFilter">
+              {{ '::Email' | abpLocalization }}
+            </label>
+            <input
+              id="emailFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.email"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="addressFilter">
+              {{ '::Address' | abpLocalization }}
+            </label>
+            <input
+              id="addressFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.address"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="radioCodeFilter">
+              {{ '::RadioCode' | abpLocalization }}
+            </label>
+            <input
+              id="radioCodeFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.radioCode"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="contactNumberFilter">
+              {{ '::ContactNumber' | abpLocalization }}
+            </label>
+            <input
+              id="contactNumberFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.contactNumber"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="contactPersonNumberFilter">
+              {{ '::ContactPersonNumber' | abpLocalization }}
+            </label>
+            <input
+              id="contactPersonNumberFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.contactPersonNumber"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="lineFilter">
+              {{ '::Line' | abpLocalization }}
+            </label>
+            <input
+              id="lineFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.line"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="facebookFilter">
+              {{ '::Facebook' | abpLocalization }}
+            </label>
+            <input
+              id="facebookFilter"
+              class="form-control"
+              (ngModelChange)="this.list.get()"
+              [(ngModel)]="filters.facebook"
+              [ngModelOptions]="{ standalone: true }"/>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="minStartDateFilter">
+              {{ '::StartDateBegin' | abpLocalization }}
+            </label>
+            <input
+              id="minStartDateFilter"
+              #datepicker="ngbDatepicker"
+              class="form-control"
+              name="datepicker"
+              ngbDatepicker
+              (click)="datepicker.toggle()"
+              [(ngModel)]="filters.minStartDate"
+              (dateSelect)="list.get()"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="maxStartDateFilter">
+              {{ '::StartDateEnd' | abpLocalization }}
+            </label>
+            <input
+              id="maxStartDateFilter"
+              #datepicker="ngbDatepicker"
+              class="form-control"
+              name="datepicker"
+              ngbDatepicker
+              (click)="datepicker.toggle()"
+              [(ngModel)]="filters.maxStartDate"
+              (dateSelect)="list.get()"/>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="minPassDateFilter">
+              {{ '::PassAssessmentDateBegin' | abpLocalization }}
+            </label>
+            <input
+              id="minPassDateFilter"
+              #datepicker="ngbDatepicker"
+              class="form-control"
+              name="datepicker"
+              ngbDatepicker
+              (click)="datepicker.toggle()"
+              [(ngModel)]="filters.minPassAssessmentDate"
+              (dateSelect)="list.get()"/>
+          </div>
+        </div>
+        <div class="col-12 col-sm-auto">
+          <div class="mb-3">
+            <label class="form-label" for="maxPassDateFilter">
+              {{ '::PassAssessmentDateEnd' | abpLocalization }}
+            </label>
+            <input
+              id="maxPassDateFilter"
+              #datepicker="ngbDatepicker"
+              class="form-control"
+              name="datepicker"
+              ngbDatepicker
+              (click)="datepicker.toggle()"
+              [(ngModel)]="filters.maxPassAssessmentDate"
+              (dateSelect)="list.get()"/>
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-12 col-sm-auto align-self-end mb-3">
           <div class="row">
             <div class="col-6 col-sm-auto d-grid">
@@ -44,7 +243,7 @@
     <div class="row">
       <div class="col col-md-6">
         <h5 class="card-title">
-          {{ '::Menu:Roles' | abpLocalization }}
+          {{ '::Menu:Staffs' | abpLocalization }}
         </h5>
       </div>
       <div class="text-end col col-md-6">
@@ -73,11 +272,11 @@
               <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
             </button>
             <div ngbDropdownMenu>
-              <button *abpPermission="'Vayu.Staffs.Edit'" ngbDropdownItem (click)="edit(row.id)">
+              <button *abpPermission="'Vayu.Staffs.Edit'" ngbDropdownItem (click)="edit(row.staff.id)">
                 <i class="fa fa-pen-alt me-1"></i>
                 {{ '::Edit' | abpLocalization }}
               </button>
-              <button *abpPermission="'Vayu.Staffs.Delete'" ngbDropdownItem (click)="delete(row.id, row.name)">
+              <button *abpPermission="'Vayu.Staffs.Delete'" ngbDropdownItem (click)="delete(row.staff.id, row.staff.name)">
                 <i class="fa fa-trash-alt me-1"></i>
                 {{ '::Delete' | abpLocalization }}
               </button>
@@ -85,28 +284,28 @@
           </div>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Role' | abpLocalization" prop="role.name"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Code' | abpLocalization" prop="code"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::CodeName' | abpLocalization" prop="codeName"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::ContactNumber' | abpLocalization" prop="contactNumber"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::StartDate' | abpLocalization" prop="startDate">
+      <ngx-datatable-column [name]="'::Role' | abpLocalization" prop="role.name" sortable="true"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Code' | abpLocalization" prop="staff.code"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="staff.name"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::CodeName' | abpLocalization" prop="staff.codeName"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::ContactNumber' | abpLocalization" prop="staff.contactNumber"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::StartDate' | abpLocalization" prop="staff.startDate">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.startDate | date }}
+          {{ row.staff.startDate | date }}
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column [name]="'::PassAssessmentDate' | abpLocalization" prop="passAssessmentDate">
+      <ngx-datatable-column [name]="'::PassAssessmentDate' | abpLocalization" prop="staff.passAssessmentDate">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.passAssessmentDate | date }}
+          {{ row.staff.passAssessmentDate | date }}
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Email' | abpLocalization" prop="email"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Address' | abpLocalization" prop="address"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::RadioCode' | abpLocalization" prop="radioCode"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::ContactPerson' | abpLocalization" prop="contactPerson"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::ContactPersonNumber' | abpLocalization" prop="contactPersonNumber"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Line' | abpLocalization" prop="line"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Facebook' | abpLocalization" prop="facebook"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Email' | abpLocalization" prop="staff.email"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Address' | abpLocalization" prop="staff.address"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::RadioCode' | abpLocalization" prop="staff.radioCode"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::ContactPerson' | abpLocalization" prop="staff.contactPerson"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::ContactPersonNumber' | abpLocalization" prop="staff.contactPersonNumber"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Line' | abpLocalization" prop="staff.line"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Facebook' | abpLocalization" prop="staff.facebook"></ngx-datatable-column>
     </ngx-datatable>
   </div>
 </div>
@@ -131,7 +330,7 @@
       </div>
       <div class="form-group">
         <label for="Code">{{ '::Code'| abpLocalization}}</label><span> * </span>
-        <input type="text" id="Code" class="form-control" [formControl]="codeControl" />
+        <input type="text" id="Code" class="form-control" [formControl]="codeControl" [readOnly]="selectStaff.id"/>
       </div>
       <div class="form-group">
         <label for="Name">{{ '::Name'| abpLocalization}}</label><span> * </span>

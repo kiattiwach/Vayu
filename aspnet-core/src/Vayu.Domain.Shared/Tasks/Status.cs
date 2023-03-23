@@ -5,7 +5,7 @@ public enum Status
     Initial,
     Todo,
     InProgress,
-    Suspense,
+    Suspended,
     InReview,
     Done,
     Cancel

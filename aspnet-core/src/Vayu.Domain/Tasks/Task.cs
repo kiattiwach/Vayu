@@ -18,7 +18,7 @@ public class Task : FullAuditedAggregateRoot<Guid>
     public DateTime CompleteDateTime { get; set; }
     public string Note { get; set; }
     public Guid LeaderId { get; set; }
-    public Staff Staff { get; set; }
+    public Staff Leader { get; set; }
     public string ContactPerson { get; set; }
     public string ContactNumber { get; set; }
     public List<TaskStaff> TaskStaffs { get; set; }
@@ -27,7 +27,7 @@ public class Task : FullAuditedAggregateRoot<Guid>
     {
 
     }
-    public Task(string name, string description, Guid taskTypeId, TaskType taskType, Status status, DateTime createDateTime, DateTime completeDateTime, string note, Guid leaderId, Staff staff, string contactPerson, string contactNumber, List<TaskStaff> taskStaffs)
+    public Task(string name, string description, Guid taskTypeId, TaskType taskType, Status status, DateTime createDateTime, DateTime completeDateTime, string note, Guid leaderId, Staff leader, string contactPerson, string contactNumber, List<TaskStaff> taskStaffs)
     {
         Name = name;
         Description = description;
@@ -38,7 +38,7 @@ public class Task : FullAuditedAggregateRoot<Guid>
         CompleteDateTime = completeDateTime;
         Note = note;
         LeaderId = leaderId;
-        Staff = staff;
+        Leader = leader;
         ContactPerson = contactPerson;
         ContactNumber = contactNumber;
         TaskStaffs = taskStaffs;

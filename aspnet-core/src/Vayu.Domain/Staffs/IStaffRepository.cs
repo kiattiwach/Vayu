@@ -28,7 +28,7 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
         Guid? roleId = null,
         CancellationToken cancellationToken = default);
 
-    Task<List<StaffWithRoleQueryResultItem>> GetListAsync(string filter = null,
+    Task<List<StaffWithNavigateProperties>> GetListAsync(string filter = null,
         string code = null,
         string name = null,
         string codeName = null,
@@ -50,6 +50,7 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
         string sorting = null,
         CancellationToken cancellationToken = default);
 
-    Task<Staff> GetByRadioCode(string radioCode, string code = null);
-    Task<Staff> GetByCodeName(string codeName, string code = null);
+    Task<Staff> GetByRadioCode(string radioCode, Guid? id = null);
+    Task<Staff> GetByCodeName(string codeName, Guid? id = null);
+    Task<Staff> GetByCode(string code, Guid? id = null);
 }

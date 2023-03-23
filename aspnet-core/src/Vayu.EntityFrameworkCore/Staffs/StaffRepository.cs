@@ -30,7 +30,7 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
         return await query.CountAsync(cancellationToken);
     }
 
-    public async Task<List<StaffWithRoleQueryResultItem>> GetListAsync(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<List<StaffWithNavigateProperties>> GetListAsync(string filter = null, string code = null, string name = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
         DateTime? minStartDate = null, DateTime? maxStartDate = null, DateTime? minPassAssessmentDate = null,
@@ -40,24 +40,35 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
         var query = await GetQuery(filter, code, name, codeName, email, address, radioCode, contactNumber,
             contactPerson, contactPersonNumber, line, facebook, minStartDate, maxStartDate, minPassAssessmentDate,
             maxPassAssessmentDate, roleId);
-        query = query.OrderBy(x => x.Staff.Name);
+        query = sorting.IsNullOrWhiteSpace() ? 
+            query.OrderByDescending(x => x.Staff.CreationTime):
+            query.OrderBy(sorting);
         return await query.Skip(skipCount).Take(maxResultCount).ToListAsync(cancellationToken);
     }
 
-    public async Task<Staff> GetByRadioCode(string radioCode, string code = null)
+    public async Task<Staff> GetByRadioCode(string radioCode, Guid? id = null)
     {
         return (await GetDbSetAsync())
-            .WhereIf(code != null, x => !x.Code.Equals(code)).FirstOrDefault(x => x.RadioCode.Equals(radioCode));
+            .WhereIf(id != null, x => x.Id != id)
+            .FirstOrDefault(x => x.RadioCode.Equals(radioCode));
     }
 
-    public async Task<Staff> GetByCodeName(string codeName, string code = null)
+    public async Task<Staff> GetByCodeName(string codeName, Guid? id = null)
     {
         return (await GetDbSetAsync())
-            .WhereIf(code != null, x => !x.Code.Equals(code)).FirstOrDefault(x => x.CodeName.Equals(codeName));
+            .WhereIf(id != null, x => x.Id != id)
+            .FirstOrDefault(x => x.CodeName.Equals(codeName));
 
     }
 
-    public async Task<IQueryable<StaffWithRoleQueryResultItem>> GetQuery(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<Staff> GetByCode(string code, Guid? id = null)
+    {
+        return (await GetDbSetAsync())
+            .WhereIf(id != null, x => x.Id != id)
+            .FirstOrDefault(x => x.Code.Equals(code));
+    }
+
+    public async Task<IQueryable<StaffWithNavigateProperties>> GetQuery(string filter = null, string code = null, string name = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
         DateTime? minStartDate = null, DateTime? maxStartDate = null, DateTime? minPassAssessmentDate = null,
@@ -90,7 +101,7 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
 
         var result =  from staff in staffQuery
             join role in (await GetDbContextAsync()).Set<Role>() on staff.RoleId equals role.Id
-            select new StaffWithRoleQueryResultItem()
+            select new StaffWithNavigateProperties()
             {
                 Staff = staff,
                 Role = role

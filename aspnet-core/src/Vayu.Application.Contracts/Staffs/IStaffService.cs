@@ -10,7 +10,7 @@ public interface IStaffService : IApplicationService
 {
     Task<StaffDto> GetAsync(Guid id);
 
-    Task<PagedResultDto<StaffDto>> GetListAsync(StaffFilterDto input);
+    Task<PagedResultDto<StaffWithNavigatePropertiesDto>> GetListAsync(StaffFilterDto input);
 
     Task<StaffDto> CreateAsync(StaffCreateUpdateDto input);
 
