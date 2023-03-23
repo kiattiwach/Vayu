@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Volo.Abp.Domain.Repositories;
 
 namespace Vayu.Staffs;
@@ -20,6 +21,10 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
         string contactPersonNumber = null, 
         string line = null, 
         string facebook = null,
+        DateTime? minStartDate = null,
+        DateTime? maxStartDate = null,
+        DateTime? minPassAssessmentDate = null,
+        DateTime? maxPassAssessmentDate = null,
         Guid? roleId = null,
         CancellationToken cancellationToken = default);
 
@@ -35,11 +40,16 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
         string contactPersonNumber = null,
         string line = null,
         string facebook = null,
+        DateTime? minStartDate = null,
+        DateTime? maxStartDate = null,
+        DateTime? minPassAssessmentDate = null,
+        DateTime? maxPassAssessmentDate = null,
         Guid? roleId = null,
         int maxResultCount = int.MaxValue,
         int skipCount = 0,
         string sorting = null,
         CancellationToken cancellationToken = default);
 
-    Task<Staff> GetByRadioCode(string radioCode);
+    Task<Staff> GetByRadioCode(string radioCode, string code = null);
+    Task<Staff> GetByCodeName(string codeName, string code = null);
 }

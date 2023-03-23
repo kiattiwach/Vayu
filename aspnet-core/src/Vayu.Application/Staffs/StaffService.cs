@@ -52,10 +52,14 @@ public class StaffService : VayuAppService, IStaffService
     {
         var count = await _staffRepository.GetCountAsync(input.Filter, input.Code, input.Name, input.CodeName,
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
-            input.ContactPersonNumber, input.Line, input.Facebook, input.RoleId);
+            input.ContactPersonNumber, input.Line, input.Facebook,
+            input.MinStartDate, input.MaxStartDate, input.MinPassAssessmentDate, input.MaxPassAssessmentDate,
+            input.RoleId);
         var items = await _staffRepository.GetListAsync(input.Filter, input.Code, input.Name, input.CodeName,
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
-            input.ContactPersonNumber, input.Line, input.Facebook, input.RoleId,input.MaxResultCount,input.SkipCount);
+            input.ContactPersonNumber, input.Line, input.Facebook,
+            input.MinStartDate, input.MaxStartDate, input.MinPassAssessmentDate, input.MaxPassAssessmentDate,
+            input.RoleId,input.MaxResultCount,input.SkipCount);
         
         return new PagedResultDto<StaffDto>(count, items.Select(s =>
         {
@@ -68,16 +72,12 @@ public class StaffService : VayuAppService, IStaffService
     [Authorize(VayuPermissions.Staffs.Create)]
     public async Task<StaffDto> CreateAsync(StaffCreateUpdateDto input)
     {
-        var staffUsedRadioCode = await _staffRepository.GetByRadioCode(input.RadioCode);
-        if (staffUsedRadioCode != null)
-        {
-            throw new UserFriendlyException(
-                _stringLocalize["RadioCodeIsUsed", staffUsedRadioCode.Name, input.RadioCode]);
-        }
+        await CheckUnUsedRadioCode(input.RadioCode);
+        await CheckUnUsedCodeName(input.CodeName);
 
         var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name, input.CodeName, input.Email,
             input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson, input.ContactPersonNumber,
-            input.Line, input.Facebook, input.RoleId));
+            input.Line, input.Facebook,input.StartDate, input.PassAssessmentDate, input.RoleId));
         var staff = ObjectMapper.Map<Staff, StaffDto>(result);
         staff.Role = await GetStaffRole(result);
         return staff;
@@ -86,12 +86,8 @@ public class StaffService : VayuAppService, IStaffService
     [Authorize(VayuPermissions.Staffs.Edit)]
     public async Task<StaffDto> UpdateAsync(StaffCreateUpdateDto input)
     {
-        var staffUsedRadioCode = await _staffRepository.GetByRadioCode(input.RadioCode);
-        if (staffUsedRadioCode != null && !staffUsedRadioCode.Name.Equals(input.Name))
-        {
-            throw new UserFriendlyException(
-                _stringLocalize["RadioCodeIsUsed", staffUsedRadioCode.Name, input.RadioCode]);
-        }
+        await CheckUnUsedRadioCode(input.RadioCode, input.Code);
+        await CheckUnUsedCodeName(input.CodeName, input.Code);
 
         var staff = await _staffRepository.GetAsync(input.Id);
         staff.Code = input.Code;
@@ -106,11 +102,33 @@ public class StaffService : VayuAppService, IStaffService
         staff.Line = input.Line;
         staff.Facebook = input.Facebook;
         staff.RoleId = input.RoleId;
+        staff.StartDate = input.StartDate;
+        staff.PassAssessmentDate = input.PassAssessmentDate;
 
         var result = await _staffRepository.UpdateAsync(staff);
         var staffDto = ObjectMapper.Map<Staff,StaffDto>(result);
         staffDto.Role = await GetStaffRole(result);
         return staffDto;
+    }
+
+    private async Task CheckUnUsedRadioCode(string radioCode, string code = null)
+    {
+        var staffUsedRadioCode = await _staffRepository.GetByRadioCode(radioCode, code);
+        if (staffUsedRadioCode != null)
+        {
+            throw new UserFriendlyException(
+                _stringLocalize["RadioCodeIsUsed", staffUsedRadioCode.Name, radioCode]);
+        }
+    }
+
+    private async Task CheckUnUsedCodeName(string codeName, string code = null)
+    {
+        var staffUsedCodeName = await _staffRepository.GetByCodeName(codeName, code);
+        if (staffUsedCodeName != null)
+        {
+            throw new UserFriendlyException(
+                _stringLocalize["CodeNameIsUsed", staffUsedCodeName.Name, codeName]);
+        }
     }
 
     [Authorize(VayuPermissions.Staffs.Delete)]

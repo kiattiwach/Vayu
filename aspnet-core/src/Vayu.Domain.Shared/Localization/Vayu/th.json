@@ -64,6 +64,12 @@
     "ContactPersonNumber": "เบอร์โทรฯ ชื่อผุ้ติดต่อ",
     "Line": "ไลน์",
     "Facebook": "เฟสบุค",
-    "RadioCodeIsUsed": "{0} ใช้รหัสวิทยุ {1} แล้ว"
+    "StartDate": "วันที่เริ่ม",
+    "PassAssessmentDate": "วันที่ผ่านการประเมิน",
+    "RadioCodeIsUsed": "{0} ใช้รหัสวิทยุ {1} แล้ว",
+    "CodeNameIsUsed": "{0} ใช้ชื่อรหัส {1} แล้ว",
+    "InvalidStartDate": "ควรเริ่มงานก่อน {0}",
+    "InvalidPassAssessmentDateDate": "ควรผ่านการประเมินหลังจาก {0}",
+    "CopyFromStartDate": "วันเดียวกับวันเริ่ม"
   }
 }

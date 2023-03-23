@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Tasks\" />
     <Folder Include="Staffs\" />
     <Folder Include="Roles\" />
   </ItemGroup>

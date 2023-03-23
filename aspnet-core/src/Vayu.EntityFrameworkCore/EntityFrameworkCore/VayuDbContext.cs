@@ -96,8 +96,10 @@ public class VayuDbContext :
             b.Property(x => x.Note).HasMaxLength(TaskConsts.MaxNoteLength);
             b.Property(x => x.ContactPerson).HasMaxLength(TaskConsts.MaxContactPersonLength);
             b.Property(x => x.ContactNumber).HasMaxLength(TaskConsts.MaxContactPersonNumberLength);
-            b.HasIndex(x => new { x.Name, x.TaskTypeId }).IsUnique();
-            b.HasOne(x => x.Staff).WithMany().HasForeignKey(x => x.LeaderId);
+
+            b.HasIndex(x => new { x.Name, x.TaskTypeId });
+            b.HasOne(x => x.Staff).WithMany().HasForeignKey(x => x.LeaderId).IsRequired();
+            b.HasOne(x => x.TaskType).WithMany().HasForeignKey(x => x.TaskTypeId).IsRequired();
 
             b.ApplyObjectExtensionMappings();
         });
@@ -129,6 +131,8 @@ public class VayuDbContext :
             b.Property(x => x.ContactPersonNumber).HasColumnName(nameof(Staff.ContactPersonNumber)).HasMaxLength(StaffConsts.MaxContactNumberLength);
             b.Property(x => x.Line).HasColumnName(nameof(Staff.Line)).HasMaxLength(StaffConsts.MaxEmailLength);
             b.Property(x => x.Facebook).HasColumnName(nameof(Staff.Facebook)).HasMaxLength(StaffConsts.MaxEmailLength);
+            b.Property(x => x.StartDate).HasColumnName(nameof(Staff.StartDate)).IsRequired().HasDefaultValue(StaffConsts.MinStartDate);
+            b.Property(x => x.PassAssessmentDate).HasColumnName(nameof(Staff.PassAssessmentDate));
 
             b.HasIndex(x => x.Code).IsUnique();
             

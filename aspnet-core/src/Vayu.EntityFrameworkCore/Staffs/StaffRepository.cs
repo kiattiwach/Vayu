@@ -21,33 +21,47 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
     public async Task<int> GetCountAsync(string filter = null, string code = null, string name = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
-        Guid? roleId = null, CancellationToken cancellationToken = default)
+        DateTime? minStartDate = null, DateTime? maxStartDate = null, DateTime? minPassAssessmentDate = null,
+        DateTime? maxPassAssessmentDate = null, Guid? roleId = null, CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(filter, code, name, codeName, email, address, radioCode, contactNumber,
-            contactPerson, contactPersonNumber, line, facebook, roleId);
+            contactPerson, contactPersonNumber, line, facebook, minStartDate, maxStartDate, minPassAssessmentDate,
+            maxPassAssessmentDate, roleId);
         return await query.CountAsync(cancellationToken);
     }
 
-    public async Task<List<StaffWithRoleQueryReultItem>> GetListAsync(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<List<StaffWithRoleQueryResultItem>> GetListAsync(string filter = null, string code = null, string name = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
-        Guid? roleId = null, int maxResultCount = Int32.MaxValue, int skipCount = 0, string sorting = null,
-        CancellationToken cancellationToken = default)
+        DateTime? minStartDate = null, DateTime? maxStartDate = null, DateTime? minPassAssessmentDate = null,
+        DateTime? maxPassAssessmentDate = null, Guid? roleId = null, int maxResultCount = Int32.MaxValue, int skipCount = 0,
+        string sorting = null, CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(filter, code, name, codeName, email, address, radioCode, contactNumber,
-            contactPerson, contactPersonNumber, line, facebook, roleId);
+            contactPerson, contactPersonNumber, line, facebook, minStartDate, maxStartDate, minPassAssessmentDate,
+            maxPassAssessmentDate, roleId);
         query = query.OrderBy(x => x.Staff.Name);
         return await query.Skip(skipCount).Take(maxResultCount).ToListAsync(cancellationToken);
     }
 
-    public async Task<Staff> GetByRadioCode(string radioCode)
+    public async Task<Staff> GetByRadioCode(string radioCode, string code = null)
     {
-        return (await GetDbSetAsync()).FirstOrDefault(x => x.RadioCode.Equals(radioCode));
+        return (await GetDbSetAsync())
+            .WhereIf(code != null, x => !x.Code.Equals(code)).FirstOrDefault(x => x.RadioCode.Equals(radioCode));
     }
 
-    public async Task<IQueryable<StaffWithRoleQueryReultItem>> GetQuery(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<Staff> GetByCodeName(string codeName, string code = null)
+    {
+        return (await GetDbSetAsync())
+            .WhereIf(code != null, x => !x.Code.Equals(code)).FirstOrDefault(x => x.CodeName.Equals(codeName));
+
+    }
+
+    public async Task<IQueryable<StaffWithRoleQueryResultItem>> GetQuery(string filter = null, string code = null, string name = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
+        DateTime? minStartDate = null, DateTime? maxStartDate = null, DateTime? minPassAssessmentDate = null,
+        DateTime? maxPassAssessmentDate = null,
         Guid? roleId = default)
     {
         var staffQuery = (await GetDbSetAsync())
@@ -68,11 +82,15 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
             .WhereIf(!string.IsNullOrWhiteSpace(contactPersonNumber), x => x.ContactPersonNumber.Contains(contactPersonNumber))
             .WhereIf(!string.IsNullOrWhiteSpace(line), x => x.Line.Contains(line))
             .WhereIf(!string.IsNullOrWhiteSpace(facebook), x => x.Facebook.Contains(facebook))
-            .WhereIf(roleId != Guid.Empty && roleId is { }, x => x.RoleId == roleId);
+            .WhereIf(roleId != Guid.Empty && roleId is { }, x => x.RoleId == roleId)
+            .WhereIf(minStartDate != null, x => x.StartDate >= minStartDate)
+            .WhereIf(maxStartDate != null, x => x.StartDate <= maxStartDate)
+            .WhereIf(minPassAssessmentDate != null, x => x.PassAssessmentDate >= minPassAssessmentDate)
+            .WhereIf(maxPassAssessmentDate!= null, x => x.PassAssessmentDate <= maxPassAssessmentDate);
 
         var result =  from staff in staffQuery
             join role in (await GetDbContextAsync()).Set<Role>() on staff.RoleId equals role.Id
-            select new StaffWithRoleQueryReultItem()
+            select new StaffWithRoleQueryResultItem()
             {
                 Staff = staff,
                 Role = role

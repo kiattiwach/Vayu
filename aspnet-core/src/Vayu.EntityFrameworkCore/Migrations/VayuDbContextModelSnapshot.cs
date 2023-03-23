@@ -167,6 +167,10 @@ namespace Vayu.Migrations
                         .HasColumnType("nvarchar(512)")
                         .HasColumnName("Name");
 
+                    b.Property<DateTime?>("PassAssessmentDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PassAssessmentDate");
+
                     b.Property<string>("RadioCode")
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)")
@@ -174,6 +178,12 @@ namespace Vayu.Migrations
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(1973, 1, 1, 7, 0, 0, 0, DateTimeKind.Local))
+                        .HasColumnName("StartDate");
 
                     b.HasKey("Id");
 
@@ -272,8 +282,7 @@ namespace Vayu.Migrations
 
                     b.HasIndex("TaskTypeId");
 
-                    b.HasIndex("Name", "TaskTypeId")
-                        .IsUnique();
+                    b.HasIndex("Name", "TaskTypeId");
 
                     b.ToTable("VayuTasks", (string)null);
                 });

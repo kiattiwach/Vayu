@@ -5,10 +5,12 @@ export interface StaffCreateUpdateDto extends EntityDto<string> {
   code: string;
   name: string;
   codeName: string;
+  contactNumber: string;
+  startDate: string;
+  passAssessmentDate?: string;
   email?: string;
   address?: string;
   radioCode?: string;
-  contactNumber: string;
   contactPerson?: string;
   contactPersonNumber?: string;
   line?: string;
@@ -20,10 +22,12 @@ export interface StaffDto extends AuditedEntityDto<string> {
   code?: string;
   name?: string;
   codeName?: string;
+  contactNumber?: string;
+  startDate?: string;
+  passAssessmentDate?: string;
   email?: string;
   address?: string;
   radioCode?: string;
-  contactNumber?: string;
   contactPerson?: string;
   contactPersonNumber?: string;
   line?: string;
@@ -45,4 +49,8 @@ export interface StaffFilterDto extends PagedAndSortedResultRequestDto {
   line?: string;
   facebook?: string;
   roleId?: string;
+  minStartDate?: string;
+  maxStartDate?: string;
+  minPassAssessmentDate?: string;
+  maxPassAssessmentDate?: string;
 }
