@@ -98,8 +98,8 @@ public class VayuDbContext :
             b.Property(x => x.ContactNumber).HasMaxLength(TaskConsts.MaxContactPersonNumberLength);
 
             b.HasIndex(x => new { x.Name, x.TaskTypeId });
-            b.HasOne(x => x.Leader).WithMany().HasForeignKey(x => x.LeaderId).IsRequired();
-            b.HasOne(x => x.TaskType).WithMany().HasForeignKey(x => x.TaskTypeId).IsRequired();
+            b.HasOne<Staff>().WithMany().HasForeignKey(x => x.LeaderId).IsRequired();
+            b.HasOne<TaskType>().WithMany().HasForeignKey(x => x.TaskTypeId).IsRequired();
 
             b.ApplyObjectExtensionMappings();
         });

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Vayu.EntityFrameworkCore;
+using Vayu.TaskTypes;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -29,7 +30,7 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
         return await query.CountAsync(cancellationToken);
     }
 
-    public async Task<List<Task>> GetListAsync(string filter = null, string name = null, string description = null,
+    public async Task<List<TaskWithNavigateProperties>> GetListAsync(string filter = null, string name = null, string description = null,
         Guid? taskTypeId = null,
         Status? status = null, DateTime? minCreateDateTime = null,
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
@@ -45,17 +46,15 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .ToListAsync(GetCancellationToken(cancellationToken));
     }
 
-    private async Task<IQueryable<Task>> GetQuery(string filter = null, string name = null, string description = null, Guid? taskTypeId = null,
+    private async Task<IQueryable<TaskWithNavigateProperties>> GetQuery(string filter = null, string name = null, string description = null, Guid? taskTypeId = null,
         Status? status = null, DateTime? minCreateDateTime = null,
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
         List<Guid> teamMemberIds = null)
     {
-        return (await GetDbSetAsync())
+        var taskQuery = (await GetDbSetAsync())
             .WhereIf(!filter.IsNullOrWhiteSpace(), x => x.Name.Contains(filter) || x.Description.Contains(filter)
-                || x.TaskType.Name.Contains(filter) || x.Note.Contains(filter) || x.Leader.Name.Contains(filter) ||
-                x.ContactPerson.Contains(filter)
-                || x.ContactNumber.Contains(filter))
+                || x.Note.Contains(filter) || x.ContactPerson.Contains(filter) || x.ContactNumber.Contains(filter))
             .WhereIf(!name.IsNullOrWhiteSpace(), x => x.Name.Contains(name))
             .WhereIf(!description.IsNullOrWhiteSpace(), x => x.Description.Contains(description))
             .WhereIf(taskTypeId != Guid.Empty, x => x.TaskTypeId == taskTypeId)
@@ -70,6 +69,7 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber))
             .WhereIf(teamMemberIds.Any(), x => x.TaskStaffs.Any(ts => teamMemberIds.Any(tm => tm == ts.StaffId)));
 
+        var result = from taskType in (await GetDbContextAsync()).Set<TaskType>()
 
     }
 }

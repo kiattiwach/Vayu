@@ -24,7 +24,7 @@ public interface ITaskRepository : IBasicRepository<Task, Guid>
         List<Guid> teamMemberIds = null,
         CancellationToken cancellationToken = default);
 
-    Task<List<Task>> GetListAsync(string filter = null,
+    Task<List<TaskWithNavigateProperties>> GetListAsync(string filter = null,
         string name = null,
         string description = null,
         Guid? taskTypeId = null,
