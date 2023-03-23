@@ -33,6 +33,9 @@ export class StaffComponent implements OnInit {
   lineControl: FormControl;
   facebookControl: FormControl;
   roleControl: FormControl;
+  startDateControl: FormControl;
+  passAssessmentDateControl: FormControl;
+  copyStartDateControl: FormControl;
 
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
@@ -71,6 +74,9 @@ export class StaffComponent implements OnInit {
     this.lineControl=  new FormControl(this.selectStaff.line || null,[]);
     this.facebookControl=  new FormControl(this.selectStaff.facebook || null,[]);
     this.roleControl=  new FormControl(this.selectStaff.role?.id || null,[Validators.required]);
+    this.startDateControl = new FormControl(this.selectStaff.startDate || null,[Validators.required]);
+    this.passAssessmentDateControl = new FormControl(this.selectStaff.passAssessmentDate || null, []);
+    this.copyStartDateControl = new FormControl();
 
     this.form = this.fb.group({
       code: this.codeControl,
@@ -84,7 +90,10 @@ export class StaffComponent implements OnInit {
       contactPersonNumber: this.contactPersonNumberControl,
       line: this.lineControl,
       facebook: this.facebookControl,
-      roleId: this.roleControl
+      roleId: this.roleControl,
+      startDate: this.startDateControl,
+      passAssessmentDate: this.passAssessmentDateControl,
+      copyStartDate: this.copyStartDateControl
     });
   }
 
@@ -126,4 +135,12 @@ export class StaffComponent implements OnInit {
 
     this.list.get();
   }
+
+  copyStartDate(){
+    if (this.startDateControl.value != null && this.copyStartDateControl.value === true)
+      this.passAssessmentDateControl.setValue(this.startDateControl.value, {emitEvent:false});
+    else
+      this.passAssessmentDateControl.setValue(null,{emitEvent: false});
+  }
+
 }

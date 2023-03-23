@@ -89,10 +89,20 @@
       <ngx-datatable-column [name]="'::Code' | abpLocalization" prop="code"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::CodeName' | abpLocalization" prop="codeName"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::ContactNumber' | abpLocalization" prop="contactNumber"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::StartDate' | abpLocalization" prop="startDate">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.startDate | date }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::PassAssessmentDate' | abpLocalization" prop="passAssessmentDate">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.passAssessmentDate | date }}
+        </ng-template>
+      </ngx-datatable-column>
       <ngx-datatable-column [name]="'::Email' | abpLocalization" prop="email"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Address' | abpLocalization" prop="address"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::RadioCode' | abpLocalization" prop="radioCode"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::ContactNumber' | abpLocalization" prop="contactNumber"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::ContactPerson' | abpLocalization" prop="contactPerson"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::ContactPersonNumber' | abpLocalization" prop="contactPersonNumber"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Line' | abpLocalization" prop="line"></ngx-datatable-column>
@@ -134,6 +144,35 @@
       <div class="form-group">
         <label for="ContactNumber">{{ '::ContactNumber'| abpLocalization}}</label><span> * </span>
         <input type="text" id="ContactNumber" class="form-control" [formControl]="contactNumberControl" />
+      </div>
+      <div class="form-group">
+        <label for="StartDate">{{'::StartDate'| abpLocalization}}</label><span> * </span>
+        <input
+          id="StartDate"
+          #datepicker="ngbDatepicker"
+          class="form-control"
+          name="datepicker"
+          [formControl]="startDateControl"
+          ngbDatepicker
+          (click)="datepicker.toggle()"
+          (dateSelect)="copyStartDate()"/>
+      </div>
+      <div class="form-group">
+        <label for="PassAssessmentDate">{{'::PassAssessmentDate'| abpLocalization}}</label>
+        <div class="custom-checkbox custom-control mb-1">
+          <input id="CopyStartDate" type="checkbox"  class="custom-control-input me-2"
+                 [formControl]="copyStartDateControl"
+                 (change)="copyStartDate()"/>
+          <label class="custom-control-label" for="CopyStartDate">{{'::CopyFromStartDate'| abpLocalization}}</label>
+        </div>
+        <input
+          id="PassAssessmentDate"
+          #datepicker="ngbDatepicker"
+          class="form-control"
+          name="datepicker"
+          [formControl]="passAssessmentDateControl"
+          ngbDatepicker
+          (click)="datepicker.toggle()"/>
       </div>
       <div class="form-group">
         <label for="Email">{{ '::Email'| abpLocalization}}</label>

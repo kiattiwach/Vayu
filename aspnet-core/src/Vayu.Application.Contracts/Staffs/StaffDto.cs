@@ -8,11 +8,13 @@ public class StaffDto : AuditedEntityDto<Guid>
 {
     public string Code { get; set; }
     public string Name { get; set; }
-    public string CodeName { get; set; }
+    public string CodeName { get; set; }    
+    public string ContactNumber { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime PassAssessmentDate { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
     public string RadioCode { get; set; }
-    public string ContactNumber { get; set; }
     public string ContactPerson { get; set; }
     public string ContactPersonNumber { get; set; }
     public string Line { get; set; }

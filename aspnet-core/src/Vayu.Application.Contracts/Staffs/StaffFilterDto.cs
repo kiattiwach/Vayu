@@ -19,4 +19,8 @@ public class StaffFilterDto : PagedAndSortedResultRequestDto
     [CanBeNull]public string Line { get; set; }
     [CanBeNull]public string Facebook { get; set; }
     [CanBeNull] public Guid RoleId { get; set; }
+    [CanBeNull] public DateTime MinStartDate { get; set; }
+    [CanBeNull] public DateTime MaxStartDate { get; set; }
+    [CanBeNull] public DateTime MinPassAssessmentDate { get; set; }
+    [CanBeNull] public DateTime MaxPassAssessmentDate { get; set; }
 }

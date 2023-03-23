@@ -12,5 +12,7 @@ public class StaffConsts
     public static int MaxAddressLength { get; set; } = 1024;
     public static int MaxRadioCodeLength { get; set; } = 32;
     public static int MaxEmailLength { get; set; } = 128;
+    public static DateTime MinStartDate { get; set; } =
+        (new DateTime(1973, 1, 1, 0, 0, 0, DateTimeKind.Utc)).ToLocalTime();
 
 }
