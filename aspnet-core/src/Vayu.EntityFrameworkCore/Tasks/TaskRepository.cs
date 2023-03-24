@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Vayu.EntityFrameworkCore;
+using Vayu.Staffs;
 using Vayu.TaskTypes;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -69,7 +70,20 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber))
             .WhereIf(teamMemberIds.Any(), x => x.TaskStaffs.Any(ts => teamMemberIds.Any(tm => tm == ts.StaffId)));
 
-        var result = from taskType in (await GetDbContextAsync()).Set<TaskType>()
+        var result = from task in taskQuery
+            join taskType in (await GetDbContextAsync()).Set<TaskType>() on task.TaskTypeId equals taskType.Id
+            join leader in (await GetDbContextAsync()).Set<Staff>() on task.LeaderId equals leader.Id
+            join taskStaff in (await GetDbContextAsync()).Set<TaskStaff>() on task.Id equals taskStaff.TaskId
+            join teamMember in (await GetDbContextAsync()).Set<Staff>() on taskStaff.StaffId equals teamMember.Id into teamMembers
+            
+            select new TaskWithNavigateProperties()
+            {
+                Task = task,
+                Type = taskType,
+                Reader = leader,
+                TeamMembers = teamMembers.ToList()
+            };
 
+        return result;
     }
 }
