@@ -25,7 +25,7 @@ public class Task : FullAuditedAggregateRoot<Guid>
     {
 
     }
-    public Task(string name, string description, Guid taskTypeId, Status status, DateTime createDateTime, DateTime completeDateTime, string note, Guid leaderId, string contactPerson, string contactNumber, List<TaskStaff> taskStaffs)
+    public Task(string name, string description, Guid taskTypeId, Status status, DateTime createDateTime, DateTime completeDateTime, string note, Guid leaderId, string contactPerson, string contactNumber)
     {
         Name = name;
         Description = description;
@@ -37,6 +37,5 @@ public class Task : FullAuditedAggregateRoot<Guid>
         LeaderId = leaderId;
         ContactPerson = contactPerson;
         ContactNumber = contactNumber;
-        TaskStaffs = taskStaffs;
     }
 }

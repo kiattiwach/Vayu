@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\Tasks\" />
     <Folder Include="Controllers\Roles\" />
   </ItemGroup>
 

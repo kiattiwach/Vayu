@@ -84,6 +84,8 @@
     "CodeIsUsed": "{0} ใช้รหัส {1} แล้ว",
     "InvalidStartDate": "ควรเริ่มงานก่อน {0}",
     "InvalidPassAssessmentDateDate": "ควรผ่านการประเมินหลังจาก {0}",
-    "CopyFromStartDate": "วันเดียวกับวันเริ่ม"
+    "CopyFromStartDate": "วันเดียวกับวันเริ่ม",
+    "NewTaskShouldBeInitial": "สถานะของงานใหม่ต้องเป็น {0}",
+    "TeamMemberShouldNotBeZero": "ต้องมีสมาชิกในทีมอย่างน้อย 1 คน"
   }
 }

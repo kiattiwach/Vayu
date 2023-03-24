@@ -4,15 +4,17 @@ using Volo.Abp.Application.Dtos;
 
 namespace Vayu.Tasks;
 
-public class TaskFilterDto : EntityDto<Guid>
+public class TaskFilterDto : PagedAndSortedResultRequestDto
 {
     [CanBeNull] public string Filter { get; set; }
     [CanBeNull] public string Name { get; set; }
     [CanBeNull] public string Description { get; set; }
     [CanBeNull] public Guid? TaskTypeId { get; set; }
     public Status? Status { get; set; }
-    public DateTime? CreateDateTime { get; set; }
-    public DateTime? CompleteDateTime { get; set; }
+    public DateTime? MinCreateDateTime { get; set; }
+    public DateTime? MaxCreateDateTime { get; set; }
+    public DateTime? MinCompleteDateTime { get; set; }
+    public DateTime? MaxCompleteDateTime { get; set; }
     [CanBeNull] public string Note { get; set; }
     [CanBeNull] public Guid? StaffId { get; set; }
     [CanBeNull] public string ContactPerson { get; set; }

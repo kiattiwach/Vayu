@@ -54,5 +54,13 @@ public class TaskCreateUpdateDto : EntityDto<Guid>, IValidatableObject
                 new[] { nameof(TeamMemberIds) }
             );
         }
+
+        if ((Id == Guid.Empty || Id == default) && Status != Status.Initial)
+        {
+            yield return new ValidationResult(
+                stringLocalize["NewTaskShouldBeInitial", stringLocalize[$"Enum:Status:{Status.Initial.ToString()}"]],
+                new[] { nameof(Status) }
+            );
+        }
     }
 }

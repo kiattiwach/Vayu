@@ -65,7 +65,7 @@ public class VayuHttpApiHostModule : AbpModule
         ConfigureAuthentication(context);
         ConfigureBundles();
         ConfigureUrls(configuration);
-        ConfigureConventionalControllers();
+        //ConfigureConventionalControllers();//For hiding endpoint api which are created from ApplicationService. 
         ConfigureLocalization();
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
@@ -127,6 +127,9 @@ public class VayuHttpApiHostModule : AbpModule
         }
     }
 
+    /// <summary>
+    /// Create swagger endpoint from ApplicationService
+    /// </summary>
     private void ConfigureConventionalControllers()
     {
         Configure<AbpAspNetCoreMvcOptions>(options =>
