@@ -41,7 +41,7 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
     {
         var query = await GetQuery(filter, name, description, taskTypeId, status, minCreateDateTime, maxCreateDateTime,
             minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds);
-        query = query.OrderBy(sorting.IsNullOrEmpty() ? $"{nameof(Task.CreateDateTime)}" : sorting);
+        query = query.OrderBy(sorting.IsNullOrEmpty() ? $"{nameof(Task)}.{nameof(Task.CreateDateTime)} desc" : sorting);
         return await query.Skip(skipCount)
             .Take(maxResultCount)
             .ToListAsync(GetCancellationToken(cancellationToken));
@@ -67,21 +67,24 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .WhereIf(!note.IsNullOrWhiteSpace(), x => x.Note.Contains(note))
             .WhereIf(leaderId != Guid.Empty, x => x.LeaderId == leaderId)
             .WhereIf(!contactPerson.IsNullOrWhiteSpace(), x => x.ContactPerson.Contains(contactPerson))
-            .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber))
-            .WhereIf(teamMemberIds.Any(), x => x.TaskStaffs.Any(ts => teamMemberIds.Any(tm => tm == ts.StaffId)));
+            .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber));
+
+        var taskStaffs = from taskStaff in (await GetDbContextAsync()).Set<TaskStaff>()
+            join staff in (await GetDbContextAsync()).Set<Staff>() on taskStaff.StaffId equals staff.Id
+            join task in taskQuery on taskStaff.TaskId equals task.Id
+            where teamMemberIds.Contains(taskStaff.StaffId)
+                select staff;
 
         var result = from task in taskQuery
             join taskType in (await GetDbContextAsync()).Set<TaskType>() on task.TaskTypeId equals taskType.Id
             join leader in (await GetDbContextAsync()).Set<Staff>() on task.LeaderId equals leader.Id
-            join taskStaff in (await GetDbContextAsync()).Set<TaskStaff>() on task.Id equals taskStaff.TaskId
-            join teamMember in (await GetDbContextAsync()).Set<Staff>() on taskStaff.StaffId equals teamMember.Id into teamMembers
-            
+
             select new TaskWithNavigateProperties()
             {
                 Task = task,
-                Type = taskType,
+                TaskType = taskType,
                 Reader = leader,
-                TeamMembers = teamMembers.ToList()
+                TeamMembers = taskStaffs.ToList()
             };
 
         return result;

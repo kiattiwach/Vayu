@@ -305,6 +305,41 @@ namespace Vayu.Migrations
                     b.ToTable("VayuTaskStaffs", (string)null);
                 });
 
+            modelBuilder.Entity("Vayu.Tasks.TaskStatus", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TaskId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("VayuTaskStatuses", (string)null);
+                });
+
             modelBuilder.Entity("Vayu.TaskTypes.TaskType", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1809,21 +1844,17 @@ namespace Vayu.Migrations
 
             modelBuilder.Entity("Vayu.Tasks.Task", b =>
                 {
-                    b.HasOne("Vayu.Staffs.Staff", "Staff")
+                    b.HasOne("Vayu.Staffs.Staff", null)
                         .WithMany()
                         .HasForeignKey("LeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vayu.TaskTypes.TaskType", "TaskType")
+                    b.HasOne("Vayu.TaskTypes.TaskType", null)
                         .WithMany()
                         .HasForeignKey("TaskTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Staff");
-
-                    b.Navigation("TaskType");
                 });
 
             modelBuilder.Entity("Vayu.Tasks.TaskStaff", b =>
@@ -1838,6 +1869,15 @@ namespace Vayu.Migrations
                         .WithMany("TaskStaffs")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Vayu.Tasks.TaskStatus", b =>
+                {
+                    b.HasOne("Vayu.Tasks.Task", null)
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

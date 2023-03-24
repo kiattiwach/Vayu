@@ -165,5 +165,15 @@ public class VayuDbContext :
 
             b.ApplyObjectExtensionMappings();
         });
+
+        builder.Entity<TaskStatus>(b =>
+        {
+            b.ToTable(VayuConsts.DbTablePrefix + "TaskStatuses", VayuConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+
+            b.HasOne<Task>().WithMany().HasForeignKey(x => x.TaskId);
+
+            b.ApplyObjectExtensionMappings();
+        });
     }
 }

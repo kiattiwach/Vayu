@@ -65,7 +65,7 @@ public class VayuHttpApiHostModule : AbpModule
         ConfigureAuthentication(context);
         ConfigureBundles();
         ConfigureUrls(configuration);
-        //ConfigureConventionalControllers();//For hiding endpoint api which are created from ApplicationService. 
+        ConfigureConventionalControllers();//Skip this if you want to hiding endpoint api which are created from ApplicationService. 
         ConfigureLocalization();
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);

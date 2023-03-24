@@ -13,13 +13,16 @@ namespace Vayu.Tasks;
 public class TaskService : VayuAppService, ITaskService
 {
     private readonly ITaskRepository _taskRepository;
-    private readonly IRepository<TaskStaff> _taskStaffRepository;
+    private readonly ITaskStaffRepository _taskStaffRepository;
+    private readonly ITaskStatusRepository _taskStatusRepository;
 
     public TaskService(ITaskRepository taskRepository,
-        IRepository<TaskStaff> taskStaffRepository)
+        ITaskStaffRepository taskStaffRepository,
+        ITaskStatusRepository taskStatusRepository)
     {
         _taskRepository = taskRepository;
         _taskStaffRepository = taskStaffRepository;
+        _taskStatusRepository = taskStatusRepository;
     }
 
     [Authorize(VayuPermissions.Tasks.Default)]
@@ -56,6 +59,8 @@ public class TaskService : VayuAppService, ITaskService
             TaskId = result.Id
         }));
 
+        await AddTaskStatus(input);
+
         return ObjectMapper.Map<Task, TaskDto>(result);
     }
 
@@ -75,17 +80,31 @@ public class TaskService : VayuAppService, ITaskService
         task.ContactNumber = input.ContactNumber;
         
         var result = await _taskRepository.UpdateAsync(task);
+        
+        var taskStaffs = await _taskStaffRepository.GetListAsync(taskId:input.Id);
+        var toDelete = taskStaffs.Where(x => input.TeamMemberIds.All(id => id != x.StaffId));
+        await _taskStaffRepository.DeleteManyAsync(toDelete);
 
-        var taskStaffs = (await _taskStaffRepository.GetQueryableAsync()).Where(x => x.TaskId == input.Id);
-        await _taskStaffRepository.DeleteAsync(x => input.TeamMemberIds.All(t => x.StaffId != t));
-        await _taskStaffRepository.InsertManyAsync(input.TeamMemberIds.Where(t => !taskStaffs.Any(x => t == x.StaffId))
+        var toInsert = input.TeamMemberIds.Where(id => taskStaffs.All(x => x.StaffId != id))
             .Select(s => new TaskStaff()
             {
                 StaffId = s,
                 TaskId = input.Id
-            }));
+            });
+        await _taskStaffRepository.InsertManyAsync(toInsert);
+
+        await AddTaskStatus(input);
 
         return ObjectMapper.Map<Task, TaskDto>(result);
+    }
+
+    private async System.Threading.Tasks.Task AddTaskStatus(TaskCreateUpdateDto input)
+    {
+        await _taskStatusRepository.InsertAsync(new TaskStatus()
+        {
+            TaskId = input.Id,
+            Status = input.Status
+        });
     }
 
     [Authorize(VayuPermissions.Tasks.Delete)]

@@ -16,9 +16,17 @@ function configureRoutes(routesService: RoutesService) {
         layout: eLayoutType.application,
       },
       {
+        path: '/tasks',
+        name: '::Menu:Tasks',
+        iconClass: 'fas fa-tasks',
+        layout: eLayoutType.application,
+        requiredPolicy: 'Vayu.Tasks',
+        order:1
+      },
+      {
         name:'::Menu:Setting',
         iconClass:'fas fa-cogs',
-        order:2,
+        order:3,
         layout: eLayoutType.application
       },
       {

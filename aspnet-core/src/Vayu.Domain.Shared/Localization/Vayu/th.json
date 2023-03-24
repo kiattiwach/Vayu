@@ -2,6 +2,7 @@
   "culture": "th",
   "texts": {
 
+    //Permission
     "Permission:Vayu": "วายุ",
     "Permission:TaskTypes": "การจัดการประเภทงาน",
     "Permission:TaskTypes.Create": "การเพิ่มประเภทงานใหม่",
@@ -18,17 +19,20 @@
     "SearchPlaceholder": "ป้อนคำค้นหา",
     "SeeAdvancedFilters": "ค้นหาขั้นสูง",
 
+    //Menu
     "Menu:Home": "หน้าหลัก",
     "Menu:Setting": "ตั้งค่า",
     "Menu:TaskTypes": "ประเภทงาน",
     "Menu:Roles": "หน้าที่/ตำแหน่ง",
     "Menu:StaffRole": "เจ้าหน้าที่/หน้าที่",
     "Menu:Staffs": "เจ้าหน้าที่",
+    "Menu:Tasks": "งาน",
     "Actions": "ดำเนินการ",
     "Close": "ปิด",
     "Delete": "ลบ",
     "Edit": "แก้ไข",
 
+    //Enum
     "Enum:TaskCategory:0": "งานภายใน",
     "Enum:TaskCategory:1": "งานภายนอก",
     "Enum:TaskCategory:Internal": "งานภายใน",
@@ -41,6 +45,7 @@
     "Enum:Status:Done": "เสร็จแล้ว",
     "Enum:Status:Cancel": "ยกเลิก",
 
+    "Login": "เข้าระบบ",
     "Clear": "ล้าง",
     "Refresh": "รีเฟรชข้อมูล",
     "CreationTime": "วันที่เพิ่ม",
@@ -52,16 +57,20 @@
     "No": "ไม่",
     "Yes": "ใช่",
 
+    //TaskType
     "NewTaskType": "เพิ่มประเภทงานใหม่",
     "Name": "ชื่อ",
     "Type": "ประเภท",
     "Search": "ค้นหา",
+    "TaskType": "ประเภทงาน",
 
+    //Role
     "AreYouSureDeleteRole": "คุณกำลังจะลบหน้าที่/ตำแหน่ง",
     "Role": "หน้าที่/ตำแหน่ง",
     "NewRole": "เพิ่มหน้าที่/ตำแหน่งใหม่",
     "Description": "คำอธิบาย",
 
+    //Staff
     "NewStaff": "เพิ่มเจ้าหน้าที่",
     "Code": "รหัส",
     "CodeName": "ชื่อรหัส",
@@ -85,7 +94,14 @@
     "InvalidStartDate": "ควรเริ่มงานก่อน {0}",
     "InvalidPassAssessmentDateDate": "ควรผ่านการประเมินหลังจาก {0}",
     "CopyFromStartDate": "วันเดียวกับวันเริ่ม",
+    "AreYouSureDeleteStaff": "คุณกำลังจะลบเจ้าหน้าที่",
+
+    //Task
     "NewTaskShouldBeInitial": "สถานะของงานใหม่ต้องเป็น {0}",
-    "TeamMemberShouldNotBeZero": "ต้องมีสมาชิกในทีมอย่างน้อย 1 คน"
+    "TeamMemberShouldNotBeZero": "ต้องมีสมาชิกในทีมอย่างน้อย 1 คน",
+    "AreYouSureDeleteTask": "คุณกำลังจะลยงาน",
+    "Status": "สถานะ",
+    "Leader": "ผู้รับผิดชอบงาน",
+    "NewTask": "งานใหม่"
   }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Vayu.Roles;
 using Vayu.Staffs;
+using Vayu.Tasks;
 using Vayu.TaskTypes;
 using Volo.Abp.Uow;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -49,6 +50,8 @@ public class VayuEntityFrameworkCoreModule : AbpModule
             options.AddRepository<TaskType, TaskTypeRepository>();
             options.AddRepository<Role, RoleRepository>();
             options.AddRepository<Staff, StaffRepository>();
+            options.AddRepository<Task, TaskRepository>();
+            options.AddRepository<TaskStaff, TaskStaffRepository>();
         });
 
         Configure<AbpDbContextOptions>(options =>
