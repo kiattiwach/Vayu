@@ -95,6 +95,12 @@
     "InvalidPassAssessmentDateDate": "ควรผ่านการประเมินหลังจาก {0}",
     "CopyFromStartDate": "วันเดียวกับวันเริ่ม",
     "AreYouSureDeleteStaff": "คุณกำลังจะลบเจ้าหน้าที่",
+    "EmailIsUsed": "{0} มีผู้นำไปใช้แล้ว",
+    "RegisterMailSubject": "ระบบติดตามงานวายุ: ลงทะเบียนผู้ใช้",
+    "RegisterStaffInfo": "ข้อมูลการลงทะเบียนพนักงาน",
+    "Password": "รหัสผ่าน",
+    "ClickHereToLogin": "คลิกที่นี่เพื่อเข้าสู่ระบบ {0}",
+    "UserName": "ชื่อผู้ใช้",
 
     //Task
     "NewTaskShouldBeInitial": "สถานะของงานใหม่ต้องเป็น {0}",

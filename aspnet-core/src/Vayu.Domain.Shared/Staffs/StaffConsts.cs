@@ -6,7 +6,8 @@ public class StaffConsts
 {
     public const string EntityType = "Staff";
     public static int MaxCodeLength { get; set; } = 16;
-    public static int MaxNameLength { get; set; } = 512;
+    public static int MaxNameLength { get; set; } = 128;
+    public static int MaxSurNameLength { get; set; } = 128;
     public static int MaxCodeNameLength { get; set; } = 128;
     public static int MaxContactNumberLength { get; set; } = 30;
     public static int MaxAddressLength { get; set; } = 1024;

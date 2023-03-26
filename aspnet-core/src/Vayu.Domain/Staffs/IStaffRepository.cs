@@ -11,7 +11,8 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
 {
     Task<int> GetCountAsync(string filter = null,
         string code = null, 
-        string name = null, 
+        string name = null,
+        string surName = null,
         string codeName = null, 
         string email = null, 
         string address = null, 
@@ -31,6 +32,7 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
     Task<List<StaffWithNavigateProperties>> GetListAsync(string filter = null,
         string code = null,
         string name = null,
+        string surName = null,
         string codeName = null,
         string email = null,
         string address = null,

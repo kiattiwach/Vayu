@@ -18,26 +18,26 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
     {
     }
 
-    public async Task<int> GetCountAsync(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<int> GetCountAsync(string filter = null, string code = null, string name = null, string surName = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
         DateTime? minStartDate = null, DateTime? maxStartDate = null, DateTime? minPassAssessmentDate = null,
         DateTime? maxPassAssessmentDate = null, Guid? roleId = null, CancellationToken cancellationToken = default)
     {
-        var query = await GetQuery(filter, code, name, codeName, email, address, radioCode, contactNumber,
+        var query = await GetQuery(filter, code, name, surName,codeName, email, address, radioCode, contactNumber,
             contactPerson, contactPersonNumber, line, facebook, minStartDate, maxStartDate, minPassAssessmentDate,
             maxPassAssessmentDate, roleId);
         return await query.CountAsync(cancellationToken);
     }
 
-    public async Task<List<StaffWithNavigateProperties>> GetListAsync(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<List<StaffWithNavigateProperties>> GetListAsync(string filter = null, string code = null, string name = null, string surName = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
         DateTime? minStartDate = null, DateTime? maxStartDate = null, DateTime? minPassAssessmentDate = null,
         DateTime? maxPassAssessmentDate = null, Guid? roleId = null, int maxResultCount = Int32.MaxValue, int skipCount = 0,
         string sorting = null, CancellationToken cancellationToken = default)
     {
-        var query = await GetQuery(filter, code, name, codeName, email, address, radioCode, contactNumber,
+        var query = await GetQuery(filter, code, name, surName, codeName, email, address, radioCode, contactNumber,
             contactPerson, contactPersonNumber, line, facebook, minStartDate, maxStartDate, minPassAssessmentDate,
             maxPassAssessmentDate, roleId);
         query = sorting.IsNullOrWhiteSpace() ? 
@@ -68,7 +68,8 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
             .FirstOrDefault(x => x.Code.Equals(code));
     }
 
-    public async Task<IQueryable<StaffWithNavigateProperties>> GetQuery(string filter = null, string code = null, string name = null, string codeName = null,
+    public async Task<IQueryable<StaffWithNavigateProperties>> GetQuery(string filter = null, string code = null, string name = null, 
+        string surName = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,
         string contactPerson = null, string contactPersonNumber = null, string line = null, string facebook = null,
         DateTime? minStartDate = null, DateTime? maxStartDate = null, DateTime? minPassAssessmentDate = null,
@@ -77,13 +78,15 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
     {
         var staffQuery = (await GetDbSetAsync())
             .WhereIf(!string.IsNullOrWhiteSpace(filter), x =>
-                x.Code.Contains(filter) || x.Name.Contains(filter) || x.CodeName.Contains(filter) ||
+                x.Code.Contains(filter) || x.Name.Contains(filter) || x.SurName.Contains(filter) ||
+                x.CodeName.Contains(filter) ||
                 x.Email.Contains(filter) || x.Address.Contains(filter) || x.RadioCode.Contains(filter) ||
                 x.ContactNumber.Contains(filter)
                 || x.ContactPerson.Contains(filter) || x.ContactPersonNumber.Contains(filter) ||
                 GetDbContextAsync().Result.VayuRoles.Any(r => r.Id == x.RoleId && r.Name.Contains(filter)))
             .WhereIf(!string.IsNullOrWhiteSpace(code), x => x.Code.Contains(code))
             .WhereIf(!string.IsNullOrWhiteSpace(name), x => x.Name.Contains(name))
+            .WhereIf(!string.IsNullOrWhiteSpace(surName), x => x.SurName.Contains(surName))
             .WhereIf(!string.IsNullOrWhiteSpace(codeName), x => x.CodeName.Contains(codeName))
             .WhereIf(!string.IsNullOrWhiteSpace(email), x => x.Email.Contains(email))
             .WhereIf(!string.IsNullOrWhiteSpace(address), x => x.Address.Contains(address))

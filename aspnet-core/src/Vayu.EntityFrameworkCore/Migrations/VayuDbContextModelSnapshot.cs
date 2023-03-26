@@ -107,8 +107,8 @@ namespace Vayu.Migrations
                         .HasColumnName("ContactNumber");
 
                     b.Property<string>("ContactPerson")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)")
                         .HasColumnName("ContactPerson");
 
                     b.Property<string>("ContactPersonNumber")
@@ -163,8 +163,8 @@ namespace Vayu.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)")
                         .HasColumnName("Name");
 
                     b.Property<DateTime?>("PassAssessmentDate")
@@ -185,12 +185,26 @@ namespace Vayu.Migrations
                         .HasDefaultValue(new DateTime(1973, 1, 1, 7, 0, 0, 0, DateTimeKind.Local))
                         .HasColumnName("StartDate");
 
+                    b.Property<string>("SurName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)")
+                        .HasColumnName("SurName");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("UserId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
                         .IsUnique();
 
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("VayuStaffs", (string)null);
                 });
@@ -1840,6 +1854,10 @@ namespace Vayu.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Volo.Abp.Identity.IdentityUser", null)
+                        .WithOne()
+                        .HasForeignKey("Vayu.Staffs.Staff", "UserId");
                 });
 
             modelBuilder.Entity("Vayu.Tasks.Task", b =>

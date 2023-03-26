@@ -12,9 +12,13 @@ using Volo.Abp.Domain.Repositories;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using Microsoft.Extensions.Localization;
+using PasswordGenerator;
 using Vayu.Localization;
 using Volo.Abp;
+using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
+using static Volo.Abp.Identity.Settings.IdentitySettingNames;
+using Volo.Abp.Emailing;
 
 namespace Vayu.Staffs;
 
@@ -23,14 +27,34 @@ public class StaffService : VayuAppService, IStaffService
     private readonly IStaffRepository _staffRepository;
     private readonly IRepository<Role, Guid> _roleRepository;
     private readonly IStringLocalizer<VayuResource> _stringLocalize;
+    private readonly IRepository<IdentityUser, Guid> _identityRepository;
+    private readonly IdentityUserManager _identityUserManager;
+    private readonly IRepository<IdentityRole, Guid> _identityRoleRepository;
+    private readonly IEmailSender _emailSender;
+    private readonly IPassword _password;
 
     public StaffService(IStaffRepository staffRepository, 
         IRepository<Role,Guid> roleRepository,
-        IStringLocalizer<VayuResource> stringLocalize)
+        IStringLocalizer<VayuResource> stringLocalize,
+        IRepository<IdentityUser, Guid> identityRepository,
+        IdentityUserManager identityUserManager,
+        IPassword password,
+        IRepository<IdentityRole, Guid> identityRoleRepository,
+        IEmailSender emailSender)
+
     {
         _staffRepository = staffRepository;
         _roleRepository = roleRepository;
         _stringLocalize = stringLocalize;
+        _identityRepository = identityRepository;
+        _identityUserManager = identityUserManager;
+        _identityRoleRepository = identityRoleRepository;
+        _emailSender = emailSender;
+        _password = password.LengthRequired(8)
+                            .IncludeUppercase()
+                            .IncludeLowercase()
+                            .IncludeNumeric()
+                            .IncludeSpecial(); ;
     }
 
     [Authorize(VayuPermissions.Staffs.Default)]
@@ -42,12 +66,12 @@ public class StaffService : VayuAppService, IStaffService
     [Authorize(VayuPermissions.Staffs.Default)]
     public async Task<PagedResultDto<StaffWithNavigatePropertiesDto>> GetListAsync(StaffFilterDto input)
     {
-        var count = await _staffRepository.GetCountAsync(input.Filter, input.Code, input.Name, input.CodeName,
+        var count = await _staffRepository.GetCountAsync(input.Filter, input.Code, input.Name, input.SurName, input.CodeName,
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
             input.ContactPersonNumber, input.Line, input.Facebook,
             input.MinStartDate, input.MaxStartDate, input.MinPassAssessmentDate, input.MaxPassAssessmentDate,
             input.RoleId);
-        var items = await _staffRepository.GetListAsync(input.Filter, input.Code, input.Name, input.CodeName,
+        var items = await _staffRepository.GetListAsync(input.Filter, input.Code, input.Name, input.SurName, input.CodeName,
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
             input.ContactPersonNumber, input.Line, input.Facebook,
             input.MinStartDate, input.MaxStartDate, input.MinPassAssessmentDate, input.MaxPassAssessmentDate,
@@ -69,9 +93,36 @@ public class StaffService : VayuAppService, IStaffService
         await CheckUnUsedRadioCode(input.RadioCode);
         await CheckUnUsedCodeName(input.CodeName);
 
-        var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name, input.CodeName, input.Email,
+        var userWithSameEmail = await _identityUserManager.FindByEmailAsync(input.Email);
+
+        if (userWithSameEmail != null)
+        {
+            throw new UserFriendlyException(_stringLocalize["EmailIsUsed", input.Email]);
+        }
+
+        string password = _password.Next();
+        var defaultRole = await _identityRoleRepository.SingleAsync(r => r.IsDefault);
+        var identityUser = new IdentityUser(GuidGenerator.Create(), input.Email, input.Email)
+        {
+            Name = input.Name,
+            Surname = input.Surname
+        };
+        
+        identityUser.AddRole(defaultRole.Id);
+        await _identityUserManager.CreateAsync(identityUser, password, true);
+        input.UserId = identityUser.Id;
+
+        var emailBody = $"{_stringLocalize["RegisterStaffInfo"]}<br>" + 
+                       $"{_stringLocalize["Name"]}: {input.Name} <br>" +
+                       $"{_stringLocalize["UserName"]}: {input.Email} <br>" +
+                       $"{_stringLocalize["Password"]}: {password} <br>" + "<br>" +
+                       $"<a href='https://www.skapp.at/Account/Login'{_stringLocalize["ClickHereToLogin {0}", VayuRemoteServiceConsts.ModuleName]}></a>";
+
+        await _emailSender.SendAsync(input.Email, _stringLocalize["RegisterMailSubject"], emailBody, true);
+
+        var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name,input.Surname, input.CodeName, input.Email,
             input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson, input.ContactPersonNumber,
-            input.Line, input.Facebook,input.StartDate, input.PassAssessmentDate, input.RoleId));
+            input.Line, input.Facebook,input.StartDate, input.PassAssessmentDate, input.RoleId, input.UserId));
         
         return ObjectMapper.Map<Staff, StaffDto>(result);
     }
@@ -85,6 +136,7 @@ public class StaffService : VayuAppService, IStaffService
         var staff = await _staffRepository.GetAsync(input.Id);
         staff.Code = input.Code;
         staff.Name = input.Name;
+        staff.SurName = input.Surname;
         staff.CodeName = input.CodeName;
         staff.Email = input.Email;
         staff.Address = input.Address;

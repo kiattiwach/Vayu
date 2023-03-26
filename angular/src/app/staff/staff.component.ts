@@ -72,7 +72,7 @@ export class StaffComponent implements OnInit {
     this.codeControl=  new FormControl(this.selectStaff.code || null,[Validators.required]);
     this.nameControl=  new FormControl(this.selectStaff.name || null,[Validators.required]);
     this.codeNameControl=  new FormControl(this.selectStaff.codeName || null,[Validators.required]);
-    this.emailControl=  new FormControl(this.selectStaff.email || null,[Validators.pattern(this.emailPattern)]);
+    this.emailControl=  new FormControl(this.selectStaff.email || null,[Validators.required, Validators.pattern(this.emailPattern)]);
     this.addressControl=  new FormControl(this.selectStaff.address || null,[]);
     this.radioCodeControl=  new FormControl(this.selectStaff.radioCode || null,[]);
     this.contactNumberControl=  new FormControl(this.selectStaff.contactNumber || null,[Validators.required, Validators.pattern(this.phonePattern)]);

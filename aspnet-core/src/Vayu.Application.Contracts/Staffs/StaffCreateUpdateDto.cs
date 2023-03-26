@@ -20,6 +20,10 @@ public class StaffCreateUpdateDto : EntityDto<Guid>, IValidatableObject
     public string Name { get; set; }
 
     [Required]
+    [DynamicMaxLength(typeof(StaffConsts), nameof(StaffConsts.MaxSurNameLength))]
+    public string Surname { get; set; }
+
+    [Required]
     [DynamicMaxLength(typeof(StaffConsts), nameof(StaffConsts.MaxCodeNameLength))]
     public string CodeName { get; set; }
 
@@ -33,6 +37,7 @@ public class StaffCreateUpdateDto : EntityDto<Guid>, IValidatableObject
     public DateTime? PassAssessmentDate { get; set; }
 
     [DynamicMaxLength(typeof(StaffConsts), nameof(StaffConsts.MaxEmailLength))]
+    [Required]
     public string Email { get; set; }
 
     [DynamicMaxLength(typeof(StaffConsts), nameof(StaffConsts.MaxAddressLength))]
@@ -55,6 +60,8 @@ public class StaffCreateUpdateDto : EntityDto<Guid>, IValidatableObject
 
     [Required]
     public Guid RoleId { get; set; }
+
+    public Guid UserId { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

@@ -122,6 +122,7 @@ public class VayuDbContext :
 
             b.Property(x => x.Code).HasColumnName(nameof(Staff.Code)).IsRequired().HasMaxLength(StaffConsts.MaxCodeLength);
             b.Property(x => x.Name).HasColumnName(nameof(Staff.Name)).IsRequired().HasMaxLength(StaffConsts.MaxNameLength);
+            b.Property(x => x.SurName).HasColumnName(nameof(Staff.SurName)).IsRequired().HasMaxLength(StaffConsts.MaxSurNameLength);
             b.Property(x => x.CodeName).HasColumnName(nameof(Staff.CodeName)).IsRequired().HasMaxLength(StaffConsts.MaxCodeNameLength);
             b.Property(x => x.Email).HasColumnName(nameof(Staff.Email)).HasMaxLength(StaffConsts.MaxEmailLength);
             b.Property(x => x.Address).HasColumnName(nameof(Staff.Address)).HasMaxLength(StaffConsts.MaxAddressLength);
@@ -133,10 +134,12 @@ public class VayuDbContext :
             b.Property(x => x.Facebook).HasColumnName(nameof(Staff.Facebook)).HasMaxLength(StaffConsts.MaxEmailLength);
             b.Property(x => x.StartDate).HasColumnName(nameof(Staff.StartDate)).IsRequired().HasDefaultValue(StaffConsts.MinStartDate);
             b.Property(x => x.PassAssessmentDate).HasColumnName(nameof(Staff.PassAssessmentDate));
+            b.Property(x => x.UserId).HasColumnName(nameof(Staff.UserId)).HasDefaultValue(null);
 
             b.HasIndex(x => x.Code).IsUnique();
             
             b.HasOne<Role>().WithMany().HasForeignKey(x => x.RoleId).IsRequired();
+            b.HasOne<IdentityUser>().WithOne().HasForeignKey<Staff>(x => x.UserId);
 
             b.ApplyObjectExtensionMappings();
         });
