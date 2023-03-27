@@ -10,6 +10,8 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {NgbDatepickerModule, NgbDropdownModule} from "@ng-bootstrap/ng-bootstrap";
 import {AdvancedEntityFiltersModule, CommercialUiModule} from "@volo/abp.commercial.ng.ui";
 import {MatTabsModule} from "@angular/material/tabs";
+import {MatButtonModule} from "@angular/material/button";
+import {MatListModule} from "@angular/material/list";
 
 
 @NgModule({
@@ -28,7 +30,9 @@ import {MatTabsModule} from "@angular/material/tabs";
     CommercialUiModule,
     AdvancedEntityFiltersModule,
     NgbDatepickerModule,
-    MatTabsModule
+    MatTabsModule,
+    MatButtonModule,
+    MatListModule
   ]
 })
 export class TaskModule { }

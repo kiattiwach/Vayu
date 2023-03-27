@@ -2,7 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import {ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
 import {NgbDateAdapter, NgbDateNativeAdapter, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import { phonePattern } from '../shared/pattern';
-import {TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskService, TaskWithNavigatePropertiesDto} from "@proxy/tasks";
+import {
+  statusOptions,
+  TaskCreateUpdateDto,
+  TaskDto,
+  TaskFilterDto,
+  TaskService,
+  TaskWithNavigatePropertiesDto
+} from "@proxy/tasks";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {Confirmation} from "@abp/ng.theme.shared";
@@ -15,7 +22,6 @@ import {Confirmation} from "@abp/ng.theme.shared";
     { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
 })
 export class TaskComponent implements OnInit {
-  options: NgbModalOptions;
   phonePattern = phonePattern;
   filters = {} as TaskFilterDto;
   tasks = {items: [], totalCount: 0 } as PagedResultDto<TaskWithNavigatePropertiesDto>;
@@ -24,6 +30,8 @@ export class TaskComponent implements OnInit {
   form: FormGroup;
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
+  options: NgbModalOptions;
+  isDisplayAddTeamMember: boolean;
 
     constructor(public readonly list: ListService,
                 public taskService: TaskService,
@@ -33,7 +41,7 @@ export class TaskComponent implements OnInit {
                 private permissionService: PermissionService) { }
 
   ngOnInit(): void {
-      this.options = {size:'xl'}
+      this.options = { size:'xl' };
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
     this.list.hookToQuery(streamCreator)?.subscribe((response) => this.tasks = response);
@@ -92,5 +100,7 @@ export class TaskComponent implements OnInit {
     this.list.get();
   }
 
-
+  addTeamMember(){
+      this.isDisplayAddTeamMember = !this.isDisplayAddTeamMember;
+  }
 }

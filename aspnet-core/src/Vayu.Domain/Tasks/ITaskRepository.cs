@@ -9,7 +9,6 @@ namespace Vayu.Tasks;
 public interface ITaskRepository : IBasicRepository<Task, Guid>
 {
     Task<int> GetCountAsync(string filter = null,
-        string name = null,
         string description = null,
         Guid? taskTypeId = null,
         Status? status = null,
@@ -25,7 +24,6 @@ public interface ITaskRepository : IBasicRepository<Task, Guid>
         CancellationToken cancellationToken = default);
 
     Task<List<TaskWithNavigateProperties>> GetListAsync(string filter = null,
-        string name = null,
         string description = null,
         Guid? taskTypeId = null,
         Status? status = null,

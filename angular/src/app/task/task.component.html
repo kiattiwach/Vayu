@@ -284,12 +284,13 @@
           </div>
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="task.status"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="task.name"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::TaskType' | abpLocalization" prop="taskType.name"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="task.status"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Description' | abpLocalization" prop="task.description"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Leader' | abpLocalization" prop="reader.name"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::ContactPerson' | abpLocalization" prop="task.contactPerson"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::ContactNumber' | abpLocalization" prop="task.contactNumber"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Note' | abpLocalization" prop="task.note"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::CreateDateTime' | abpLocalization" prop="task.createDateTime">
         <ng-template let-row="row" ngx-datatable-cell-template>
           {{ row.task.createDateTime | date }}
@@ -310,97 +311,61 @@
   </ng-template>
 
   <ng-template #abpBody>
-    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-      <mat-tab label="First">Content 1</mat-tab>
-      <mat-tab label="Second">Content 2</mat-tab>
-      <mat-tab label="Third">Content 3</mat-tab>
-    </mat-tab-group>
-    <!--<form [formGroup]="form" (ngSubmit)="save()" class="row gap-3">
-      <div class="form-group">
-        <label for="roleId">{{ '::Role'| abpLocalization}}</label><span> * </span>
-        <div class="row" style="&#45;&#45;bs-gutter-x: 0;">
-          <abp-lookup-select
-            id="roleId"
-            autofocus="true"
-            [getFn]="staffService.getRoleLookup"
-            [formControl]="roleControl"  >
-          </abp-lookup-select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="Code">{{ '::Code'| abpLocalization}}</label><span> * </span>
-        <input type="text" id="Code" class="form-control" [formControl]="codeControl" [readOnly]="selectStaff.id"/>
-      </div>
-      <div class="form-group">
-        <label for="Name">{{ '::Name'| abpLocalization}}</label><span> * </span>
-        <input type="text" id="Name" class="form-control" [formControl]="nameControl" />
-      </div>
-      <div class="form-group">
-        <label for="CodeName">{{ '::CodeName'| abpLocalization}}</label><span> * </span>
-        <input type="text" id="CodeName" class="form-control" [formControl]="codeNameControl" />
-      </div>
-      <div class="form-group">
-        <label for="ContactNumber">{{ '::ContactNumber'| abpLocalization}}</label><span> * </span>
-        <input type="text" id="ContactNumber" class="form-control" [formControl]="contactNumberControl" />
-      </div>
-      <div class="form-group">
-        <label for="StartDate">{{'::StartDate'| abpLocalization}}</label><span> * </span>
-        <input
-          id="StartDate"
-          #datepicker="ngbDatepicker"
-          class="form-control"
-          name="datepicker"
-          [formControl]="startDateControl"
-          ngbDatepicker
-          (click)="datepicker.toggle()"
-          (dateSelect)="copyStartDate()"/>
-      </div>
-      <div class="form-group">
-        <label for="PassAssessmentDate">{{'::PassAssessmentDate'| abpLocalization}}</label>
-        <div class="custom-checkbox custom-control mb-1">
-          <input id="CopyStartDate" type="checkbox"  class="custom-control-input me-2"
-                 [formControl]="copyStartDateControl"
-                 (change)="copyStartDate()"/>
-          <label class="custom-control-label" for="CopyStartDate">{{'::CopyFromStartDate'| abpLocalization}}</label>
-        </div>
-        <input
-          id="PassAssessmentDate"
-          #datepicker="ngbDatepicker"
-          class="form-control"
-          name="datepicker"
-          [formControl]="passAssessmentDateControl"
-          ngbDatepicker
-          (click)="datepicker.toggle()"/>
-      </div>
-      <div class="form-group">
-        <label for="Email">{{ '::Email'| abpLocalization}}</label>
-        <input type="text" id="Email" class="form-control" [formControl]="emailControl" />
-      </div>
-      <div class="form-group">
-        <label for="Address">{{ '::Address'| abpLocalization}}</label>
-        <input type="text" id="Address" class="form-control" [formControl]="addressControl" />
-      </div>
-      <div class="form-group">
-        <label for="RadioCode">{{ '::RadioCode'| abpLocalization}}</label>
-        <input type="text" id="RadioCode" class="form-control" [formControl]="radioCodeControl" />
-      </div>
-      <div class="form-group">
-        <label for="ContactPerson">{{ '::ContactPerson'| abpLocalization}}</label>
-        <input type="text" id="ContactPerson" class="form-control" [formControl]="contactPersonControl" />
-      </div>
-      <div class="form-group">
-        <label for="ContactPersonNumber">{{ '::ContactPersonNumber'| abpLocalization}}</label>
-        <input type="text" id="ContactPersonNumber" class="form-control" [formControl]="contactPersonNumberControl" />
-      </div>
-      <div class="form-group">
-        <label for="Line">{{ '::Line'| abpLocalization}}</label>
-        <input type="text" id="Line" class="form-control" [formControl]="lineControl" />
-      </div>
-      <div class="form-group">
-        <label for="Facebook">{{ '::Facebook'| abpLocalization}}</label>
-        <input type="text" id="Facebook" class="form-control" [formControl]="facebookControl" />
-      </div>
-    </form>-->
+    <form [formGroup]="form" (ngSubmit)="save()" class="row gap-3">
+      <mat-tab-group mat-align-tabs="start" selectedIndex="0">
+        <mat-tab label="{{'::TaskDetail' | abpLocalization}}">
+          <div class="form-group">
+            <label for="TaskTypeId">{{ '::TaskType'| abpLocalization}}</label><span> * </span>
+            <div class="row" style="bs-gutter-x: 0;">
+              <abp-lookup-select
+                id="TaskTypeId"
+                autofocus="true"
+                [getFn]="taskService.getTaskTypeLookup"
+                [formControl]="" >
+              </abp-lookup-select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="Description">{{ '::Description'| abpLocalization}}</label><span> * </span>
+            <input type="text" id="Description" class="form-control" [formControl]="" />
+          </div>
+          <div class="form-group">
+            <label for="Note">{{ '::Note'| abpLocalization}}</label><span> * </span>
+            <textarea rows="3" style="resize: none" aria-multiline="true" id="Note" class="form-control" [formControl]="" ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="ContactPerson">{{ '::ContactPerson'| abpLocalization}}</label><span> * </span>
+            <input type="text" id="ContactPerson" class="form-control" [formControl]="" />
+          </div>
+          <div class="form-group">
+            <label for="ContactNumber">{{ '::ContactNumber'| abpLocalization}}</label><span> * </span>
+            <input type="text" id="ContactNumber" class="form-control" [formControl]="" />
+          </div>
+        </mat-tab>
+        <mat-tab label="{{'::TaskStaffDetail' | abpLocalization}}">
+          <div class="form-group">
+            <label for="Leader">{{ '::Leader'| abpLocalization}}</label><span> * </span>
+            <div class="row" style="bs-gutter-x: 0;">
+              <abp-lookup-select
+                id="Leader"
+                autofocus="true"
+                [getFn]="taskService.getStaffLookup"
+                [formControl]="" >
+              </abp-lookup-select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="TeamMember">{{ '::TeamMember'| abpLocalization}}</label>
+            <mat-list id="TeamMember" role="list">
+              <mat-list-item role="listitem">Item 1</mat-list-item>
+              <mat-list-item role="listitem">Item 2</mat-list-item>
+              <mat-list-item role="listitem">Item 3</mat-list-item>
+            </mat-list>
+            <button mat-flat-button color="primary" (click)="addTeamMember()"><i class="fas fa-user-plus"></i></button>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </form>
   </ng-template>
 
   <ng-template #abpFooter>
@@ -412,5 +377,17 @@
       <i class="fa fa-check mr-1"></i>
       {{ '::Save' | abpLocalization }}
     </button>
+  </ng-template>
+</abp-modal>
+
+
+<abp-modal [(visible)] = "isDisplayAddTeamMember">
+  <ng-template #abpHeader>
+  </ng-template>
+  <ng-template #abpBody>
+    TEST
+  </ng-template>
+  <ng-template #abpFooter>
+
   </ng-template>
 </abp-modal>

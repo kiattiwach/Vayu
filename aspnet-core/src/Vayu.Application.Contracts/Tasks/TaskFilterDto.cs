@@ -7,7 +7,6 @@ namespace Vayu.Tasks;
 public class TaskFilterDto : PagedAndSortedResultRequestDto
 {
     [CanBeNull] public string Filter { get; set; }
-    [CanBeNull] public string Name { get; set; }
     [CanBeNull] public string Description { get; set; }
     [CanBeNull] public Guid? TaskTypeId { get; set; }
     public Status? Status { get; set; }

@@ -91,13 +91,17 @@ public class VayuDbContext :
             b.ToTable(VayuConsts.DbTablePrefix + "Tasks", VayuConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
 
-            b.Property(x => x.Name).IsRequired().HasMaxLength(TaskConsts.MaxNameLength);
             b.Property(x => x.Description).HasMaxLength(TaskConsts.MaxDescriptionLength);
-            b.Property(x => x.Note).HasMaxLength(TaskConsts.MaxNoteLength);
+            b.Property(x => x.Note).HasMaxLength(TaskConsts.MaxNoteLength).HasDefaultValue(null);
             b.Property(x => x.ContactPerson).HasMaxLength(TaskConsts.MaxContactPersonLength);
             b.Property(x => x.ContactNumber).HasMaxLength(TaskConsts.MaxContactPersonNumberLength);
+            b.Property(x => x.CompleteDateTime).HasDefaultValue(null);
 
-            b.HasIndex(x => new { x.Name, x.TaskTypeId });
+            b.HasIndex(x => new { x.TaskTypeId });
+            b.HasIndex(x => new { x.LeaderId });
+            b.HasIndex(x => new { x.CreateDateTime });
+            b.HasIndex(x => new { x.CompleteDateTime});
+            b.HasIndex(x => new { x.CreateDateTime, x.CompleteDateTime });
             b.HasOne<Staff>().WithMany().HasForeignKey(x => x.LeaderId).IsRequired();
             b.HasOne<TaskType>().WithMany().HasForeignKey(x => x.TaskTypeId).IsRequired();
 

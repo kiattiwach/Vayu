@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Vayu.Shared;
 using Vayu.Tasks;
 using Volo.Abp.Application.Dtos;
 
@@ -44,5 +45,17 @@ public class TaskController : VayuController, ITaskService
     public Task DeleteAsync(Guid id)
     {
         return _taskService.DeleteAsync(id);
+    }
+
+    [HttpPost("get-task-type-lookup/{input}")]
+    public Task<PagedResultDto<LookupDto<Guid>>> GetTaskTypeLookupAsync(LookupRequestDto input)
+    {
+        return _taskService.GetTaskTypeLookupAsync(input);
+    }
+
+    [HttpPost("get-staff-lookup/{input}")]
+    public Task<PagedResultDto<LookupDto<Guid>>> GetStaffLookupAsync(LookupRequestDto input)
+    {
+        return _taskService.GetStaffLookupAsync(input);
     }
 }

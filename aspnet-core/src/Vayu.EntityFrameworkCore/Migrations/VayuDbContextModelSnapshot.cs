@@ -214,7 +214,7 @@ namespace Vayu.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CompleteDateTime")
+                    b.Property<DateTime?>("CompleteDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -275,11 +275,6 @@ namespace Vayu.Migrations
                     b.Property<Guid>("LeaderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
                     b.Property<string>("Note")
                         .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
@@ -292,11 +287,15 @@ namespace Vayu.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompleteDateTime");
+
+                    b.HasIndex("CreateDateTime");
+
                     b.HasIndex("LeaderId");
 
                     b.HasIndex("TaskTypeId");
 
-                    b.HasIndex("Name", "TaskTypeId");
+                    b.HasIndex("CreateDateTime", "CompleteDateTime");
 
                     b.ToTable("VayuTasks", (string)null);
                 });

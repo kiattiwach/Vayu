@@ -2,6 +2,7 @@ import type { TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskWithNavigatePrope
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
+import type { LookupDto, LookupRequestDto } from '../shared/models';
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +40,24 @@ export class TaskService {
     this.restService.request<any, PagedResultDto<TaskWithNavigatePropertiesDto>>({
       method: 'POST',
       url: `/api/task/get-list${input}`,
+      body: input,
+    },
+    { apiName: this.apiName });
+  
+
+  getStaffLookup = (input: LookupRequestDto) =>
+    this.restService.request<any, PagedResultDto<LookupDto<string>>>({
+      method: 'POST',
+      url: `/api/task/get-staff-lookup/${input}`,
+      body: input,
+    },
+    { apiName: this.apiName });
+  
+
+  getTaskTypeLookup = (input: LookupRequestDto) =>
+    this.restService.request<any, PagedResultDto<LookupDto<string>>>({
+      method: 'POST',
+      url: `/api/task/get-task-type-lookup/${input}`,
       body: input,
     },
     { apiName: this.apiName });

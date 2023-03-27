@@ -109,6 +109,9 @@
     "AreYouSureDeleteTask": "คุณกำลังจะลยงาน",
     "Status": "สถานะ",
     "Leader": "ผู้รับผิดชอบงาน",
-    "NewTask": "งานใหม่"
+    "NewTask": "งานใหม่",
+    "TaskDetail": "รายละเอียดงาน",
+    "TaskStaffDetail": "ผู้รับผิดชอบ",
+    "TeamMember": "ทีมงาน"
   }
 }

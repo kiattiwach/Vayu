@@ -1,39 +1,37 @@
 import type { EntityDto, FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { Status } from './status.enum';
-import type { TaskTypeDto } from '../task-types/models';
 import type { StaffDto } from '../staffs/models';
+import type { TaskTypeDto } from '../task-types/models';
 
 export interface TaskCreateUpdateDto extends EntityDto<string> {
-  name: string;
-  description: string;
-  taskTypeId?: string;
+  taskTypeId: string;
   status: Status;
+  description: string;
   createDateTime: string;
   completeDateTime?: string;
   note?: string;
-  leaderId: string;
+  leader: StaffDto;
   contactPerson?: string;
   contactNumber?: string;
-  teamMemberIds: string[];
+  teamMemberIds: StaffDto[];
 }
 
 export interface TaskDto extends FullAuditedEntityDto<string> {
-  name?: string;
-  description?: string;
   taskTypeId?: string;
   status: Status;
+  description?: string;
   createDateTime?: string;
   completeDateTime?: string;
   note?: string;
-  leaderId?: string;
+  leader: StaffDto;
   contactPerson?: string;
   contactNumber?: string;
+  teamMembers: StaffDto[];
   concurrencyStamp?: string;
 }
 
 export interface TaskFilterDto extends PagedAndSortedResultRequestDto {
   filter?: string;
-  name?: string;
   description?: string;
   taskTypeId?: string;
   status?: Status;
