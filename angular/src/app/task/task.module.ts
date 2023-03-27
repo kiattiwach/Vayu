@@ -9,6 +9,7 @@ import {BaseThemeSharedModule} from "@abp/ng.theme.shared";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgbDatepickerModule, NgbDropdownModule} from "@ng-bootstrap/ng-bootstrap";
 import {AdvancedEntityFiltersModule, CommercialUiModule} from "@volo/abp.commercial.ng.ui";
+import {MatTabsModule} from "@angular/material/tabs";
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {AdvancedEntityFiltersModule, CommercialUiModule} from "@volo/abp.commerc
     CoreModule,
     CommercialUiModule,
     AdvancedEntityFiltersModule,
-    NgbDatepickerModule
+    NgbDatepickerModule,
+    MatTabsModule
   ]
 })
 export class TaskModule { }

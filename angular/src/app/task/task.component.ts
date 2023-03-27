@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
-import {NgbDateAdapter, NgbDateNativeAdapter} from "@ng-bootstrap/ng-bootstrap";
+import {NgbDateAdapter, NgbDateNativeAdapter, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import { phonePattern } from '../shared/pattern';
 import {TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskService, TaskWithNavigatePropertiesDto} from "@proxy/tasks";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -15,6 +15,7 @@ import {Confirmation} from "@abp/ng.theme.shared";
     { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
 })
 export class TaskComponent implements OnInit {
+  options: NgbModalOptions;
   phonePattern = phonePattern;
   filters = {} as TaskFilterDto;
   tasks = {items: [], totalCount: 0 } as PagedResultDto<TaskWithNavigatePropertiesDto>;
@@ -32,6 +33,7 @@ export class TaskComponent implements OnInit {
                 private permissionService: PermissionService) { }
 
   ngOnInit(): void {
+      this.options = {size:'xl'}
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
     this.list.hookToQuery(streamCreator)?.subscribe((response) => this.tasks = response);

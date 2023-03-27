@@ -122,7 +122,7 @@ public class VayuDbContext :
 
             b.Property(x => x.Code).HasColumnName(nameof(Staff.Code)).IsRequired().HasMaxLength(StaffConsts.MaxCodeLength);
             b.Property(x => x.Name).HasColumnName(nameof(Staff.Name)).IsRequired().HasMaxLength(StaffConsts.MaxNameLength);
-            b.Property(x => x.SurName).HasColumnName(nameof(Staff.SurName)).IsRequired().HasMaxLength(StaffConsts.MaxSurNameLength);
+            b.Property(x => x.Surname).HasColumnName(nameof(Staff.Surname)).IsRequired().HasMaxLength(StaffConsts.MaxSurNameLength);
             b.Property(x => x.CodeName).HasColumnName(nameof(Staff.CodeName)).IsRequired().HasMaxLength(StaffConsts.MaxCodeNameLength);
             b.Property(x => x.Email).HasColumnName(nameof(Staff.Email)).HasMaxLength(StaffConsts.MaxEmailLength);
             b.Property(x => x.Address).HasColumnName(nameof(Staff.Address)).HasMaxLength(StaffConsts.MaxAddressLength);

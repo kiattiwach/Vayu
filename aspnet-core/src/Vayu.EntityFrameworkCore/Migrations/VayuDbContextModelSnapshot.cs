@@ -185,11 +185,11 @@ namespace Vayu.Migrations
                         .HasDefaultValue(new DateTime(1973, 1, 1, 7, 0, 0, 0, DateTimeKind.Local))
                         .HasColumnName("StartDate");
 
-                    b.Property<string>("SurName")
+                    b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)")
-                        .HasColumnName("SurName");
+                        .HasColumnName("Surname");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier")

@@ -3,6 +3,7 @@
   "texts": {
 
     //Permission
+    "Permission:Settings": "ตั้งค่า",
     "Permission:Vayu": "วายุ",
     "Permission:TaskTypes": "การจัดการประเภทงาน",
     "Permission:TaskTypes.Create": "การเพิ่มประเภทงานใหม่",

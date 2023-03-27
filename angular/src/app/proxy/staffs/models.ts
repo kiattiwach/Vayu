@@ -4,11 +4,12 @@ import type { RoleDto } from '../roles/models';
 export interface StaffCreateUpdateDto extends EntityDto<string> {
   code: string;
   name: string;
+  surname: string;
   codeName: string;
   contactNumber: string;
   startDate: string;
   passAssessmentDate?: string;
-  email?: string;
+  email: string;
   address?: string;
   radioCode?: string;
   contactPerson?: string;
@@ -16,11 +17,13 @@ export interface StaffCreateUpdateDto extends EntityDto<string> {
   line?: string;
   facebook?: string;
   roleId: string;
+  userId?: string;
 }
 
 export interface StaffDto extends AuditedEntityDto<string> {
   code?: string;
   name?: string;
+  surname?: string;
   codeName?: string;
   contactNumber?: string;
   startDate?: string;
@@ -39,6 +42,7 @@ export interface StaffFilterDto extends PagedAndSortedResultRequestDto {
   filter?: string;
   code?: string;
   name?: string;
+  surname?: string;
   codeName?: string;
   email?: string;
   address?: string;
