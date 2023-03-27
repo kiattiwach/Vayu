@@ -78,7 +78,7 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
     {
         var staffQuery = (await GetDbSetAsync())
             .WhereIf(!string.IsNullOrWhiteSpace(filter), x =>
-                x.Code.Contains(filter) || x.Name.Contains(filter) || x.SurName.Contains(filter) ||
+                x.Code.Contains(filter) || x.Name.Contains(filter) || x.Surname.Contains(filter) ||
                 x.CodeName.Contains(filter) ||
                 x.Email.Contains(filter) || x.Address.Contains(filter) || x.RadioCode.Contains(filter) ||
                 x.ContactNumber.Contains(filter)
@@ -86,7 +86,7 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
                 GetDbContextAsync().Result.VayuRoles.Any(r => r.Id == x.RoleId && r.Name.Contains(filter)))
             .WhereIf(!string.IsNullOrWhiteSpace(code), x => x.Code.Contains(code))
             .WhereIf(!string.IsNullOrWhiteSpace(name), x => x.Name.Contains(name))
-            .WhereIf(!string.IsNullOrWhiteSpace(surName), x => x.SurName.Contains(surName))
+            .WhereIf(!string.IsNullOrWhiteSpace(surName), x => x.Surname.Contains(surName))
             .WhereIf(!string.IsNullOrWhiteSpace(codeName), x => x.CodeName.Contains(codeName))
             .WhereIf(!string.IsNullOrWhiteSpace(email), x => x.Email.Contains(email))
             .WhereIf(!string.IsNullOrWhiteSpace(address), x => x.Address.Contains(address))

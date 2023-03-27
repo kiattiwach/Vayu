@@ -9,7 +9,7 @@ public class StaffFilterDto : PagedAndSortedResultRequestDto
     [CanBeNull] public string Filter { get; set; }
     [CanBeNull]public string Code { get; set; }
     [CanBeNull]public string Name { get; set; }
-    [CanBeNull] public string SurName { get; set; }
+    [CanBeNull] public string Surname { get; set; }
     [CanBeNull]public string CodeName { get; set; }
     [CanBeNull]public string Email { get; set; }
     [CanBeNull]public string Address { get; set; }

@@ -30,6 +30,7 @@ export class StaffComponent implements OnInit {
 
   codeControl: FormControl;
   nameControl: FormControl;
+  surnameControl: FormControl;
   codeNameControl: FormControl;
   emailControl: FormControl;
   addressControl: FormControl;
@@ -71,6 +72,7 @@ export class StaffComponent implements OnInit {
   buildForm() {
     this.codeControl=  new FormControl(this.selectStaff.code || null,[Validators.required]);
     this.nameControl=  new FormControl(this.selectStaff.name || null,[Validators.required]);
+    this.surnameControl=  new FormControl(this.selectStaff.surname || null,[Validators.required]);
     this.codeNameControl=  new FormControl(this.selectStaff.codeName || null,[Validators.required]);
     this.emailControl=  new FormControl(this.selectStaff.email || null,[Validators.required, Validators.pattern(this.emailPattern)]);
     this.addressControl=  new FormControl(this.selectStaff.address || null,[]);
@@ -88,6 +90,7 @@ export class StaffComponent implements OnInit {
     this.form = this.fb.group({
       code: this.codeControl,
       name: this.nameControl,
+      surname: this.surnameControl,
       codeName: this.codeNameControl,
       email: this.emailControl,
       address: this.addressControl,

@@ -66,12 +66,12 @@ public class StaffService : VayuAppService, IStaffService
     [Authorize(VayuPermissions.Staffs.Default)]
     public async Task<PagedResultDto<StaffWithNavigatePropertiesDto>> GetListAsync(StaffFilterDto input)
     {
-        var count = await _staffRepository.GetCountAsync(input.Filter, input.Code, input.Name, input.SurName, input.CodeName,
+        var count = await _staffRepository.GetCountAsync(input.Filter, input.Code, input.Name, input.Surname, input.CodeName,
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
             input.ContactPersonNumber, input.Line, input.Facebook,
             input.MinStartDate, input.MaxStartDate, input.MinPassAssessmentDate, input.MaxPassAssessmentDate,
             input.RoleId);
-        var items = await _staffRepository.GetListAsync(input.Filter, input.Code, input.Name, input.SurName, input.CodeName,
+        var items = await _staffRepository.GetListAsync(input.Filter, input.Code, input.Name, input.Surname, input.CodeName,
             input.Email, input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson,
             input.ContactPersonNumber, input.Line, input.Facebook,
             input.MinStartDate, input.MaxStartDate, input.MinPassAssessmentDate, input.MaxPassAssessmentDate,
@@ -136,7 +136,7 @@ public class StaffService : VayuAppService, IStaffService
         var staff = await _staffRepository.GetAsync(input.Id);
         staff.Code = input.Code;
         staff.Name = input.Name;
-        staff.SurName = input.Surname;
+        staff.Surname = input.Surname;
         staff.CodeName = input.CodeName;
         staff.Email = input.Email;
         staff.Address = input.Address;

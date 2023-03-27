@@ -304,12 +304,17 @@
   </div>
 </div>
 
-<abp-modal [(visible)]="isModalOpen">
+<abp-modal [(visible)]="isModalOpen" [options]="options">
   <ng-template #abpHeader>
-    <h3>{{ (selectedTask?.id ? '::Edit' :'::NewStaff') | abpLocalization }}</h3>
+    <h3>{{ (selectedTask?.id ? '::Edit' :'::NewTask') | abpLocalization }}</h3>
   </ng-template>
 
   <ng-template #abpBody>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab label="First">Content 1</mat-tab>
+      <mat-tab label="Second">Content 2</mat-tab>
+      <mat-tab label="Third">Content 3</mat-tab>
+    </mat-tab-group>
     <!--<form [formGroup]="form" (ngSubmit)="save()" class="row gap-3">
       <div class="form-group">
         <label for="roleId">{{ '::Role'| abpLocalization}}</label><span> * </span>
@@ -403,7 +408,7 @@
       {{ '::Close' | abpLocalization }}
     </button>
 
-    <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+    <button class="btn btn-primary" (click)="save()" [disabled]="form?.invalid">
       <i class="fa fa-check mr-1"></i>
       {{ '::Save' | abpLocalization }}
     </button>

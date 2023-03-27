@@ -27,7 +27,8 @@ function configureRoutes(routesService: RoutesService) {
         name:'::Menu:Setting',
         iconClass:'fas fa-cogs',
         order:3,
-        layout: eLayoutType.application
+        layout: eLayoutType.application,
+        requiredPolicy: 'Vayu.Settings'
       },
       {
         path: '/task-types',
@@ -43,6 +44,7 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-user-cog',
         parentName: '::Menu:Setting',
         layout: eLayoutType.application,
+        requiredPolicy: 'Vayu.Settings',
         order:2
       },
       {

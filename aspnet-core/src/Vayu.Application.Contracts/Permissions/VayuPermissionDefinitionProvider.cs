@@ -9,7 +9,9 @@ public class VayuPermissionDefinitionProvider : PermissionDefinitionProvider
     public override void Define(IPermissionDefinitionContext context)
     {
         var vayuGroup = context.AddGroup(VayuPermissions.GroupName);
-     
+
+        vayuGroup.AddPermission(VayuPermissions.Setting.Default, L("Permission:Settings"));
+
         var taskTypePermission = vayuGroup.AddPermission(VayuPermissions.TaskTypes.Default, L("Permission:TaskTypes"));
         taskTypePermission.AddChild(VayuPermissions.TaskTypes.Create, L("Permission:TaskTypes.Create"));
         taskTypePermission.AddChild(VayuPermissions.TaskTypes.Edit, L("Permission:TaskTypes.Edit"));
