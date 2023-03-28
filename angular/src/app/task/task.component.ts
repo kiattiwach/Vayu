@@ -10,9 +10,10 @@ import {
   TaskService,
   TaskWithNavigatePropertiesDto
 } from "@proxy/tasks";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {Confirmation} from "@abp/ng.theme.shared";
+import {StaffDto} from "@proxy/staffs";
 
 @Component({
   selector: 'app-task',
@@ -28,10 +29,23 @@ export class TaskComponent implements OnInit {
   selectedTask = {} as TaskDto;
   isModalOpen = false;
   form: FormGroup;
+  formTeamMember: FormGroup;
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
   options: NgbModalOptions;
   isDisplayAddTeamMember: boolean;
+  taskTypeIdControl: FormControl;
+  statusControl: FormControl;
+  descriptionControl: FormControl;
+  createDateTimeControl: FormControl;
+  completeDateTimeControl: FormControl;
+  noteControl: FormControl;
+  leaderIdControl: FormControl;
+  contactPersonControl: FormControl;
+  contactNumberControl: FormControl;
+  teamMemberIdsControl: FormControl;
+  teamMembers: StaffDto[] = [];
+  teamMemberSelected: StaffDto;
 
     constructor(public readonly list: ListService,
                 public taskService: TaskService,
@@ -57,7 +71,29 @@ export class TaskComponent implements OnInit {
   }
 
   buildForm() {
+    this.taskTypeIdControl = new FormControl(this.selectedTask.taskTypeId || null, [Validators.required]);
+    this.statusControl = new FormControl(this.selectedTask.status || null, [Validators.required]);
+    this.descriptionControl = new FormControl(this.selectedTask.description || null, [Validators.required]);
+    this.createDateTimeControl = new FormControl(this.selectedTask.createDateTime ? new Date(this.selectedTask.createDateTime) : null, [Validators.required]);
+    this.completeDateTimeControl = new FormControl(this.selectedTask.completeDateTime ? new Date(this.selectedTask.completeDateTime) : null, [Validators.required]);
+    this.noteControl = new FormControl(this.selectedTask.note || null);
+    this.leaderIdControl = new FormControl(this.selectedTask.leaderId || null, [Validators.required]);
+    this.contactPersonControl = new FormControl(this.selectedTask.contactPerson || null);
+    this.contactNumberControl = new FormControl(this.selectedTask.contactNumber || null, [Validators.pattern(this.phonePattern)]);
+    this.teamMemberIdsControl = new FormControl(this.selectedTask.teamMemberIds || null, [Validators.required]);
 
+    this.form = this.fb.group({
+      taskTypeId: this.taskTypeIdControl,
+      status: this.statusControl,
+      description: this.descriptionControl,
+      createDateTime: this.createDateTimeControl,
+      completeDateTime: this.completeDateTimeControl,
+      note: this.noteControl,
+      leaderId: this.leaderIdControl,
+      contactPerson: this.contactPersonControl,
+      contactNumber: this.contactPersonControl,
+      teamMemberIds: this.teamMemberIdsControl
+    });
   }
 
   edit(id: string){
@@ -101,6 +137,7 @@ export class TaskComponent implements OnInit {
   }
 
   addTeamMember(){
-      this.isDisplayAddTeamMember = !this.isDisplayAddTeamMember;
+    this.teamMembers.push(this.teamMemberSelected);
   }
+
 }

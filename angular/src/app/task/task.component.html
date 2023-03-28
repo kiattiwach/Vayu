@@ -321,25 +321,25 @@
                 id="TaskTypeId"
                 autofocus="true"
                 [getFn]="taskService.getTaskTypeLookup"
-                [formControl]="" >
+                [formControl]="taskTypeIdControl" >
               </abp-lookup-select>
             </div>
           </div>
           <div class="form-group">
             <label for="Description">{{ '::Description'| abpLocalization}}</label><span> * </span>
-            <input type="text" id="Description" class="form-control" [formControl]="" />
+            <input type="text" id="Description" class="form-control" [formControl]="descriptionControl" />
           </div>
           <div class="form-group">
             <label for="Note">{{ '::Note'| abpLocalization}}</label><span> * </span>
-            <textarea rows="3" style="resize: none" aria-multiline="true" id="Note" class="form-control" [formControl]="" ></textarea>
+            <textarea rows="3" style="resize: none" aria-multiline="true" id="Note" class="form-control" [formControl]="noteControl" ></textarea>
           </div>
           <div class="form-group">
             <label for="ContactPerson">{{ '::ContactPerson'| abpLocalization}}</label><span> * </span>
-            <input type="text" id="ContactPerson" class="form-control" [formControl]="" />
+            <input type="text" id="ContactPerson" class="form-control" [formControl]="contactPersonControl" />
           </div>
           <div class="form-group">
             <label for="ContactNumber">{{ '::ContactNumber'| abpLocalization}}</label><span> * </span>
-            <input type="text" id="ContactNumber" class="form-control" [formControl]="" />
+            <input type="text" id="ContactNumber" class="form-control" [formControl]="contactNumberControl" />
           </div>
         </mat-tab>
         <mat-tab label="{{'::TaskStaffDetail' | abpLocalization}}">
@@ -350,7 +350,7 @@
                 id="Leader"
                 autofocus="true"
                 [getFn]="taskService.getStaffLookup"
-                [formControl]="" >
+                [formControl]="leaderIdControl" >
               </abp-lookup-select>
             </div>
           </div>
@@ -361,7 +361,7 @@
               <mat-list-item role="listitem">Item 2</mat-list-item>
               <mat-list-item role="listitem">Item 3</mat-list-item>
             </mat-list>
-            <button mat-flat-button color="primary" (click)="addTeamMember()"><i class="fas fa-user-plus"></i></button>
+            <button mat-flat-button color="primary" (click)="isDisplayAddTeamMember = true"><i class="fas fa-user-plus"></i></button>
           </div>
         </mat-tab>
       </mat-tab-group>
@@ -383,11 +383,29 @@
 
 <abp-modal [(visible)] = "isDisplayAddTeamMember">
   <ng-template #abpHeader>
+    <h4>{{ '::StaffSelection' | abpLocalization }}</h4>
   </ng-template>
   <ng-template #abpBody>
-    TEST
+    <div [formGroup]="formTeamMember" class="row gap-3">
+      <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Choose an option</mat-label>
+          <mat-select *ngFor="let staff of this.taskService.getStaffForTeamMemberLookup(this.teamMembers) | async"
+            [(ngModel)]="teamMemberSelected">
+            <mat-option value="option1">{{staff.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
   </ng-template>
   <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" abpClose (click)="isDisplayAddTeamMember = false">
+      {{ '::Close' | abpLocalization }}
+    </button>
 
+    <button class="btn btn-primary" (click)="addTeamMember()" [disabled]="formTeamMember?.invalid">
+      <i class="fa fa-check mr-1"></i>
+      {{ '::Add' | abpLocalization }}
+    </button>
   </ng-template>
 </abp-modal>

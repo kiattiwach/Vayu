@@ -31,7 +31,7 @@ public class TaskCreateUpdateDto : EntityDto<Guid>, IValidatableObject
     public string Note { get; set; }
 
     [Required]
-    public StaffDto Leader { get; set; }
+    public Guid LeaderId { get; set; }
 
     [DynamicMaxLength(typeof(TaskConsts), nameof(TaskConsts.MaxContactPersonLength))]
     public string ContactPerson { get; set; }
@@ -39,7 +39,7 @@ public class TaskCreateUpdateDto : EntityDto<Guid>, IValidatableObject
     [DynamicMaxLength(typeof(TaskConsts), nameof(TaskConsts.MaxContactPersonNumberLength))]
     public string ContactNumber { get; set; }
 
-    public List<StaffDto> TeamMemberIds { get; set; }
+    public List<Guid> TeamMemberIds { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

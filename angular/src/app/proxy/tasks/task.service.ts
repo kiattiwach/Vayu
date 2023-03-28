@@ -3,6 +3,7 @@ import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 import type { LookupDto, LookupRequestDto } from '../shared/models';
+import type { StaffDto } from '../staffs/models';
 
 @Injectable({
   providedIn: 'root',
@@ -40,6 +41,15 @@ export class TaskService {
     this.restService.request<any, PagedResultDto<TaskWithNavigatePropertiesDto>>({
       method: 'POST',
       url: `/api/task/get-list${input}`,
+      body: input,
+    },
+    { apiName: this.apiName });
+  
+
+  getStaffForTeamMemberLookup = (input: StaffDto[]) =>
+    this.restService.request<any, StaffDto[]>({
+      method: 'POST',
+      url: `/api/task/get-staff-for-team-member-lookup/${input}`,
       body: input,
     },
     { apiName: this.apiName });

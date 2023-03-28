@@ -12,6 +12,8 @@ import {AdvancedEntityFiltersModule, CommercialUiModule} from "@volo/abp.commerc
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatButtonModule} from "@angular/material/button";
 import {MatListModule} from "@angular/material/list";
+import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
 
 
 @NgModule({
@@ -32,7 +34,9 @@ import {MatListModule} from "@angular/material/list";
     NgbDatepickerModule,
     MatTabsModule,
     MatButtonModule,
-    MatListModule
+    MatListModule,
+    MatInputModule,
+    MatSelectModule
   ]
 })
 export class TaskModule { }

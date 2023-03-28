@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Vayu.Shared;
+using Vayu.Staffs;
 using Vayu.Tasks;
 using Volo.Abp.Application.Dtos;
 
@@ -57,5 +59,11 @@ public class TaskController : VayuController, ITaskService
     public Task<PagedResultDto<LookupDto<Guid>>> GetStaffLookupAsync(LookupRequestDto input)
     {
         return _taskService.GetStaffLookupAsync(input);
+    }
+
+    [HttpPost("get-staff-for-team-member-lookup/{input}")]
+    public Task<List<StaffDto>> GetStaffForTeamMemberLookupAsync(List<StaffDto> input)
+    {
+        return _taskService.GetStaffForTeamMemberLookupAsync(input);
     }
 }

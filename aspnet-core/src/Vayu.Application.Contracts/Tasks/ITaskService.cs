@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Vayu.Shared;
+using Vayu.Staffs;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
@@ -15,4 +17,5 @@ public interface ITaskService : IApplicationService
     Task DeleteAsync(Guid id);
     Task<PagedResultDto<LookupDto<Guid>>> GetTaskTypeLookupAsync(LookupRequestDto input);
     Task<PagedResultDto<LookupDto<Guid>>> GetStaffLookupAsync(LookupRequestDto input);
+    Task<List<StaffDto>> GetStaffForTeamMemberLookupAsync(List<StaffDto> input);
 }

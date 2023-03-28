@@ -46,12 +46,10 @@ public class TaskService : VayuAppService, ITaskService
     private async Task<TaskDto> ToDto(Task task)
     {
         var taskDto = ObjectMapper.Map<Task, TaskDto>(task);
-        var leader = await _staffRepository.GetAsync(task.LeaderId);
-        var teamMember = (await _taskStaffRepository.GetListAsync(task.Id))?
-            .Select(x => _staffRepository.GetAsync(x.StaffId).Result).ToList();
+        var teamMemberIds = (await _taskStaffRepository.GetListAsync(task.Id))?
+            .Select(x => _staffRepository.GetAsync(x.StaffId).Result.Id).ToList();
 
-        taskDto.Leader = ObjectMapper.Map<Staff, StaffDto>(leader);
-        taskDto.TeamMembers = ObjectMapper.Map<List<Staff>, List<StaffDto>>(teamMember);
+        taskDto.TeamMemberIds = teamMemberIds;
         return taskDto;
     }
 
@@ -75,11 +73,11 @@ public class TaskService : VayuAppService, ITaskService
     public async Task<TaskDto> CreateAsync(TaskCreateUpdateDto input)
     {
         var result = await _taskRepository.InsertAsync(new Task(input.Description, input.TaskTypeId, input.Status,
-            input.CreateDateTime, input.CompleteDateTime, input.Note, input.Leader.Id, input.ContactPerson,input.ContactNumber));
+            input.CreateDateTime, input.CompleteDateTime, input.Note, input.LeaderId, input.ContactPerson,input.ContactNumber));
 
         await _taskStaffRepository.InsertManyAsync(input.TeamMemberIds.Select(s => new TaskStaff()
         {
-            StaffId = s.Id,
+            StaffId = s,
             TaskId = result.Id
         }));
 
@@ -99,20 +97,20 @@ public class TaskService : VayuAppService, ITaskService
         task.CreateDateTime = input.CreateDateTime;
         task.CompleteDateTime = input.CompleteDateTime;
         task.Note = input.Note;
-        task.LeaderId = input.Leader.Id;
+        task.LeaderId = input.LeaderId;
         task.ContactPerson = input.ContactPerson;
         task.ContactNumber = input.ContactNumber;
         
         var result = await _taskRepository.UpdateAsync(task);
         
         var taskStaffs = await _taskStaffRepository.GetListAsync(taskId:input.Id);
-        var toDelete = taskStaffs.Where(x => input.TeamMemberIds.All(staff => staff.Id != x.StaffId));
+        var toDelete = taskStaffs.Where(x => input.TeamMemberIds.All(id => id != x.StaffId));
         await _taskStaffRepository.DeleteManyAsync(toDelete);
 
-        var toInsert = input.TeamMemberIds.Where(staff => taskStaffs.All(x => x.StaffId != staff.Id))
+        var toInsert = input.TeamMemberIds.Where(id => taskStaffs.All(x => x.StaffId != id))
             .Select(s => new TaskStaff()
             {
-                StaffId = s.Id,
+                StaffId = s,
                 TaskId = input.Id
             });
         await _taskStaffRepository.InsertManyAsync(toInsert);
@@ -153,5 +151,15 @@ public class TaskService : VayuAppService, ITaskService
             .WhereIf(!input.Filter.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Filter));
         var items = await query.PageBy(input.SkipCount, input.MaxResultCount).ToDynamicListAsync<Staff>();
         return new PagedResultDto<LookupDto<Guid>>(items.Count, ObjectMapper.Map<List<Staff>, List<LookupDto<Guid>>>(items));
+    }
+
+    public async Task<List<StaffDto>> GetStaffForTeamMemberLookupAsync(List<StaffDto> input)
+    {
+        var staffIds = input?.Select(x => x.Id);
+        var query = (await _staffRepository.GetQueryableAsync())
+            .WhereIf(staffIds != null, x => staffIds.Contains(x.Id));
+        
+        var items = query.ToList();
+        return ObjectMapper.Map<List<Staff>, List<StaffDto>>(items);
     }
 }

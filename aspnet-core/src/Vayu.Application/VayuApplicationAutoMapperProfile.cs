@@ -17,12 +17,11 @@ public class VayuApplicationAutoMapperProfile : Profile
         CreateMap<Role, LookupDto<Guid>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));
         CreateMap<Staff, StaffDto>();
         CreateMap<TaskType, TaskTypeDto>();
-        CreateMap<Task, TaskDto>(MemberList.Destination)
-            .Ignore(x => x.Leader)
-            .Ignore(x => x.TeamMembers);
+        CreateMap<Task, TaskDto>(MemberList.Destination);
         CreateMap<TaskWithNavigateProperties, TaskWithNavigatePropertiesDto>()
             .ForMember(x => x.Staff, option => option.MapFrom(s => s.Reader));
         CreateMap<TaskType, LookupDto<Guid>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));
         CreateMap<Staff, LookupDto<Guid>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));
+        CreateMap<Staff, LookupDto<StaffDto>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));
     }
 }

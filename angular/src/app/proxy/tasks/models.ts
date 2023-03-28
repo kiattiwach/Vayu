@@ -1,7 +1,7 @@
 import type { EntityDto, FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { Status } from './status.enum';
-import type { StaffDto } from '../staffs/models';
 import type { TaskTypeDto } from '../task-types/models';
+import type { StaffDto } from '../staffs/models';
 
 export interface TaskCreateUpdateDto extends EntityDto<string> {
   taskTypeId: string;
@@ -10,10 +10,10 @@ export interface TaskCreateUpdateDto extends EntityDto<string> {
   createDateTime: string;
   completeDateTime?: string;
   note?: string;
-  leader: StaffDto;
+  leaderId: string;
   contactPerson?: string;
   contactNumber?: string;
-  teamMemberIds: StaffDto[];
+  teamMemberIds: string[];
 }
 
 export interface TaskDto extends FullAuditedEntityDto<string> {
@@ -23,10 +23,10 @@ export interface TaskDto extends FullAuditedEntityDto<string> {
   createDateTime?: string;
   completeDateTime?: string;
   note?: string;
-  leader: StaffDto;
+  leaderId?: string;
   contactPerson?: string;
   contactNumber?: string;
-  teamMembers: StaffDto[];
+  teamMemberIds: string[];
   concurrencyStamp?: string;
 }
 
