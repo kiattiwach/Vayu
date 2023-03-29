@@ -19,5 +19,5 @@ public interface IStaffService : IApplicationService
     Task DeleteAsync(Guid id);
 
     Task<PagedResultDto<LookupDto<Guid>>> GetRoleLookupAsync(LookupRequestDto input);
-
+    Task TestSendMail();
 }

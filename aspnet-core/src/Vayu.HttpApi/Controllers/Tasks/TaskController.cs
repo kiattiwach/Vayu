@@ -61,9 +61,9 @@ public class TaskController : VayuController, ITaskService
         return _taskService.GetStaffLookupAsync(input);
     }
 
-    [HttpPost("get-staff-for-team-member-lookup/{input}")]
-    public Task<List<StaffDto>> GetStaffForTeamMemberLookupAsync(List<StaffDto> input)
+    [HttpPost("get-team-lookup")]
+    public Task<List<StaffDto>> GetTeamLookupAsync([FromForm]List<Guid> ids)
     {
-        return _taskService.GetStaffForTeamMemberLookupAsync(input);
+        return _taskService.GetTeamLookupAsync(ids);
     }
 }

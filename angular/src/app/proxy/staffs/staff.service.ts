@@ -54,6 +54,14 @@ export class StaffService {
     { apiName: this.apiName });
   
 
+  testSendMail = () =>
+    this.restService.request<any, void>({
+      method: 'GET',
+      url: '/api/staff/test-send-mail',
+    },
+    { apiName: this.apiName });
+  
+
   update = (input: StaffCreateUpdateDto) =>
     this.restService.request<any, StaffDto>({
       method: 'POST',

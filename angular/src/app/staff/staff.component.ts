@@ -153,4 +153,8 @@ export class StaffComponent implements OnInit {
     else
       this.passAssessmentDateControl.setValue(null,{emitEvent: false});
   }
+
+  testSendMail() {
+    this.staffService.testSendMail().subscribe(() => alert('Send completed'), (error => {alert('Send uncompleted')}));
+  }
 }
