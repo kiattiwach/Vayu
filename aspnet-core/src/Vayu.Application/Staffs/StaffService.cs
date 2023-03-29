@@ -11,6 +11,8 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Net;
+using System.Net.Mail;
 using Microsoft.Extensions.Localization;
 using PasswordGenerator;
 using Vayu.Localization;
@@ -205,6 +207,22 @@ public class StaffService : VayuAppService, IStaffService
 
     public async Task TestSendMail()
     {
-        await _emailSender.SendAsync("kiattiwatt@hotmail.com", "Test", "Test - content", false);
+
+        SmtpClient smtpClient = new SmtpClient
+         {
+             Credentials = new NetworkCredential("kiattiwat.katanyuchanon@atom-outsource.co.th", "naotoe9*"),
+             Host = "smtp.office365.com",
+             Port = 587,
+             EnableSsl = true
+         };
+         await smtpClient.SendMailAsync(new MailMessage()
+         {
+             From = new MailAddress("kiattiwat.katanyuchanon@atom-outsource.co.th"),
+             Body = "TEST",
+             Subject = "TEST",
+             To = { new MailAddress("kiattiwatt@hotmail.com") }
+         });
+        await Task.CompletedTask;
+         //await _emailSender.SendAsync("kiattiwatt@hotmail.com", "Test", "Test - content", false);
     }
 }
