@@ -202,4 +202,9 @@ public class StaffService : VayuAppService, IStaffService
         return new PagedResultDto<LookupDto<Guid>>(items.Count,
             ObjectMapper.Map<List<Role>, List<LookupDto<Guid>>>(items));
     }
+
+    public async Task TestSendMail()
+    {
+        await _emailSender.SendAsync("kiattiwatt@hotmail.com", "Test", "Test - content", false);
+    }
 }

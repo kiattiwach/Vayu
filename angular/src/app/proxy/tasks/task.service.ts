@@ -46,15 +46,6 @@ export class TaskService {
     { apiName: this.apiName });
   
 
-  getStaffForTeamMemberLookup = (input: StaffDto[]) =>
-    this.restService.request<any, StaffDto[]>({
-      method: 'POST',
-      url: `/api/task/get-staff-for-team-member-lookup/${input}`,
-      body: input,
-    },
-    { apiName: this.apiName });
-  
-
   getStaffLookup = (input: LookupRequestDto) =>
     this.restService.request<any, PagedResultDto<LookupDto<string>>>({
       method: 'POST',
@@ -69,6 +60,14 @@ export class TaskService {
       method: 'POST',
       url: `/api/task/get-task-type-lookup/${input}`,
       body: input,
+    },
+    { apiName: this.apiName });
+  
+
+  getTeamLookup = (ids: string[]) =>
+    this.restService.request<any, StaffDto[]>({
+      method: 'POST',
+      url: '/api/task/get-team-lookup',
     },
     { apiName: this.apiName });
   

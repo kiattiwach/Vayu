@@ -52,4 +52,10 @@ public class StaffController : VayuController, IStaffService
     {
         return _staffService.GetRoleLookupAsync(input);
     }
+
+    [HttpGet("test-send-mail")]
+    public Task TestSendMail()
+    {
+        return _staffService.TestSendMail();
+    }
 }

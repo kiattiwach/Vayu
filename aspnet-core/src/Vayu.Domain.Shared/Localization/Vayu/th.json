@@ -102,6 +102,7 @@
     "Password": "รหัสผ่าน",
     "ClickHereToLogin": "คลิกที่นี่เพื่อเข้าสู่ระบบ {0}",
     "UserName": "ชื่อผู้ใช้",
+    "Surname": "นามสกุล",
 
     //Task
     "NewTaskShouldBeInitial": "สถานะของงานใหม่ต้องเป็น {0}",
@@ -112,6 +113,9 @@
     "NewTask": "งานใหม่",
     "TaskDetail": "รายละเอียดงาน",
     "TaskStaffDetail": "ผู้รับผิดชอบ",
-    "TeamMember": "ทีมงาน"
+    "TeamMember": "ทีมงาน",
+    "CreateDateTime": "เริ่มต้น",
+    "CompleteDateTime": "สิ้นสุด",
+    "Note": "บันทึกเพิ่มเติม"
   }
 }

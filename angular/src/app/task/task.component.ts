@@ -29,7 +29,6 @@ export class TaskComponent implements OnInit {
   selectedTask = {} as TaskDto;
   isModalOpen = false;
   form: FormGroup;
-  formTeamMember: FormGroup;
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
   options: NgbModalOptions;
@@ -46,6 +45,7 @@ export class TaskComponent implements OnInit {
   teamMemberIdsControl: FormControl;
   teamMembers: StaffDto[] = [];
   teamMemberSelected: StaffDto;
+  staffOptions = {} as StaffDto[];
 
     constructor(public readonly list: ListService,
                 public taskService: TaskService,
@@ -55,7 +55,7 @@ export class TaskComponent implements OnInit {
                 private permissionService: PermissionService) { }
 
   ngOnInit(): void {
-      this.options = { size:'xl' };
+      this.options = { size:'lg' };
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
     this.list.hookToQuery(streamCreator)?.subscribe((response) => this.tasks = response);
@@ -138,6 +138,13 @@ export class TaskComponent implements OnInit {
 
   addTeamMember(){
     this.teamMembers.push(this.teamMemberSelected);
+  }
+
+  openTeamMemberModal(){
+    this.taskService.getTeamLookup(this.teamMembers?.map(x => x.id)).subscribe(s => {
+      this.isDisplayAddTeamMember = true;
+      this.staffOptions = s;
+    })
   }
 
 }

@@ -261,6 +261,10 @@
       </div>
       <div class="text-end col col-md-6">
         <div class="text-lg-end pt-2">
+          <button id="TestSendMail" class="btn btn-primary me-3" type="button" (click)="testSendMail()">
+            <i class="fa fa-mail-bulk me-1"></i>
+            <span>Test Send Mail</span>
+          </button>
           <button *abpPermission="'Vayu.Staffs.Create'" id="create" class="btn btn-primary" type="button" (click)="create()">
             <i class="fa fa-plus me-1"></i>
             <span>{{ "::NewStaff" | abpLocalization }}</span>
