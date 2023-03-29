@@ -155,6 +155,6 @@ export class StaffComponent implements OnInit {
   }
 
   testSendMail() {
-    this.staffService.testSendMail().subscribe(() => alert('Send completed'), (error => {alert('Send uncompleted')}));
+    this.staffService.testSendMail().subscribe(() => alert('Send completed'), (error => {alert('Send uncompleted' + error.message)}));
   }
 }
