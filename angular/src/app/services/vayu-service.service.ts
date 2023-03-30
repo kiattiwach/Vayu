@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {Confirmation, ConfirmationService} from "@abp/ng.theme.shared";
 import {Observable} from "rxjs";
 import {LocalizationService} from "@abp/ng.core";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {snackBarConfig, snackBarErrorConfig} from "../shared/snack-bar-config";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,8 @@ export class VayuServiceService {
   private confirmationYesText: string;
   private confirmationNoText: string;
   constructor( private confirmation: ConfirmationService,
-               private localizationService: LocalizationService) {
+               private localizationService: LocalizationService,
+               private snackBar: MatSnackBar) {
     this.localizationService.get('::Yes').subscribe(s => this.confirmationYesText = s);
     this.localizationService.get('::No').subscribe(s => this.confirmationNoText = s);
   }
@@ -30,5 +33,12 @@ export class VayuServiceService {
       // iconTemplate : '<img src="custom-image-path.jpg" alt=""/>'
     };
     return this.confirmation.warn('::AreYouSureToDelete', title +' '+ name, options)
+  }
+
+  displaySnackBar(message: string, isError: boolean = false) {
+    let action: string;
+    this.localizationService.get(`::${message}`).subscribe(s => message = s);
+    this.localizationService.get('::Close').subscribe(s => action = s);
+    this.snackBar.open(message, action, isError ? snackBarErrorConfig : snackBarConfig);
   }
 }

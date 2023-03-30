@@ -11,16 +11,16 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Net;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Localization;
 using PasswordGenerator;
 using Vayu.Localization;
 using Volo.Abp;
 using Volo.Abp.Identity;
-using Volo.Abp.ObjectMapping;
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
-using Volo.Abp.Emailing;
+using MailKit.Security;
+using MimeKit;
+using MimeKit.Text;
+using Volo.Abp.Settings;
 
 namespace Vayu.Staffs;
 
@@ -32,7 +32,7 @@ public class StaffService : VayuAppService, IStaffService
     private readonly IRepository<IdentityUser, Guid> _identityRepository;
     private readonly IdentityUserManager _identityUserManager;
     private readonly IRepository<IdentityRole, Guid> _identityRoleRepository;
-    private readonly IEmailSender _emailSender;
+    private readonly EmailService _emailService;
     private readonly IPassword _password;
 
     public StaffService(IStaffRepository staffRepository, 
@@ -42,7 +42,7 @@ public class StaffService : VayuAppService, IStaffService
         IdentityUserManager identityUserManager,
         IPassword password,
         IRepository<IdentityRole, Guid> identityRoleRepository,
-        IEmailSender emailSender)
+        EmailService emailService)
 
     {
         _staffRepository = staffRepository;
@@ -51,7 +51,7 @@ public class StaffService : VayuAppService, IStaffService
         _identityRepository = identityRepository;
         _identityUserManager = identityUserManager;
         _identityRoleRepository = identityRoleRepository;
-        _emailSender = emailSender;
+        _emailService = emailService;
         _password = password.LengthRequired(8)
                             .IncludeUppercase()
                             .IncludeLowercase()
@@ -114,13 +114,12 @@ public class StaffService : VayuAppService, IStaffService
         await _identityUserManager.CreateAsync(identityUser, password, true);
         input.UserId = identityUser.Id;
 
-        var emailBody = $"{_stringLocalize["RegisterStaffInfo"]}<br>" + 
-                       $"{_stringLocalize["Name"]}: {input.Name} <br>" +
-                       $"{_stringLocalize["UserName"]}: {input.Email} <br>" +
-                       $"{_stringLocalize["Password"]}: {password} <br>" + "<br>" +
-                       $"<a href='https://www.skapp.at/Account/Login'{_stringLocalize["ClickHereToLogin {0}", VayuRemoteServiceConsts.ModuleName]}></a>";
+        var emailBody = $"{_stringLocalize["RegisterStaffInfo", input.Name, input.Surname]}<br>" +
+                        $"{_stringLocalize["UserName"]}: {input.Email} <br>" +
+                       $"{_stringLocalize["Password"]}: {password} <br>" + 
+                       $"<a href='https://www.google.co.th/'>{_stringLocalize["ClickHereToLogin {0}", VayuRemoteServiceConsts.ModuleName]}</a>";
 
-        await _emailSender.SendAsync(input.Email, _stringLocalize["RegisterMailSubject"], emailBody, true);
+        await _emailService.SendAsync(new List<string>() { input.Email }, _stringLocalize["CreateStaffMailSubject"], emailBody);
 
         var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name,input.Surname, input.CodeName, input.Email,
             input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson, input.ContactPersonNumber,
@@ -205,24 +204,32 @@ public class StaffService : VayuAppService, IStaffService
             ObjectMapper.Map<List<Role>, List<LookupDto<Guid>>>(items));
     }
 
-    public async Task TestSendMail()
+    public async Task TestSendMailAsync(string to)
     {
+        await _emailService.SendAsync(new List<string>() { to }, "Test mail service",
+            @" <button type=""button"">TEST</button>");
+    }
 
-        SmtpClient smtpClient = new SmtpClient
-         {
-             Credentials = new NetworkCredential("kiattiwat.katanyuchanon@atom-outsource.co.th", "naotoe9*"),
-             Host = "smtp.office365.com",
-             Port = 587,
-             EnableSsl = true
-         };
-         await smtpClient.SendMailAsync(new MailMessage()
-         {
-             From = new MailAddress("kiattiwat.katanyuchanon@atom-outsource.co.th"),
-             Body = "TEST",
-             Subject = "TEST",
-             To = { new MailAddress("kiattiwatt@hotmail.com") }
-         });
-        await Task.CompletedTask;
-         //await _emailSender.SendAsync("kiattiwatt@hotmail.com", "Test", "Test - content", false);
+    Task ExecuteSend(string to, string subject, string message)
+    {
+        // create message
+        var email = new MimeMessage();
+        email.Sender = MailboxAddress.Parse("vayu.app.service@gmail.com");
+        email.Sender.Name = "vayu service";
+        email.From.Add(email.Sender);
+        email.To.Add(MailboxAddress.Parse(to));
+        email.Subject = subject;
+        email.Body = new TextPart(TextFormat.Html) { Text = message };
+
+        // send email
+        using (var smtp = new SmtpClient())
+        {
+            smtp.Connect("smtp-relay.sendinblue.com", 587, SecureSocketOptions.Auto);
+            smtp.Authenticate("vayu.app.service@gmail.com", "MsqW9YXRU1ka6g3N");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+        }
+
+        return Task.FromResult(true);
     }
 }

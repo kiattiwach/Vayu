@@ -15,6 +15,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { APP_ROUTE_PROVIDER } from './route.provider';
 import { storeLocaleData } from '@abp/ng.core/locale';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 import(
   /* webpackChunkName: "_locale-your-locale-js"*/
   /* webpackMode: "eager" */
@@ -37,6 +38,7 @@ import(
     SettingManagementConfigModule.forRoot(),
     ThemeLeptonXModule.forRoot(),
     SideMenuLayoutModule.forRoot(),
+    MatSnackBarModule
   ],
   declarations: [AppComponent],
   providers: [APP_ROUTE_PROVIDER, {provide: SUPPRESS_UNSAVED_CHANGES_WARNING, useValue: true}],//todo - switch to true when found solution to overwrite general confirmation modal

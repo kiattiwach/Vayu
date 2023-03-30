@@ -21,6 +21,7 @@ export class RoleComponent implements OnInit {
   descriptionControl: FormControl;
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
+  snackBarMessage: string;
 
   constructor(public readonly list: ListService,
               private roleService: RoleService,
@@ -56,7 +57,16 @@ export class RoleComponent implements OnInit {
   delete(id: string, name: string) {
     this.vayuServiceService.displayConfirmDelete(this.confirmationTitle, name).subscribe((status) =>{
       if (status === Confirmation.Status.confirm) {
-        this.roleService.delete(id).subscribe(() => this.list.get());
+        let isError: boolean;
+        this.roleService.delete(id).subscribe(() => this.snackBarMessage = 'DeleteRoleComplete',
+          (error) => {
+            this.snackBarMessage = 'DeleteRoleFail';
+            isError = true;
+          },
+          () => {
+            this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
+            this.list.get()
+          });
       }
     });
   }
@@ -80,7 +90,14 @@ export class RoleComponent implements OnInit {
       ? this.roleService.update(updateDto)
       :this.roleService.create(this.form.value);
 
+    let isError: boolean;
     request.subscribe(() => {
+      this.snackBarMessage = this.selectRole.id ? 'EditRoleCompleted' : 'AddRoleCompleted';
+    }, (error) => {
+      this.snackBarMessage = `${this.selectRole.id ? 'EditRoleFail' : 'AddRoleFail'} ${error.message}`;
+      isError = true;
+    },() =>{
+      this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
       this.isModalOpen = false;
       this.form.reset();
       this.list.get();

@@ -46,6 +46,7 @@ export class TaskComponent implements OnInit {
   teamMembers: StaffDto[] = [];
   teamMemberSelected: StaffDto;
   staffOptions = {} as StaffDto[];
+  snackBarMessage: string
 
     constructor(public readonly list: ListService,
                 public taskService: TaskService,
@@ -104,6 +105,7 @@ export class TaskComponent implements OnInit {
     });
   }
 
+  //todo-remove
   delete(id: string, name: string) {
     this.vayuServiceService.displayConfirmDelete(this.confirmationTitle,name).subscribe((status) =>{
       if (status === Confirmation.Status.confirm) {
@@ -123,7 +125,14 @@ export class TaskComponent implements OnInit {
       ? this.taskService.update(updateDto)
       :this.taskService.create(this.form.value);
 
+    let isError: boolean;
     request.subscribe(() => {
+      this.snackBarMessage = this.selectedTask.id ? 'EditTaskCompleted' : 'AddTaskCompleted';
+    }, (error) => {
+      this.snackBarMessage = `${this.selectedTask.id ? 'EditTaskFail' : 'AddTaskFail'} ${error.message}`;
+      isError = true;
+    },() =>{
+      this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
       this.isModalOpen = false;
       this.form.reset();
       this.list.get();

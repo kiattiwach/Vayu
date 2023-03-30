@@ -54,10 +54,10 @@ export class StaffService {
     { apiName: this.apiName });
   
 
-  testSendMail = () =>
+  testSendMail = (to: string) =>
     this.restService.request<any, void>({
       method: 'GET',
-      url: '/api/staff/test-send-mail',
+      url: `/api/staff/test-send-mail/${to}`,
     },
     { apiName: this.apiName });
   

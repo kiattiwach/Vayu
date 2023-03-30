@@ -53,9 +53,9 @@ public class StaffController : VayuController, IStaffService
         return _staffService.GetRoleLookupAsync(input);
     }
 
-    [HttpGet("test-send-mail")]
-    public Task TestSendMail()
+    [HttpGet("test-send-mail/{to}")]
+    public Task TestSendMailAsync(string to)
     {
-        return _staffService.TestSendMail();
+        return _staffService.TestSendMailAsync(to);
     }
 }

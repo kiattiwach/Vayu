@@ -28,6 +28,7 @@ export class TaskTypeComponent implements OnInit {
   taskCategoryControl: FormControl;
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
+  snackBarMessage: string;
 
   constructor(public readonly list: ListService,
               public taskTypeService: TaskTypeService,
@@ -63,7 +64,16 @@ export class TaskTypeComponent implements OnInit {
   delete(id: string, name: string) {
     this.vayuServiceService.displayConfirmDelete(this.confirmationTitle,name).subscribe((status) =>{
       if (status === Confirmation.Status.confirm) {
-        this.taskTypeService.delete(id).subscribe(() => this.list.get());
+        let isError: boolean;
+        this.taskTypeService.delete(id).subscribe(() => this.snackBarMessage = 'DeleteTaskTypeComplete',
+          (error) => {
+            this.snackBarMessage = 'DeleteTaskTypeFail';
+            isError = true;
+          },
+          () => {
+            this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
+            this.list.get()
+          });
       }
     });
   }
@@ -87,7 +97,14 @@ export class TaskTypeComponent implements OnInit {
     ? this.taskTypeService.update(updateDto)
       :this.taskTypeService.create(this.form.value);
 
+    let isError: boolean;
     request.subscribe(() => {
+      this.snackBarMessage = this.selectTaskType.id ? 'EditTaskTypeCompleted' : 'AddTaskTypeCompleted';
+    }, (error) => {
+      this.snackBarMessage = `${this.selectTaskType.id ? 'EditTaskTypeFail' : 'AddTaskTypeFail'} ${error.message}`;
+      isError = true;
+    },() =>{
+      this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
       this.isModalOpen = false;
       this.form.reset();
       this.list.get();

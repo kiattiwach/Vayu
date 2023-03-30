@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
+import {ConfigStateService, ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {
@@ -44,15 +44,18 @@ export class StaffComponent implements OnInit {
   startDateControl: FormControl;
   passAssessmentDateControl: FormControl;
   copyStartDateControl: FormControl;
-
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
+  snackBarMessage: string;
+  isAdmin: boolean;
+
   constructor(public readonly list: ListService,
               public staffService: StaffService,
               private fb: FormBuilder,
               private vayuServiceService: VayuServiceService,
               private localizationService: LocalizationService,
-              private permissionService: PermissionService) { }
+              private permissionService: PermissionService,
+              private config: ConfigStateService) { }
 
   ngOnInit(): void {
     const streamCreator = (query) => this.staffService.getList({...query,
@@ -60,7 +63,8 @@ export class StaffComponent implements OnInit {
     this.list.hookToQuery(streamCreator)?.subscribe((response) => this.staffs = response);
 
     this.localizationService.get('::AreYouSureDeleteStaff').subscribe(s => this.confirmationTitle = s);
-    this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.Staffs.Edit') || this.permissionService.getGrantedPolicy('Vayu.Staffs.Delete')
+    this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.Staffs.Edit') || this.permissionService.getGrantedPolicy('Vayu.Staffs.Delete');
+    this.isAdmin = this.config.getDeep("currentUser.roles")?.some(x => x == 'admin');
   }
 
   create() {
@@ -117,8 +121,17 @@ export class StaffComponent implements OnInit {
 
   delete(id: string, name: string) {
     this.vayuServiceService.displayConfirmDelete(this.confirmationTitle,name).subscribe((status) =>{
+      let isError: boolean;
       if (status === Confirmation.Status.confirm) {
-        this.staffService.delete(id).subscribe(() => this.list.get());
+        this.staffService.delete(id).subscribe(() => this.snackBarMessage = 'DeleteStaffComplete',
+          (error) => {
+            this.snackBarMessage = 'DeleteStaffFail';
+            isError = true;
+          },
+          () => {
+            this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
+            this.list.get()
+          });
       }
     });
   }
@@ -134,7 +147,14 @@ export class StaffComponent implements OnInit {
       ? this.staffService.update(updateDto)
       :this.staffService.create(this.form.value);
 
+    let isError: boolean;
     request.subscribe(() => {
+      this.snackBarMessage = this.selectStaff.id ? 'EditStaffCompleted' : 'AddStaffCompleted';
+    }, (error) => {
+      this.snackBarMessage = `${this.selectStaff.id ? 'EditStaffFail' : 'AddStaffFail'} ${error.message}`;
+      isError = true;
+    },() =>{
+      this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
       this.isModalOpen = false;
       this.form.reset();
       this.list.get();
@@ -155,6 +175,11 @@ export class StaffComponent implements OnInit {
   }
 
   testSendMail() {
-    this.staffService.testSendMail().subscribe(() => alert('Send completed'), (error => {alert('Send uncompleted' + error.message)}));
+    const email = this.config.getDeep("currentUser.email");
+    if (email){
+      this.staffService.testSendMail(email)
+        .subscribe(() => this.vayuServiceService.displaySnackBar('TestSendMailComplete'),
+          (error => this.vayuServiceService.displaySnackBar('TestSendMailFail')));
+    }
   }
 }
