@@ -117,7 +117,7 @@ public class StaffService : VayuAppService, IStaffService
         var emailBody = GetRegistrationEmailBody(input.Name, input.Surname , input.Email, password);
         
         //todo - switch on for production
-        //await _emailService.SendAsync(new List<string>() { input.Email }, _stringLocalize["CreateStaffMailSubject"], emailBody);
+        await _emailService.SendAsync(new List<string>() { input.Email }, _stringLocalize["CreateStaffMailSubject"], emailBody);
 
         var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name,input.Surname, input.CodeName, input.Email,
             input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson, input.ContactPersonNumber,

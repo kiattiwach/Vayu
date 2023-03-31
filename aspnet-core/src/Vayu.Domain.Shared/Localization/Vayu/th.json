@@ -71,6 +71,13 @@
     "Enum:Status:InReview": "กำลังตรวจสอบ",
     "Enum:Status:Done": "เสร็จแล้ว",
     "Enum:Status:Cancel": "ยกเลิก",
+    "Enum:Status:0": "เริ่มต้น",
+    "Enum:Status:1": "เตรียมจะปฏิบัติ",
+    "Enum:Status:2": "กำลังจะปฏิบัติ",
+    "Enum:Status:3": "ถูกระงับ",
+    "Enum:Status:3": "กำลังตรวจสอบ",
+    "Enum:Status:4": "เสร็จแล้ว",
+    "Enum:Status:5": "ยกเลิก",
 
     //TaskType
     "NewTaskType": "เพิ่มประเภทงานใหม่",
@@ -98,6 +105,7 @@
     "DeleteRoleFail": "ลบหน้าที่/ตำแหน่ง สำเร็จ!",
 
     //Staff
+    "Staff": "เจ้าหน้าที่",
     "NewStaff": "เพิ่มเจ้าหน้าที่",
     "Code": "รหัส",
     "CodeName": "ชื่อรหัส",
@@ -145,6 +153,7 @@
     "NewTask": "งานใหม่",
     "TaskDetail": "รายละเอียดงาน",
     "TaskStaffDetail": "ผู้รับผิดชอบ",
+    "SelectTeamMember": "เลือกทีมงาน",
     "TeamMember": "ทีมงาน",
     "CreateDateTime": "เริ่มต้น",
     "CompleteDateTime": "สิ้นสุด",

@@ -72,8 +72,11 @@ public class TaskService : VayuAppService, ITaskService
     [Authorize(VayuPermissions.Tasks.Create)]
     public async Task<TaskDto> CreateAsync(TaskCreateUpdateDto input)
     {
+        input.CreateDateTime = DateTime.Now;
+        input.Status = Status.Initial;
+
         var result = await _taskRepository.InsertAsync(new Task(input.Description, input.TaskTypeId, input.Status,
-            input.CreateDateTime, input.CompleteDateTime, input.Note, input.LeaderId, input.ContactPerson,input.ContactNumber));
+            input.CreateDateTime, null, input.Note, input.LeaderId, input.ContactPerson,input.ContactNumber));
 
         await _taskStaffRepository.InsertManyAsync(input.TeamMemberIds.Select(s => new TaskStaff()
         {
@@ -81,8 +84,7 @@ public class TaskService : VayuAppService, ITaskService
             TaskId = result.Id
         }));
 
-        await AddTaskStatus(input);
-
+        await AddTaskStatus(result);
 
         return await ToDto(result);
     }
@@ -115,17 +117,17 @@ public class TaskService : VayuAppService, ITaskService
             });
         await _taskStaffRepository.InsertManyAsync(toInsert);
 
-        await AddTaskStatus(input);
+        await AddTaskStatus(result);
 
         return await ToDto(result);
     }
 
-    private async System.Threading.Tasks.Task AddTaskStatus(TaskCreateUpdateDto input)
+    private async System.Threading.Tasks.Task AddTaskStatus(Task task)
     {
-        await _taskStatusRepository.InsertAsync(new TaskStatus()
+        var result = await _taskStatusRepository.InsertAsync(new TaskStatus()
         {
-            TaskId = input.Id,
-            Status = input.Status
+            TaskId = task.Id,
+            Status = task.Status
         });
     }
 
@@ -156,7 +158,7 @@ public class TaskService : VayuAppService, ITaskService
     public async Task<List<StaffDto>> GetTeamLookupAsync(List<Guid> ids)
     {
         var query = (await _staffRepository.GetQueryableAsync())
-            .WhereIf(ids != null, x => ids.Contains(x.Id));
+            .WhereIf(ids.Any(), x => ids.Contains(x.Id));
         
         var items = query.ToList();
         return ObjectMapper.Map<List<Staff>, List<StaffDto>>(items);

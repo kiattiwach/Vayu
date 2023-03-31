@@ -11,7 +11,7 @@ import {NgbDatepickerModule, NgbDropdownModule} from "@ng-bootstrap/ng-bootstrap
 import {AdvancedEntityFiltersModule, CommercialUiModule} from "@volo/abp.commercial.ng.ui";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatButtonModule} from "@angular/material/button";
-import {MatListModule} from "@angular/material/list";
+import {MatListModule, MatSelectionList} from "@angular/material/list";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 

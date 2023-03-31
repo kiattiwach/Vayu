@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
 import {NgbDateAdapter, NgbDateNativeAdapter, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
-import { phonePattern } from '../shared/pattern';
+import {phonePattern} from '../shared/pattern';
 import {
-  statusOptions,
+  Status,
   TaskCreateUpdateDto,
   TaskDto,
   TaskFilterDto,
@@ -13,7 +13,7 @@ import {
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {Confirmation} from "@abp/ng.theme.shared";
-import {StaffDto} from "@proxy/staffs";
+import {StaffDto, StaffService} from "@proxy/staffs";
 
 @Component({
   selector: 'app-task',
@@ -32,7 +32,6 @@ export class TaskComponent implements OnInit {
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
   options: NgbModalOptions;
-  isDisplayAddTeamMember: boolean;
   taskTypeIdControl: FormControl;
   statusControl: FormControl;
   descriptionControl: FormControl;
@@ -43,9 +42,10 @@ export class TaskComponent implements OnInit {
   contactPersonControl: FormControl;
   contactNumberControl: FormControl;
   teamMemberIdsControl: FormControl;
+  selectStaffControl: FormControl = new FormControl<StaffDto>(null);
   teamMembers: StaffDto[] = [];
   teamMemberSelected: StaffDto;
-  staffOptions = {} as StaffDto[];
+  staffOptions: StaffDto[] = [];
   snackBarMessage: string
 
     constructor(public readonly list: ListService,
@@ -53,16 +53,22 @@ export class TaskComponent implements OnInit {
                 private fb: FormBuilder,
                 private vayuServiceService: VayuServiceService,
                 private localizationService: LocalizationService,
-                private permissionService: PermissionService) { }
+                private permissionService: PermissionService,
+                private staffService: StaffService) { }
 
   ngOnInit(): void {
-      this.options = { size:'lg' };
+      this.options = { size:'lg',  backdrop: 'static'};
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
     this.list.hookToQuery(streamCreator)?.subscribe((response) => this.tasks = response);
 
     this.localizationService.get('::AreYouSureDeleteTask').subscribe(s => this.confirmationTitle = s);
     this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.Tasks.Edit') || this.permissionService.getGrantedPolicy('Vayu.Tasks.Delete')
+    this.taskService.getTeamLookup([]).subscribe(x => this.staffOptions = x);
+
+    this.selectStaffControl.valueChanges.subscribe((x) => {
+      this.addTeamMember(x);
+    });
   }
 
   create() {
@@ -73,10 +79,10 @@ export class TaskComponent implements OnInit {
 
   buildForm() {
     this.taskTypeIdControl = new FormControl(this.selectedTask.taskTypeId || null, [Validators.required]);
-    this.statusControl = new FormControl(this.selectedTask.status || null, [Validators.required]);
+    this.statusControl = new FormControl(this.selectedTask.status || null);
     this.descriptionControl = new FormControl(this.selectedTask.description || null, [Validators.required]);
-    this.createDateTimeControl = new FormControl(this.selectedTask.createDateTime ? new Date(this.selectedTask.createDateTime) : null, [Validators.required]);
-    this.completeDateTimeControl = new FormControl(this.selectedTask.completeDateTime ? new Date(this.selectedTask.completeDateTime) : null, [Validators.required]);
+    this.createDateTimeControl = new FormControl(this.selectedTask.createDateTime ? new Date(this.selectedTask.createDateTime) : null);
+    this.completeDateTimeControl = new FormControl(this.selectedTask.completeDateTime ? new Date(this.selectedTask.completeDateTime) : null);
     this.noteControl = new FormControl(this.selectedTask.note || null);
     this.leaderIdControl = new FormControl(this.selectedTask.leaderId || null, [Validators.required]);
     this.contactPersonControl = new FormControl(this.selectedTask.contactPerson || null);
@@ -87,8 +93,8 @@ export class TaskComponent implements OnInit {
       taskTypeId: this.taskTypeIdControl,
       status: this.statusControl,
       description: this.descriptionControl,
-      createDateTime: this.createDateTimeControl,
-      completeDateTime: this.completeDateTimeControl,
+      //createDateTime: this.createDateTimeControl,
+      //completeDateTime: this.completeDateTimeControl,
       note: this.noteControl,
       leaderId: this.leaderIdControl,
       contactPerson: this.contactPersonControl,
@@ -119,10 +125,15 @@ export class TaskComponent implements OnInit {
       return;
     }
 
-    let updateDto = <TaskCreateUpdateDto>this.form.value;
-    updateDto.id = this.selectedTask.id;
+    if (!this.selectedTask.id) {
+      this.statusControl.setValue(Status.Initial, {emitEvent: false});
+      //this.createDateTimeControl.setValue(new Date(), {emitEvent: false});
+    }
+
+    let dto = <TaskCreateUpdateDto>this.form.value;
+    dto.id = this.selectedTask.id;
     const request = this.selectedTask.id
-      ? this.taskService.update(updateDto)
+      ? this.taskService.update(dto)
       :this.taskService.create(this.form.value);
 
     let isError: boolean;
@@ -145,15 +156,18 @@ export class TaskComponent implements OnInit {
     this.list.get();
   }
 
-  addTeamMember(){
-    this.teamMembers.push(this.teamMemberSelected);
+  addTeamMember(id: string){
+    if (id) {
+      this.staffService.get(id).subscribe((x) => {
+        this.teamMembers.push(x);
+        this.selectStaffControl.setValue(null,{emitEvent: false});
+        let ids = this.teamMemberIdsControl.value ?? [];
+        ids.push(id);
+        this.teamMemberIdsControl.setValue(ids, {emitEvent: false});
+      });
+    }
   }
-
-  openTeamMemberModal(){
-    this.taskService.getTeamLookup(this.teamMembers?.map(x => x.id)).subscribe(s => {
-      this.isDisplayAddTeamMember = true;
-      this.staffOptions = s;
-    })
+  teamChange(event: string[]) {
+    this.teamMembers = this.teamMembers.filter(x => event?.some(id => id == x.id));
   }
-
 }

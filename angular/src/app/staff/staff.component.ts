@@ -183,7 +183,4 @@ export class StaffComponent implements OnInit {
     }
   }
 
-  reSendRegistrationEmail(userId: string){
-
-  }
 }

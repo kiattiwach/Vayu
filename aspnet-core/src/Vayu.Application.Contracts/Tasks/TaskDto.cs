@@ -13,7 +13,7 @@ public class TaskDto : FullAuditedEntityDto<Guid>, IHasConcurrencyStamp
     public Status Status { get; set; }
     public string Description { get; set; }
     public DateTime CreateDateTime { get; set; }
-    public DateTime CompleteDateTime { get; set; }
+    public DateTime? CompleteDateTime { get; set; }
     public string Note { get; set; }
     public Guid LeaderId { get; set; }
     public string ContactPerson { get; set; }

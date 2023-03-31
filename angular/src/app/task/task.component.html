@@ -257,6 +257,11 @@
     </div>
   </div>
   <div class="card-body">
+    Group by create date, Action view task info, validate Leader, teamMember, Remove delete action, Filter
+    <br>
+    Color status
+    <br>
+    Change status by owner or creator
     <ngx-datatable [rows]="tasks?.items" [count]="tasks?.totalCount" [list]="list" default>
       <ngx-datatable-column *ngIf="isDisplayActionMenu"
                             [name]="'::Actions' | abpLocalization"
@@ -285,9 +290,13 @@
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column [name]="'::TaskType' | abpLocalization" prop="taskType.name"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="task.status"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="task.status">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ '::Enum:Status:' + row.task.status | abpLocalization }}
+        </ng-template>
+      </ngx-datatable-column>
       <ngx-datatable-column [name]="'::Description' | abpLocalization" prop="task.description"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Leader' | abpLocalization" prop="reader.name"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Leader' | abpLocalization" prop="staff.name"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::ContactPerson' | abpLocalization" prop="task.contactPerson"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::ContactNumber' | abpLocalization" prop="task.contactNumber"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Note' | abpLocalization" prop="task.note"></ngx-datatable-column>
@@ -353,16 +362,24 @@
                   id="Leader"
                   autofocus="true"
                   [getFn]="taskService.getStaffLookup"
-                  [formControl]="leaderIdControl" >
+                  [formControl]="leaderIdControl">
                 </abp-lookup-select>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group row gap-2">
               <label for="TeamMember">{{ '::TeamMember'| abpLocalization}}</label>
-              <mat-list id="TeamMember" role="list" *ngFor="let member of teamMembers">
-                <mat-list-item role="listitem">{{member.name}}</mat-list-item>
-              </mat-list>
-              <button mat-flat-button color="primary" (click)="openTeamMemberModal()"><i class="fas fa-user-plus"></i></button>
+              <mat-selection-list id="TeamMember" [formControl]="teamMemberIdsControl" (ngModelChange)="teamChange($event)">
+                <mat-list-option *ngFor="let member of teamMembers" [value]="member.id">
+                  {{member.name}}
+                </mat-list-option>
+              </mat-selection-list>
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{'::SelectTeamMember' | abpLocalization}}</mat-label>
+                <select matNativeControl [formControl]="selectStaffControl">
+                  <option [value]="null"></option>
+                  <option *ngFor="let staff of staffOptions" [value]="staff.id">{{staff.name}}</option>
+                </select>
+              </mat-form-field>
             </div>
           </form>
         </mat-tab>
@@ -370,41 +387,13 @@
   </ng-template>
 
   <ng-template #abpFooter>
-    <button type="button" class="btn btn-secondary" abpClose>
+    <button type="button" class="btn btn-secondary" abpClose (click)="teamMembers = []">
       {{ '::Close' | abpLocalization }}
     </button>
 
     <button class="btn btn-primary" (click)="save()" [disabled]="form?.invalid">
       <i class="fa fa-check mr-1"></i>
       {{ '::Save' | abpLocalization }}
-    </button>
-  </ng-template>
-</abp-modal>
-
-
-<abp-modal [(visible)] = "isDisplayAddTeamMember">
-  <ng-template #abpHeader>
-    <h4>{{ '::StaffSelection' | abpLocalization }}</h4>
-  </ng-template>
-  <ng-template #abpBody>
-    <div class="row gap-3">
-      <div class="form-group">
-        <mat-label>Choose an option</mat-label>
-        <mat-select *ngFor="let staff of staffOptions"
-                    [(ngModel)]="teamMemberSelected">
-          <mat-option value="option1">{{staff.name}}</mat-option>
-        </mat-select>
-      </div>
-    </div>
-  </ng-template>
-  <ng-template #abpFooter>
-    <button type="button" class="btn btn-secondary" abpClose (click)="isDisplayAddTeamMember = false">
-      {{ '::Close' | abpLocalization }}
-    </button>
-
-    <button class="btn btn-primary" (click)="addTeamMember()" [disabled]="teamMemberSelected != null">
-      <i class="fa fa-check mr-1"></i>
-      {{ '::Add' | abpLocalization }}
     </button>
   </ng-template>
 </abp-modal>

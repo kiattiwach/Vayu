@@ -57,14 +57,14 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .WhereIf(!filter.IsNullOrWhiteSpace(), x => x.Description.Contains(filter)
                 || x.Note.Contains(filter) || x.ContactPerson.Contains(filter) || x.ContactNumber.Contains(filter))
             .WhereIf(!description.IsNullOrWhiteSpace(), x => x.Description.Contains(description))
-            .WhereIf(taskTypeId != Guid.Empty, x => x.TaskTypeId == taskTypeId)
+            .WhereIf(taskTypeId != Guid.Empty && taskTypeId != null, x => x.TaskTypeId == taskTypeId)
             .WhereIf(status != null, x => x.Status == status)
             .WhereIf(minCreateDateTime != null, x => x.CreateDateTime > minCreateDateTime)
             .WhereIf(maxCreateDateTime != null, x => x.CreateDateTime < maxCreateDateTime)
             .WhereIf(minCompleteDateTime != null, x => x.CompleteDateTime > minCompleteDateTime)
             .WhereIf(maxCompleteDateTime != null, x => x.CreateDateTime < maxCompleteDateTime)
             .WhereIf(!note.IsNullOrWhiteSpace(), x => x.Note.Contains(note))
-            .WhereIf(leaderId != Guid.Empty, x => x.LeaderId == leaderId)
+            .WhereIf(leaderId != Guid.Empty && leaderId != null, x => x.LeaderId == leaderId)
             .WhereIf(!contactPerson.IsNullOrWhiteSpace(), x => x.ContactPerson.Contains(contactPerson))
             .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber));
 

@@ -25,7 +25,7 @@ public class Task : FullAuditedAggregateRoot<Guid>
     {
 
     }
-    public Task(string description, Guid taskTypeId, Status status, DateTime createDateTime, DateTime completeDateTime, string note, Guid leaderId, string contactPerson, string contactNumber)
+    public Task(string description, Guid taskTypeId, Status status, DateTime createDateTime, DateTime? completeDateTime, string note, Guid leaderId, string contactPerson, string contactNumber)
     {
         Description = description;
         TaskTypeId = taskTypeId;
