@@ -17,11 +17,11 @@
     "Permission:Staffs.Create": "เพิ่มเจ้าหน้าที่ใหม่",
     "Permission:Staffs.Edit": "แก้ไขเจ้าหน้าที่",
     "Permission:Staffs.Delete": "ลบเจ้าหน้าที่",
+    "Permission:Staffs.SendRegistrationEmail": "ส่งอีเมลล์ข้อมูลการลงทะเบียน",
     "Permission:Tasks": "เข้าถึงงาน",
     "Permission:Tasks.Create": "เพิ่มงานที่ใหม่",
     "Permission:Tasks.Edit": "แก้ไขงาน",
     "Permission:Tasks.Delete": "ลบงาน",
-
 
     "Welcome": "ยินดีต้อนรับ",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
@@ -44,6 +44,7 @@
     "CreateStaffMailSubject": "ยินดีต้อนรับสูระบบงานวายุ!",
     "TestSendMailComplete": "ทดสอลส่งอีเมลล์สำเร็จ",
     "TestSendMailFail": "ทดสอบส่งอีเมลล์ล้มเหลว",
+    "RegistrationEmailSubject": "ข้อมูลการลงทะเบียน",
 
     //Menu
     "Menu:Home": "หน้าหลัก",

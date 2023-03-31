@@ -114,18 +114,24 @@ public class StaffService : VayuAppService, IStaffService
         await _identityUserManager.CreateAsync(identityUser, password, true);
         input.UserId = identityUser.Id;
 
-        var emailBody = $"{_stringLocalize["RegisterStaffInfo", input.Name, input.Surname]}<br>" +
-                        $"{_stringLocalize["UserName"]}: {input.Email} <br>" +
-                       $"{_stringLocalize["Password"]}: {password} <br>" + 
-                       $"<a href='https://www.google.co.th/'>{_stringLocalize["ClickHereToLogin {0}", VayuRemoteServiceConsts.ModuleName]}</a>";
-
-        await _emailService.SendAsync(new List<string>() { input.Email }, _stringLocalize["CreateStaffMailSubject"], emailBody);
+        var emailBody = GetRegistrationEmailBody(input.Name, input.Surname , input.Email, password);
+        
+        //todo - switch on for production
+        //await _emailService.SendAsync(new List<string>() { input.Email }, _stringLocalize["CreateStaffMailSubject"], emailBody);
 
         var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name,input.Surname, input.CodeName, input.Email,
             input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson, input.ContactPersonNumber,
             input.Line, input.Facebook,input.StartDate, input.PassAssessmentDate, input.RoleId, input.UserId));
         
         return ObjectMapper.Map<Staff, StaffDto>(result);
+    }
+
+    private string GetRegistrationEmailBody(string name, string surname, string email, string password)
+    {
+        return $"{_stringLocalize["RegisterStaffInfo", name, surname]}<br>" +
+                    $"{_stringLocalize["UserName"]}: {email} <br>" +
+                    $"{_stringLocalize["Password"]}: {password} <br>" +
+                    $"<a href='https://www.google.co.th/'>{_stringLocalize["ClickHereToLogin {0}", VayuRemoteServiceConsts.ModuleName]}</a>";
     }
 
     [Authorize(VayuPermissions.Staffs.Edit)]
@@ -204,32 +210,10 @@ public class StaffService : VayuAppService, IStaffService
             ObjectMapper.Map<List<Role>, List<LookupDto<Guid>>>(items));
     }
 
+    [Authorize(VayuPermissions.Staffs.Default)]
     public async Task TestSendMailAsync(string to)
     {
         await _emailService.SendAsync(new List<string>() { to }, "Test mail service",
             @" <button type=""button"">TEST</button>");
-    }
-
-    Task ExecuteSend(string to, string subject, string message)
-    {
-        // create message
-        var email = new MimeMessage();
-        email.Sender = MailboxAddress.Parse("vayu.app.service@gmail.com");
-        email.Sender.Name = "vayu service";
-        email.From.Add(email.Sender);
-        email.To.Add(MailboxAddress.Parse(to));
-        email.Subject = subject;
-        email.Body = new TextPart(TextFormat.Html) { Text = message };
-
-        // send email
-        using (var smtp = new SmtpClient())
-        {
-            smtp.Connect("smtp-relay.sendinblue.com", 587, SecureSocketOptions.Auto);
-            smtp.Authenticate("vayu.app.service@gmail.com", "MsqW9YXRU1ka6g3N");
-            smtp.Send(email);
-            smtp.Disconnect(true);
-        }
-
-        return Task.FromResult(true);
     }
 }

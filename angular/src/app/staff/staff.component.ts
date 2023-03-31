@@ -182,4 +182,8 @@ export class StaffComponent implements OnInit {
           (error => this.vayuServiceService.displaySnackBar('TestSendMailFail')));
     }
   }
+
+  reSendRegistrationEmail(userId: string){
+
+  }
 }
