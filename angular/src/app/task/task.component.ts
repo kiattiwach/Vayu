@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
 import {NgbDateAdapter, NgbDateNativeAdapter, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import {phonePattern} from '../shared/pattern';
@@ -23,6 +23,8 @@ import {StaffDto, StaffService} from "@proxy/staffs";
     { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
 })
 export class TaskComponent implements OnInit {
+  @ViewChild('taskTable') table: any;
+  @ViewChild('myGroupHeader') groupHeader: any;
   phonePattern = phonePattern;
   filters = {} as TaskFilterDto;
   tasks = {items: [], totalCount: 0 } as PagedResultDto<TaskWithNavigatePropertiesDto>;
@@ -60,7 +62,12 @@ export class TaskComponent implements OnInit {
       this.options = { size:'lg',  backdrop: 'static'};
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
-    this.list.hookToQuery(streamCreator)?.subscribe((response) => this.tasks = response);
+    this.list.hookToQuery(streamCreator)?.subscribe((response) => {
+      this.tasks = response;
+      setTimeout(() => {
+        this.toggleGroup();
+      }, 1500);
+    });
 
     this.localizationService.get('::AreYouSureDeleteTask').subscribe(s => this.confirmationTitle = s);
     this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.Tasks.Edit') || this.permissionService.getGrantedPolicy('Vayu.Tasks.Delete')
@@ -169,5 +176,13 @@ export class TaskComponent implements OnInit {
   }
   teamChange(event: string[]) {
     this.teamMembers = this.teamMembers.filter(x => event?.some(id => id == x.id));
+  }
+
+  toggleExpandGroup(group) {
+    this.table.groupHeader.toggleExpandGroup(group);
+  }
+
+  toggleGroup() {
+    this.table.groupedRows.forEach(x => this.table.groupHeader.toggleExpandGroup(x));
   }
 }

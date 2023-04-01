@@ -163,6 +163,8 @@
     "EditTaskCompleted": "แก้ไขงาน สำเร็จ!",
     "EditTaskFail": "แก้ไขงาน ไม่สำเร็จ!",
     "DeleteTaskComplete": "ลบงาน สำเร็จ!",
-    "DeleteTaskFail": "ลบงาน สำเร็จ!"
+    "DeleteTaskFail": "ลบงาน สำเร็จ!",
+    "ReceiveDate": "วันที่ได้รับแจ้ง",
+    "ExpandCollapse": "ย่อ/ขยาย"
   }
 }

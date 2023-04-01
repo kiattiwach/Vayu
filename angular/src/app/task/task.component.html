@@ -257,12 +257,27 @@
     </div>
   </div>
   <div class="card-body">
-    Group by create date, Action view task info, validate Leader, teamMember, Remove delete action, Filter
-    <br>
-    Color status
-    <br>
-    Change status by owner or creator
-    <ngx-datatable [rows]="tasks?.items" [count]="tasks?.totalCount" [list]="list" default>
+    <i class="fa fa-toggle-on me-1" (click)="toggleGroup()" role="button">
+      <span class="ps-1">{{ "::ExpandCollapse" | abpLocalization }}</span>
+    </i>
+    <ngx-datatable [rows]="tasks?.items" [count]="tasks?.totalCount" [list]="list" default
+                   #taskTable
+                   [groupRowsBy]="'task.createDateTime'">
+      <!-- Group Header Template -->
+      <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
+        <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
+          <div class="ps-1">
+            <lu role="button"
+              [class.datatable-icon-right]="!expanded"
+              [class.datatable-icon-down]="expanded"
+              title="Expand/Collapse Group"
+              (click)="toggleExpandGroup(group)">
+              <b>{{'::ReceiveDate' | abpLocalization}}: {{group.value[0].task.createDateTime | date}}</b>
+            </lu>
+          </div>
+        </ng-template>
+      </ngx-datatable-group-header>
+
       <ngx-datatable-column *ngIf="isDisplayActionMenu"
                             [name]="'::Actions' | abpLocalization"
                             [maxWidth]="150"
