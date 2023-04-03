@@ -3,7 +3,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Vayu.Tasks;
 
-public interface ITaskStatusRepository : IBasicRepository<TaskStatus, Guid>
+public interface ITaskStatusRepository : IRepository<TaskStatus, Guid>
 {
     
 }

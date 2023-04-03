@@ -1,4 +1,4 @@
-import type { TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskWithNavigatePropertiesDto } from './models';
+import type { TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskViewDto, TaskWithNavigatePropertiesDto } from './models';
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
@@ -51,6 +51,15 @@ export class TaskService {
       method: 'POST',
       url: `/api/task/get-staff-lookup/${input}`,
       body: input,
+    },
+    { apiName: this.apiName });
+  
+
+  getTaskInfo = (id: string) =>
+    this.restService.request<any, TaskViewDto>({
+      method: 'GET',
+      url: '/api/task/get-task-info',
+      params: { id },
     },
     { apiName: this.apiName });
   

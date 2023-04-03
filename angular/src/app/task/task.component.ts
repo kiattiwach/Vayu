@@ -7,7 +7,7 @@ import {
   TaskCreateUpdateDto,
   TaskDto,
   TaskFilterDto,
-  TaskService,
+  TaskService, TaskViewDto,
   TaskWithNavigatePropertiesDto
 } from "@proxy/tasks";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -29,11 +29,12 @@ export class TaskComponent implements OnInit {
   filters = {} as TaskFilterDto;
   tasks = {items: [], totalCount: 0 } as PagedResultDto<TaskWithNavigatePropertiesDto>;
   selectedTask = {} as TaskDto;
-  isModalOpen = false;
+  isCreateUpdateModalOpen = false;
+  isViewModalOpen = false;
   form: FormGroup;
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
-  options: NgbModalOptions;
+  createUpdateOptions: NgbModalOptions;
   taskTypeIdControl: FormControl;
   statusControl: FormControl;
   descriptionControl: FormControl;
@@ -48,7 +49,8 @@ export class TaskComponent implements OnInit {
   teamMembers: StaffDto[] = [];
   teamMemberSelected: StaffDto;
   staffOptions: StaffDto[] = [];
-  snackBarMessage: string
+  snackBarMessage: string;
+  taskViewDto: TaskViewDto;
 
     constructor(public readonly list: ListService,
                 public taskService: TaskService,
@@ -59,7 +61,7 @@ export class TaskComponent implements OnInit {
                 private staffService: StaffService) { }
 
   ngOnInit(): void {
-      this.options = { size:'lg',  backdrop: 'static'};
+    this.createUpdateOptions = { size:'lg',  backdrop: 'static'};
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
     this.list.hookToQuery(streamCreator)?.subscribe((response) => {
@@ -81,7 +83,7 @@ export class TaskComponent implements OnInit {
   create() {
     this.selectedTask = {} as TaskDto;
     this.buildForm();
-    this.isModalOpen = true;
+    this.isCreateUpdateModalOpen = true;
   }
 
   buildForm() {
@@ -114,7 +116,14 @@ export class TaskComponent implements OnInit {
     this.taskService.get(id).subscribe(s => {
       this.selectedTask = s;
       this.buildForm();
-      this.isModalOpen  = true;
+      this.isCreateUpdateModalOpen  = true;
+    });
+  }
+
+  view(id: string){
+    this.taskService.getTaskInfo(id).subscribe((s) => {
+      this.isViewModalOpen = true;
+      this.taskViewDto = s;
     });
   }
 
@@ -151,7 +160,7 @@ export class TaskComponent implements OnInit {
       isError = true;
     },() =>{
       this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
-      this.isModalOpen = false;
+      this.isCreateUpdateModalOpen = false;
       this.form.reset();
       this.list.get();
     });

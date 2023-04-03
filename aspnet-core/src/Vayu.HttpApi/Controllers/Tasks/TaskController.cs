@@ -66,4 +66,10 @@ public class TaskController : VayuController, ITaskService
     {
         return _taskService.GetTeamLookupAsync(ids);
     }
+
+    [HttpGet("get-task-info")]
+    public Task<TaskViewDto> GetTaskInfoAsync(Guid id)
+    {
+        return _taskService.GetTaskInfoAsync(id);
+    }
 }

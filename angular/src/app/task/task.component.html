@@ -292,6 +292,10 @@
               <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
             </button>
             <div ngbDropdownMenu>
+              <button *abpPermission="'Vayu.Tasks'" ngbDropdownItem (click)="view(row.task.id)">
+                <i class="fa fa-tasks me-1"></i>
+                {{ '::View' | abpLocalization }}
+              </button>
               <button *abpPermission="'Vayu.Tasks.Edit'" ngbDropdownItem (click)="edit(row.task.id)">
                 <i class="fa fa-pen-alt me-1"></i>
                 {{ '::Edit' | abpLocalization }}
@@ -329,7 +333,7 @@
   </div>
 </div>
 
-<abp-modal [(visible)]="isModalOpen" [options]="options">
+<abp-modal [(visible)]="isCreateUpdateModalOpen" [options]="createUpdateOptions">
   <ng-template #abpHeader>
     <h3>{{ (selectedTask?.id ? '::Edit' :'::NewTask') | abpLocalization }}</h3>
   </ng-template>
@@ -410,5 +414,20 @@
       <i class="fa fa-check mr-1"></i>
       {{ '::Save' | abpLocalization }}
     </button>
+  </ng-template>
+</abp-modal>
+
+<abp-modal [(visible)]="isViewModalOpen">
+  <ng-template #abpHeader>
+    <h3>{{'::TaskDetail' | abpLocalization}}</h3>
+  </ng-template>
+  <ng-template #abpBody>
+    <mat-divider></mat-divider>
+    <div class="d-flex flex-column justify-content-start">
+      <ngx-htl-horizontal-timeline [items]="taskViewDto.statusTimeliness"></ngx-htl-horizontal-timeline>
+    </div>
+  </ng-template>
+  <ng-template #abpFooter>
+
   </ng-template>
 </abp-modal>

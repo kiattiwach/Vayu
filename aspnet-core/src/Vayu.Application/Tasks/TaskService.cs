@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Localization;
+using Org.BouncyCastle.Math.EC.Rfc7748;
+using Vayu.Localization;
 using Vayu.Permissions;
 using Vayu.Shared;
 using Vayu.Staffs;
 using Vayu.TaskTypes;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace Vayu.Tasks;
 
@@ -20,18 +26,21 @@ public class TaskService : VayuAppService, ITaskService
     private readonly ITaskStatusRepository _taskStatusRepository;
     private readonly IRepository<TaskType, Guid> _taskTypeRepository;
     private readonly IRepository<Staff, Guid> _staffRepository;
+    private readonly IStringLocalizer<VayuResource> _stringLocalize;
 
     public TaskService(ITaskRepository taskRepository,
         ITaskStaffRepository taskStaffRepository,
         ITaskStatusRepository taskStatusRepository,
         IRepository<TaskType, Guid> taskTypeRepository,
-        IRepository<Staff, Guid> staffRepository)
+        IRepository<Staff, Guid> staffRepository,
+        IStringLocalizer<VayuResource> stringLocalize)
     {
         _taskRepository = taskRepository;
         _taskStaffRepository = taskStaffRepository;
         _taskStatusRepository = taskStatusRepository;
         _taskTypeRepository = taskTypeRepository;
         _staffRepository = staffRepository;
+        _stringLocalize = stringLocalize;
     }
 
     [Authorize(VayuPermissions.Tasks.Default)]
@@ -162,5 +171,85 @@ public class TaskService : VayuAppService, ITaskService
         
         var items = query.ToList();
         return ObjectMapper.Map<List<Staff>, List<StaffDto>>(items);
+    }
+
+    public async Task<TaskViewDto> GetTaskInfoAsync(Guid id)
+    {
+        var task = await _taskRepository.GetAsync(id);
+        if (task == null)
+        {
+            return null;
+        }
+
+        var taskStaffIds = (await _taskStaffRepository.GetListAsync(taskId: task.Id))?.Select(s => s.StaffId);
+        var result = ObjectMapper.Map<Task,TaskViewDto>(task);
+        result.Leader = ObjectMapper.Map<Staff, StaffDto>(await _staffRepository.GetAsync(task.LeaderId));
+        result.TeamMembers =
+            ObjectMapper.Map<List<Staff>, List<StaffDto>>(
+                await _staffRepository.GetListAsync(x => taskStaffIds.Contains(x.Id)));
+
+
+        var taskStatus =
+            (await _taskStatusRepository.GetListAsync(x => x.TaskId == task.Id))
+            .OrderBy(x => x.CreationTime).ToList();
+        
+        result.StatusTimeliness = taskStatus
+            .Select((x, i) => new TaskStatusTimelineDto()
+            {
+                Title = x.Status.ToString(),
+                Active = i == taskStatus.Count - 1,
+                Label = GetLabel(i),
+                Icon = GetIcon(x.Status),
+                Color = GetColor(x.Status)
+            }).ToList();
+
+        return result;
+
+        string GetLabel(int index)
+        {
+            TimeSpan timeSpan;
+            if (taskStatus.Count == 1)
+            {
+                timeSpan = DateTime.Now.Subtract(taskStatus[index].CreationTime);
+            } else if (taskStatus.Count - 1 == index)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                timeSpan = taskStatus[index + 1].CreationTime.Subtract(taskStatus[index].CreationTime);
+            }
+
+            if (timeSpan.Duration().Days > 0)
+            {
+                return _stringLocalize["DurationDHM", timeSpan.Duration().Days, timeSpan.Duration().Hours,
+                    timeSpan.Duration().Minutes];
+            }
+            else
+            {
+                return _stringLocalize["DurationHM", timeSpan.Duration().Hours, timeSpan.Duration().Minutes];
+            }
+        }
+
+        string GetIcon(Status status)
+        {
+            var instance = Activator.CreateInstance(typeof(StatusIcon));
+
+            return instance?.GetType()
+                .GetProperty(status.ToString())?
+                .GetValue(instance)?
+                .ToString();
+        }
+
+        string GetColor(Status status)
+        {
+            var instance = Activator.CreateInstance(typeof(StatusColor));
+
+            var color = (Color)instance?.GetType()?
+                .GetProperty(status.ToString())?
+                .GetValue(instance);
+            
+            return ColorTranslator.ToHtml(color);
+        }
     }
 }

@@ -14,29 +14,31 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatListModule, MatSelectionList} from "@angular/material/list";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
+import {NgxHorizontalTimelineModule} from "ngx-horizontal-timeline";
 
 
 @NgModule({
   declarations: [
     TaskComponent
   ],
-  imports: [
-    CommonModule,
-    TaskRoutingModule,
-    LocalizationModule,
-    NgxDatatableModule,
-    BaseThemeSharedModule,
-    ReactiveFormsModule,
-    NgbDropdownModule,
-    CoreModule,
-    CommercialUiModule,
-    AdvancedEntityFiltersModule,
-    NgbDatepickerModule,
-    MatTabsModule,
-    MatButtonModule,
-    MatListModule,
-    MatInputModule,
-    MatSelectModule
-  ]
+    imports: [
+        CommonModule,
+        TaskRoutingModule,
+        LocalizationModule,
+        NgxDatatableModule,
+        BaseThemeSharedModule,
+        ReactiveFormsModule,
+        NgbDropdownModule,
+        CoreModule,
+        CommercialUiModule,
+        AdvancedEntityFiltersModule,
+        NgbDatepickerModule,
+        MatTabsModule,
+        MatButtonModule,
+        MatListModule,
+        MatInputModule,
+        MatSelectModule,
+        NgxHorizontalTimelineModule
+    ]
 })
 export class TaskModule { }

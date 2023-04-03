@@ -45,6 +45,36 @@ export interface TaskFilterDto extends PagedAndSortedResultRequestDto {
   contactNumber?: string;
 }
 
+export interface TaskStatusTimelineDto {
+  label?: string;
+  icon?: string;
+  url?: string;
+  routerLink?: string;
+  expanded?: boolean;
+  disable?: boolean;
+  visible?: boolean;
+  active?: boolean;
+  style: object;
+  color?: string;
+  styleClass?: string;
+  title?: string;
+  id?: string;
+}
+
+export interface TaskViewDto extends EntityDto<string> {
+  taskType: TaskTypeDto;
+  status?: Status;
+  description?: string;
+  createDateTime?: string;
+  completeDateTime?: string;
+  note?: string;
+  leader: StaffDto;
+  contactPerson?: string;
+  contactNumber?: string;
+  teamMembers: StaffDto[];
+  statusTimeliness: TaskStatusTimelineDto[];
+}
+
 export interface TaskWithNavigatePropertiesDto {
   task: TaskDto;
   taskType: TaskTypeDto;

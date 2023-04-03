@@ -18,4 +18,5 @@ public interface ITaskService : IApplicationService
     Task<PagedResultDto<LookupDto<Guid>>> GetTaskTypeLookupAsync(LookupRequestDto input);
     Task<PagedResultDto<LookupDto<Guid>>> GetStaffLookupAsync(LookupRequestDto input);
     Task<List<StaffDto>> GetTeamLookupAsync(List<Guid> ids);
+    Task<TaskViewDto> GetTaskInfoAsync(Guid id);
 }

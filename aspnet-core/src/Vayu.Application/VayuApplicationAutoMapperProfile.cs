@@ -18,6 +18,7 @@ public class VayuApplicationAutoMapperProfile : Profile
         CreateMap<Staff, StaffDto>();
         CreateMap<TaskType, TaskTypeDto>();
         CreateMap<Task, TaskDto>(MemberList.Destination);
+        CreateMap<Task, TaskViewDto>(MemberList.Destination);
         CreateMap<TaskWithNavigateProperties, TaskWithNavigatePropertiesDto>()
             .ForMember(x => x.Staff, option => option.MapFrom(s => s.Reader));
         CreateMap<TaskType, LookupDto<Guid>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));

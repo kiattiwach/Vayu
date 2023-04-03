@@ -19,7 +19,7 @@
     "Permission:Staffs.Delete": "ลบเจ้าหน้าที่",
     "Permission:Staffs.SendRegistrationEmail": "ส่งอีเมลล์ข้อมูลการลงทะเบียน",
     "Permission:Tasks": "เข้าถึงงาน",
-    "Permission:Tasks.Create": "เพิ่มงานที่ใหม่",
+    "Permission:Tasks.Create": "เพิ่มงานใหม่",
     "Permission:Tasks.Edit": "แก้ไขงาน",
     "Permission:Tasks.Delete": "ลบงาน",
 
@@ -45,6 +45,8 @@
     "TestSendMailComplete": "ทดสอลส่งอีเมลล์สำเร็จ",
     "TestSendMailFail": "ทดสอบส่งอีเมลล์ล้มเหลว",
     "RegistrationEmailSubject": "ข้อมูลการลงทะเบียน",
+    "DurationHM": "{0} ชั่วโมง {1} นาที",
+    "DurationDHM": "{0} วัน {1} ชั่วโมง {2} นาที",
 
     //Menu
     "Menu:Home": "หน้าหลัก",
@@ -58,6 +60,7 @@
     "Close": "ปิด",
     "Delete": "ลบ",
     "Edit": "แก้ไข",
+    "View": "ดู",
 
     //Enum
     "Enum:TaskCategory:0": "งานภายใน",
