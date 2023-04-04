@@ -46,7 +46,7 @@
     "TestSendMailFail": "ทดสอบส่งอีเมลล์ล้มเหลว",
     "RegistrationEmailSubject": "ข้อมูลการลงทะเบียน",
     "DurationHM": "{0} ชั่วโมง {1} นาที",
-    "DurationDHM": "{0} วัน {1} ชั่วโมง {2} นาที",
+    "DurationDH": "{0} วัน {1} ชั่วโมง",
 
     //Menu
     "Menu:Home": "หน้าหลัก",
@@ -168,6 +168,8 @@
     "DeleteTaskComplete": "ลบงาน สำเร็จ!",
     "DeleteTaskFail": "ลบงาน สำเร็จ!",
     "ReceiveDate": "วันที่ได้รับแจ้ง",
-    "ExpandCollapse": "ย่อ/ขยาย"
+    "ExpandCollapse": "ย่อ/ขยาย",
+    "ContactInfo": "ข้อมูลผู้แจ้ง",
+    "TaskOverAllDuration" :  "ระยะเวลาการดำเนินงานทั้งหมด"
   }
 }

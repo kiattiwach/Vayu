@@ -28,6 +28,7 @@ export interface TaskDto extends FullAuditedEntityDto<string> {
   contactNumber?: string;
   teamMemberIds: string[];
   concurrencyStamp?: string;
+  overAllDuration?: string;
 }
 
 export interface TaskFilterDto extends PagedAndSortedResultRequestDto {
@@ -73,6 +74,9 @@ export interface TaskViewDto extends EntityDto<string> {
   contactNumber?: string;
   teamMembers: StaffDto[];
   statusTimeliness: TaskStatusTimelineDto[];
+  latestStatusDuration?: string;
+  overAllDuration?: string;
+  finalStatus?: Status;
 }
 
 export interface TaskWithNavigatePropertiesDto {

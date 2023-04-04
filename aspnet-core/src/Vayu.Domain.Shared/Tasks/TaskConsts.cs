@@ -25,10 +25,6 @@ public class StatusIcon
 
 public class StatusColor
 {
-    public StatusColor()
-    {
-
-    }
     public Color Initial => Color.LightCoral;
     public Color Todo => Color.LightBlue;
     public Color InProgress => Color.SandyBrown;

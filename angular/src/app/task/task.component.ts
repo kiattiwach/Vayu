@@ -35,6 +35,7 @@ export class TaskComponent implements OnInit {
   confirmationTitle: string;
   isDisplayActionMenu: boolean;
   createUpdateOptions: NgbModalOptions;
+  taskInfoOptions: NgbModalOptions;
   taskTypeIdControl: FormControl;
   statusControl: FormControl;
   descriptionControl: FormControl;
@@ -62,6 +63,7 @@ export class TaskComponent implements OnInit {
 
   ngOnInit(): void {
     this.createUpdateOptions = { size:'lg',  backdrop: 'static'};
+    this.taskInfoOptions = { size:'lg'};
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
     this.list.hookToQuery(streamCreator)?.subscribe((response) => {

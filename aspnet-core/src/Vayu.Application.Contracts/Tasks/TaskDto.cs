@@ -20,4 +20,5 @@ public class TaskDto : FullAuditedEntityDto<Guid>, IHasConcurrencyStamp
     public string ContactNumber { get; set; }
     public List<Guid> TeamMemberIds { get; set; }
     public string ConcurrencyStamp { get; set; }
+    public TimeSpan OverAllDuration { get; set; }
 }

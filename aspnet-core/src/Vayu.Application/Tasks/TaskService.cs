@@ -187,7 +187,7 @@ public class TaskService : VayuAppService, ITaskService
         result.TeamMembers =
             ObjectMapper.Map<List<Staff>, List<StaffDto>>(
                 await _staffRepository.GetListAsync(x => taskStaffIds.Contains(x.Id)));
-
+        result.TaskType = ObjectMapper.Map<TaskType, TaskTypeDto>(await _taskTypeRepository.GetAsync(task.TaskTypeId));
 
         var taskStatus =
             (await _taskStatusRepository.GetListAsync(x => x.TaskId == task.Id))
@@ -196,12 +196,16 @@ public class TaskService : VayuAppService, ITaskService
         result.StatusTimeliness = taskStatus
             .Select((x, i) => new TaskStatusTimelineDto()
             {
-                Title = x.Status.ToString(),
-                Active = i == taskStatus.Count - 1,
+                Title = _stringLocalize[$"Enum:Status:{x.Status}"],
+                Active = true,//i == taskStatus.Count - 1,
                 Label = GetLabel(i),
                 Icon = GetIcon(x.Status),
-                Color = GetColor(x.Status)
+                Color =  GetColor(x.Status)
             }).ToList();
+
+        result.LatestStatusDuration = result.StatusTimeliness?.LastOrDefault()?.Label;
+        result.OverAllDuration = GetDuration(result.OverAllTimeSpan);
+        result.FinalStatus = result.CompleteDateTime == null ? null : taskStatus?.LastOrDefault()?.Status;
 
         return result;
 
@@ -220,21 +224,12 @@ public class TaskService : VayuAppService, ITaskService
                 timeSpan = taskStatus[index + 1].CreationTime.Subtract(taskStatus[index].CreationTime);
             }
 
-            if (timeSpan.Duration().Days > 0)
-            {
-                return _stringLocalize["DurationDHM", timeSpan.Duration().Days, timeSpan.Duration().Hours,
-                    timeSpan.Duration().Minutes];
-            }
-            else
-            {
-                return _stringLocalize["DurationHM", timeSpan.Duration().Hours, timeSpan.Duration().Minutes];
-            }
+            return GetDuration(timeSpan);
         }
 
         string GetIcon(Status status)
         {
             var instance = Activator.CreateInstance(typeof(StatusIcon));
-
             return instance?.GetType()
                 .GetProperty(status.ToString())?
                 .GetValue(instance)?
@@ -244,12 +239,17 @@ public class TaskService : VayuAppService, ITaskService
         string GetColor(Status status)
         {
             var instance = Activator.CreateInstance(typeof(StatusColor));
-
             var color = (Color)instance?.GetType()?
                 .GetProperty(status.ToString())?
-                .GetValue(instance);
-            
-            return ColorTranslator.ToHtml(color);
+                .GetValue(instance)!;
+            return $"{color.R:X2}{color.G:X2}{color.B:X2}";
         }
+    }
+
+    private string GetDuration(TimeSpan timeSpan)
+    {
+        return timeSpan.Duration().Days > 0
+            ? _stringLocalize["DurationDH", timeSpan.Duration().Days, timeSpan.Duration().Hours]
+            : _stringLocalize["DurationHM", timeSpan.Duration().Hours, timeSpan.Duration().Minutes];
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Vayu.Staffs;
 using Vayu.TaskTypes;
 using Volo.Abp.Application.Dtos;
@@ -19,4 +20,8 @@ public class TaskViewDto : EntityDto<Guid>
     public string ContactNumber { get; set; }
     public List<StaffDto> TeamMembers { get; set; }
     public List<TaskStatusTimelineDto> StatusTimeliness { get; set; }
+    [CanBeNull] public string LatestStatusDuration { get; set; }
+    public TimeSpan OverAllTimeSpan { get; set; }
+    [CanBeNull] public string OverAllDuration { get; set; }
+    public Status? FinalStatus { get; set; }
 }
