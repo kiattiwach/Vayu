@@ -36,6 +36,7 @@ export interface StaffDto extends AuditedEntityDto<string> {
   line?: string;
   facebook?: string;
   roleId?: string;
+  userId?: string;
 }
 
 export interface StaffFilterDto extends PagedAndSortedResultRequestDto {

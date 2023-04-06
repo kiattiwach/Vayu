@@ -178,6 +178,7 @@ public class VayuDbContext :
             b.ToTable(VayuConsts.DbTablePrefix + "TaskStatuses", VayuConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
 
+            b.Property(x => x.Note).HasMaxLength(TaskConsts.MaxNoteLength).IsRequired(false);
             b.HasOne<Task>().WithMany().HasForeignKey(x => x.TaskId);
 
             b.ApplyObjectExtensionMappings();

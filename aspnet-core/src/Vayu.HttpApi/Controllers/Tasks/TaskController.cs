@@ -61,8 +61,8 @@ public class TaskController : VayuController, ITaskService
         return _taskService.GetStaffLookupAsync(input);
     }
 
-    [HttpPost("get-team-lookup")]
-    public Task<List<StaffDto>> GetTeamLookupAsync([FromForm]List<Guid> ids)
+    [HttpPost("get-team-lookup/{ids}")]
+    public Task<List<StaffDto>> GetTeamLookupAsync(List<Guid> ids)
     {
         return _taskService.GetTeamLookupAsync(ids);
     }
@@ -71,5 +71,17 @@ public class TaskController : VayuController, ITaskService
     public Task<TaskViewDto> GetTaskInfoAsync(Guid id)
     {
         return _taskService.GetTaskInfoAsync(id);
+    }
+
+    [HttpPost("update-task-status/{input}")]
+    public Task UpdateTaskStatusAsync(TaskStatusDto input)
+    {
+        return _taskService.UpdateTaskStatusAsync(input);
+    }
+
+    [HttpPost("get-staff-many/{ids}")]
+    public Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids)
+    {
+        return _taskService.GetStaffManyAsync(ids);
     }
 }

@@ -74,6 +74,8 @@ public class TaskService : VayuAppService, ITaskService
             input.MaxCompleteDateTime, input.Note, input.StaffId, input.ContactPerson, input.ContactNumber,
             new List<Guid>() { input.StaffId ?? Guid.Empty }, input.MaxResultCount, input.SkipCount, input.Sorting);
 
+        var x = ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items);
+
         return new PagedResultDto<TaskWithNavigatePropertiesDto>(count,
             ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items));
     }
@@ -93,7 +95,7 @@ public class TaskService : VayuAppService, ITaskService
             TaskId = result.Id
         }));
 
-        await AddTaskStatus(result);
+        await AddTaskStatus(new TaskStatusDto() { TaskId = result.Id, Status = result.Status, Note = null});
 
         return await ToDto(result);
     }
@@ -104,9 +106,6 @@ public class TaskService : VayuAppService, ITaskService
         var task = await _taskRepository.GetAsync(input.Id);
         task.Description = input.Description;
         task.TaskTypeId = input.TaskTypeId;
-        task.Status = input.Status;
-        task.CreateDateTime = input.CreateDateTime;
-        task.CompleteDateTime = input.CompleteDateTime;
         task.Note = input.Note;
         task.LeaderId = input.LeaderId;
         task.ContactPerson = input.ContactPerson;
@@ -126,18 +125,13 @@ public class TaskService : VayuAppService, ITaskService
             });
         await _taskStaffRepository.InsertManyAsync(toInsert);
 
-        await AddTaskStatus(result);
-
         return await ToDto(result);
     }
 
-    private async System.Threading.Tasks.Task AddTaskStatus(Task task)
+    private async System.Threading.Tasks.Task AddTaskStatus(TaskStatusDto taskStatus)
     {
-        var result = await _taskStatusRepository.InsertAsync(new TaskStatus()
-        {
-            TaskId = task.Id,
-            Status = task.Status
-        });
+        var result = await _taskStatusRepository
+            .InsertAsync(new TaskStatus(taskStatus.TaskId, taskStatus.Status, taskStatus.Note));
     }
 
     [Authorize(VayuPermissions.Tasks.Delete)]
@@ -167,7 +161,7 @@ public class TaskService : VayuAppService, ITaskService
     public async Task<List<StaffDto>> GetTeamLookupAsync(List<Guid> ids)
     {
         var query = (await _staffRepository.GetQueryableAsync())
-            .WhereIf(ids.Any(), x => ids.Contains(x.Id));
+            .WhereIf(ids.Any(), x => !ids.Contains(x.Id));
         
         var items = query.ToList();
         return ObjectMapper.Map<List<Staff>, List<StaffDto>>(items);
@@ -212,13 +206,13 @@ public class TaskService : VayuAppService, ITaskService
         string GetLabel(int index)
         {
             TimeSpan timeSpan;
-            if (taskStatus.Count == 1)
+            if (taskStatus.Count == 1 || taskStatus.Count - 1 == index)
             {
                 timeSpan = DateTime.Now.Subtract(taskStatus[index].CreationTime);
-            } else if (taskStatus.Count - 1 == index)
+            }/* else if (taskStatus.Count - 1 == index)
             {
                 return string.Empty;
-            }
+            }*/
             else
             {
                 timeSpan = taskStatus[index + 1].CreationTime.Subtract(taskStatus[index].CreationTime);
@@ -246,10 +240,34 @@ public class TaskService : VayuAppService, ITaskService
         }
     }
 
+    public async System.Threading.Tasks.Task UpdateTaskStatusAsync(TaskStatusDto input)
+    {
+        var task = await _taskRepository.GetAsync(input.TaskId);
+        if (input.Status == Status.Done)
+        {
+            task.CompleteDateTime = DateTime.Now;
+        } 
+        else if (task.Status == Status.Done)
+        {
+            task.CompleteDateTime = null;
+        }
+
+        task.Status = input.Status;
+
+        await _taskRepository.UpdateAsync(task);
+
+        await _taskStatusRepository.InsertAsync(new TaskStatus(input.TaskId, input.Status, input.Note));
+    }
+
+    public async Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids)
+    {
+        return ObjectMapper.Map<List<Staff>, List<StaffDto>>(await _staffRepository.GetListAsync(x => ids.Contains(x.Id)));
+    }
+
     private string GetDuration(TimeSpan timeSpan)
     {
         return timeSpan.Duration().Days > 0
-            ? _stringLocalize["DurationDH", timeSpan.Duration().Days, timeSpan.Duration().Hours]
+            ? _stringLocalize["DurationDH", timeSpan.Duration().Days, timeSpan.Duration().Hours, timeSpan.Duration().Hours]
             : _stringLocalize["DurationHM", timeSpan.Duration().Hours, timeSpan.Duration().Minutes];
     }
 }

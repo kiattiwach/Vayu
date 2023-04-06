@@ -21,4 +21,5 @@ public class StaffDto : AuditedEntityDto<Guid>
     public string Line { get; set; }
     public string Facebook { get; set; }
     public Guid RoleId { get; set; }
+    public Guid? UserId { get; set; }
 }

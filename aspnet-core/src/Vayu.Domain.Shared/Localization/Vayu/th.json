@@ -22,6 +22,7 @@
     "Permission:Tasks.Create": "เพิ่มงานใหม่",
     "Permission:Tasks.Edit": "แก้ไขงาน",
     "Permission:Tasks.Delete": "ลบงาน",
+    "Permission:Tasks.UpdateStatus": "ปรับปรุุงสถานะ",
 
     "Welcome": "ยินดีต้อนรับ",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
@@ -45,8 +46,8 @@
     "TestSendMailComplete": "ทดสอลส่งอีเมลล์สำเร็จ",
     "TestSendMailFail": "ทดสอบส่งอีเมลล์ล้มเหลว",
     "RegistrationEmailSubject": "ข้อมูลการลงทะเบียน",
-    "DurationHM": "{0} ชั่วโมง {1} นาที",
-    "DurationDH": "{0} วัน {1} ชั่วโมง",
+    "DurationHM": "{0} ชม. {1} น.",
+    "DurationDH": "{0} วัน {1} ชม. {2} น.",
 
     //Menu
     "Menu:Home": "หน้าหลัก",
@@ -60,7 +61,6 @@
     "Close": "ปิด",
     "Delete": "ลบ",
     "Edit": "แก้ไข",
-    "View": "ดู",
 
     //Enum
     "Enum:TaskCategory:0": "งานภายใน",
@@ -78,9 +78,9 @@
     "Enum:Status:1": "เตรียมจะปฏิบัติ",
     "Enum:Status:2": "กำลังจะปฏิบัติ",
     "Enum:Status:3": "ถูกระงับ",
-    "Enum:Status:3": "กำลังตรวจสอบ",
-    "Enum:Status:4": "เสร็จแล้ว",
-    "Enum:Status:5": "ยกเลิก",
+    "Enum:Status:4": "กำลังตรวจสอบ",
+    "Enum:Status:5": "เสร็จแล้ว",
+    "Enum:Status:6": "ยกเลิก",
 
     //TaskType
     "NewTaskType": "เพิ่มประเภทงานใหม่",
@@ -166,10 +166,16 @@
     "EditTaskCompleted": "แก้ไขงาน สำเร็จ!",
     "EditTaskFail": "แก้ไขงาน ไม่สำเร็จ!",
     "DeleteTaskComplete": "ลบงาน สำเร็จ!",
-    "DeleteTaskFail": "ลบงาน สำเร็จ!",
+    "DeleteTaskFail": "ลบงาน ไม่สำเร็จ!",
+    "UpdateStatusComplete": "ปรับปรุงสถานะ สำเร็จ!",
+    "UpdateStatusFail": "ปรับปรุงสถานะ ไม่สำเร็จ!",
     "ReceiveDate": "วันที่ได้รับแจ้ง",
-    "ExpandCollapse": "ย่อ/ขยาย",
+    "Expand": "ขยาย",
+    "Collapse": "ย่อ",
     "ContactInfo": "ข้อมูลผู้แจ้ง",
-    "TaskOverAllDuration" :  "ระยะเวลาการดำเนินงานทั้งหมด"
+    "TaskOverAllDuration": "ระยะเวลาการดำเนินงาน",
+    "ViewTaskInfo": "ดูรายละเอียดงาน",
+    "UpdateStatus": "ปรับปรุงสถานะ",
+    "UpdateStatusFrom": "เปลี่ยนสถานะจาก {0}"
   }
 }

@@ -25,7 +25,8 @@ public class VayuApplicationAutoMapperProfile : Profile
             .Ignore(x => x.OverAllDuration)
             .ForMember(x => x.OverAllTimeSpan, option => option.MapFrom(x => GetOverAllDuration(x)));
         CreateMap<TaskWithNavigateProperties, TaskWithNavigatePropertiesDto>()
-            .ForMember(x => x.Staff, option => option.MapFrom(s => s.Reader));
+            .ForMember(x => x.Staff, option => option.MapFrom(s => s.Reader))
+            .Ignore(x => x.AvailableStatus);
         CreateMap<TaskType, LookupDto<Guid>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));
         CreateMap<Staff, LookupDto<Guid>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));
         CreateMap<Staff, LookupDto<StaffDto>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));

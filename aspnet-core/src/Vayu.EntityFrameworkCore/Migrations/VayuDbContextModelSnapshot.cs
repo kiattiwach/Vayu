@@ -340,6 +340,10 @@ namespace Vayu.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<string>("Note")
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 

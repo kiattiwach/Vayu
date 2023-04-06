@@ -42,6 +42,7 @@ public class VayuPermissions
         public const string Create = Default + ".Create";
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";
+        public const string UpdateStatus = Default + ".UpdateStatus";
         public const string Todo = Default + ".Todo";
         public const string InProgress = Default + ".InProgress";
         public const string Suspended = Default + ".Suspended";

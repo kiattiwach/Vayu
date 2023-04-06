@@ -31,6 +31,7 @@ public class VayuPermissionDefinitionProvider : PermissionDefinitionProvider
         taskPermission.AddChild(VayuPermissions.Tasks.Create, L("Permission:Tasks.Create"));
         taskPermission.AddChild(VayuPermissions.Tasks.Edit, L("Permission:Tasks.Edit"));
         taskPermission.AddChild(VayuPermissions.Tasks.Delete, L("Permission:Tasks.Delete"));
+        taskPermission.AddChild(VayuPermissions.Tasks.UpdateStatus, L("Permission:Tasks.UpdateStatus"));
     }
 
     private static LocalizableString L(string name)

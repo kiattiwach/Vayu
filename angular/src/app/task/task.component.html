@@ -257,8 +257,10 @@
     </div>
   </div>
   <div class="card-body">
-    <i class="fa fa-toggle-on me-1" (click)="toggleGroup()" role="button">
-      <span class="ps-1">{{ "::ExpandCollapse" | abpLocalization }}</span>
+    <i class="me-1"
+       [ngClass]="(expandAll)? 'fa fa-compress-arrows-alt': 'fa fa-expand-arrows-alt'"
+       (click)="toggleGroup(!expandAll)" role="button">
+      <span class="ps-1">{{ "::" + (expandAll ? 'Collapse':'Expand') | abpLocalization }}</span>
     </i>
     <ngx-datatable [rows]="tasks?.items" [count]="tasks?.totalCount" [list]="list" default
                    #taskTable
@@ -292,18 +294,22 @@
               <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
             </button>
             <div ngbDropdownMenu>
-              <button *abpPermission="'Vayu.Tasks'" ngbDropdownItem (click)="view(row.task.id)">
-                <i class="fa fa-tasks me-1"></i>
-                {{ '::View' | abpLocalization }}
-              </button>
               <button *abpPermission="'Vayu.Tasks.Edit'" ngbDropdownItem (click)="edit(row.task.id)">
                 <i class="fa fa-pen-alt me-1"></i>
                 {{ '::Edit' | abpLocalization }}
               </button>
-              <button *abpPermission="'Vayu.Tasks.Delete'" ngbDropdownItem (click)="delete(row.task.id, row.task.name)">
+              <button *abpPermission="'Vayu.Tasks'" ngbDropdownItem (click)="view(row.task.id)">
+                <i class="fa fa-tasks me-1"></i>
+                {{ '::ViewTaskInfo' | abpLocalization }}
+              </button>
+              <button *ngIf="canUpdateStatus(row.staff.userId)" ngbDropdownItem (click)="openUpdateStatus(row)">
+                <i class="fa fa-history fa-flip-horizontal me-1"></i>
+                {{ '::UpdateStatus' | abpLocalization }}
+              </button>
+              <!--<button *abpPermission="'Vayu.Tasks.Delete'" ngbDropdownItem (click)="delete(row.task.id, row.task.name)">
                 <i class="fa fa-trash-alt me-1"></i>
                 {{ '::Delete' | abpLocalization }}
-              </button>
+              </button>-->
             </div>
           </div>
         </ng-template>
@@ -314,7 +320,11 @@
           {{ '::Enum:Status:' + row.task.status | abpLocalization }}
         </ng-template>
       </ngx-datatable-column>
-      <ngx-datatable-column [name]="'::OverAllDuration' | abpLocalization" prop="task.overAllDuration"></ngx-datatable-column>
+      <ngx-datatable-column [name]="'::TaskOverAllDuration' | abpLocalization" prop="task.overAllDuration">
+        <ng-template let-row="row.task" ngx-datatable-cell-template>
+          {{getDurationText(row.createDateTime, row.completeDateTime) | async}}
+        </ng-template>
+      </ngx-datatable-column>
       <ngx-datatable-column [name]="'::Description' | abpLocalization" prop="task.description">
         <ng-template let-row="row" ngx-datatable-cell-template>
           <div class="text-limit" >{{row.task.description}}</div>
@@ -401,11 +411,12 @@
                   {{member.name}}
                 </mat-list-option>
               </mat-selection-list>
+              {{selectedTeamMemberIds}}
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>{{'::SelectTeamMember' | abpLocalization}}</mat-label>
-                <select matNativeControl [formControl]="selectStaffControl">
+                <select matNativeControl [formControl]="selectTeamMemberControl">
                   <option [value]="null"></option>
-                  <option *ngFor="let staff of staffOptions" [value]="staff.id">{{staff.name}}</option>
+                  <option *ngFor="let staff of taskService.getTeamLookup(selectedTeamMemberIds) | async" [value]="staff.id">{{staff.name}}</option>
                 </select>
               </mat-form-field>
             </div>
@@ -426,6 +437,7 @@
   </ng-template>
 </abp-modal>
 
+<!--TaskInfo Modal-->
 <abp-modal [(visible)]="isViewModalOpen" [options]="taskInfoOptions">
   <ng-template #abpHeader>
     <h3>{{'::TaskDetail' | abpLocalization}}</h3>
@@ -468,6 +480,44 @@
     </div>
   </ng-template>
   <ng-template #abpFooter>
+  </ng-template>
+</abp-modal>
 
+<!--UpdateStatus Modal-->
+<abp-modal [(visible)]="isUpdateStatusModalOpen" [options]="updateStatusOption">
+  <ng-template #abpHeader>
+    <h3>{{getUpdateStatusHeader() | async}}</h3>
+  </ng-template>
+  <ng-template #abpBody>
+    <form [formGroup]="formStatus" (ngSubmit)="updateStatus()" class="row gap-3">
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{'::Status' | abpLocalization}}</mat-label>
+          <select matNativeControl [formControl]="selectStatusControl">
+            <option *ngFor="let option of statusOptions" [value]="option.status">
+              {{'::Enum:Status:'+ option.status.toString() | abpLocalization}}
+            </option>
+          </select>
+        </mat-form-field>
+      </div>
+      <div class="form-group" *ngIf="requiredNote == true">
+        <label for="StatusNote">{{ '::Note'| abpLocalization}}</label><span> * </span>
+        <textarea rows="4" style="resize: none" aria-multiline="true" id="StatusNote" class="form-control"
+        [formControl]="selectStatusNoteControl"></textarea>
+      </div>
+    </form>
+    <div class="row gap-3">
+
+    </div>
+  </ng-template>
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" abpClose>
+      {{ '::Close' | abpLocalization }}
+    </button>
+
+    <button class="btn btn-primary" (click)="updateStatus()" [disabled]="formStatus?.invalid">
+      <i class="fa fa-check mr-1"></i>
+      {{ '::Save' | abpLocalization }}
+    </button>
   </ng-template>
 </abp-modal>

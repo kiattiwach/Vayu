@@ -3,19 +3,19 @@
     "vayu"
   ],
   "modules": {
-    "permissionManagement": {
-      "rootPath": "permissionManagement",
-      "remoteServiceName": "AbpPermissionManagement",
+    "featureManagement": {
+      "rootPath": "featureManagement",
+      "remoteServiceName": "AbpFeatureManagement",
       "controllers": {
-        "Volo.Abp.PermissionManagement.PermissionsController": {
-          "controllerName": "Permissions",
-          "controllerGroupName": "Permissions",
+        "Volo.Abp.FeatureManagement.FeaturesController": {
+          "controllerName": "Features",
+          "controllerGroupName": "Features",
           "isRemoteService": true,
           "apiVersion": null,
-          "type": "Volo.Abp.PermissionManagement.PermissionsController",
+          "type": "Volo.Abp.FeatureManagement.FeaturesController",
           "interfaces": [
             {
-              "type": "Volo.Abp.PermissionManagement.IPermissionAppService"
+              "type": "Volo.Abp.FeatureManagement.IFeatureAppService"
             }
           ],
           "actions": {
@@ -23,7 +23,7 @@
               "uniqueName": "GetAsyncByProviderNameAndProviderKey",
               "name": "GetAsync",
               "httpMethod": "GET",
-              "url": "api/permission-management/permissions",
+              "url": "api/feature-management/features",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -70,17 +70,17 @@
                 }
               ],
               "returnValue": {
-                "type": "Volo.Abp.PermissionManagement.GetPermissionListResultDto",
-                "typeSimple": "Volo.Abp.PermissionManagement.GetPermissionListResultDto"
+                "type": "Volo.Abp.FeatureManagement.GetFeatureListResultDto",
+                "typeSimple": "Volo.Abp.FeatureManagement.GetFeatureListResultDto"
               },
               "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.PermissionManagement.IPermissionAppService"
+              "implementFrom": "Volo.Abp.FeatureManagement.IFeatureAppService"
             },
             "UpdateAsyncByProviderNameAndProviderKeyAndInput": {
               "uniqueName": "UpdateAsyncByProviderNameAndProviderKeyAndInput",
               "name": "UpdateAsync",
               "httpMethod": "PUT",
-              "url": "api/permission-management/permissions",
+              "url": "api/feature-management/features",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -101,9 +101,9 @@
                 },
                 {
                   "name": "input",
-                  "typeAsString": "Volo.Abp.PermissionManagement.UpdatePermissionsDto, Volo.Abp.PermissionManagement.Application.Contracts",
-                  "type": "Volo.Abp.PermissionManagement.UpdatePermissionsDto",
-                  "typeSimple": "Volo.Abp.PermissionManagement.UpdatePermissionsDto",
+                  "typeAsString": "Volo.Abp.FeatureManagement.UpdateFeaturesDto, Volo.Abp.FeatureManagement.Application.Contracts",
+                  "type": "Volo.Abp.FeatureManagement.UpdateFeaturesDto",
+                  "typeSimple": "Volo.Abp.FeatureManagement.UpdateFeaturesDto",
                   "isOptional": false,
                   "defaultValue": null
                 }
@@ -137,8 +137,8 @@
                   "nameOnMethod": "input",
                   "name": "input",
                   "jsonName": null,
-                  "type": "Volo.Abp.PermissionManagement.UpdatePermissionsDto",
-                  "typeSimple": "Volo.Abp.PermissionManagement.UpdatePermissionsDto",
+                  "type": "Volo.Abp.FeatureManagement.UpdateFeaturesDto",
+                  "typeSimple": "Volo.Abp.FeatureManagement.UpdateFeaturesDto",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -151,177 +151,7 @@
                 "typeSimple": "System.Void"
               },
               "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.PermissionManagement.IPermissionAppService"
-            }
-          }
-        }
-      }
-    },
-    "abp": {
-      "rootPath": "abp",
-      "remoteServiceName": "abp",
-      "controllers": {
-        "Pages.Abp.MultiTenancy.AbpTenantController": {
-          "controllerName": "AbpTenant",
-          "controllerGroupName": "AbpTenant",
-          "isRemoteService": true,
-          "apiVersion": null,
-          "type": "Pages.Abp.MultiTenancy.AbpTenantController",
-          "interfaces": [
-            {
-              "type": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.IAbpTenantAppService"
-            }
-          ],
-          "actions": {
-            "FindTenantByNameAsyncByName": {
-              "uniqueName": "FindTenantByNameAsyncByName",
-              "name": "FindTenantByNameAsync",
-              "httpMethod": "GET",
-              "url": "api/abp/multi-tenancy/tenants/by-name/{name}",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "name",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "name",
-                  "name": "name",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.FindTenantResultDto",
-                "typeSimple": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.FindTenantResultDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.IAbpTenantAppService"
-            },
-            "FindTenantByIdAsyncById": {
-              "uniqueName": "FindTenantByIdAsyncById",
-              "name": "FindTenantByIdAsync",
-              "httpMethod": "GET",
-              "url": "api/abp/multi-tenancy/tenants/by-id/{id}",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.FindTenantResultDto",
-                "typeSimple": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.FindTenantResultDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.IAbpTenantAppService"
-            }
-          }
-        },
-        "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.AbpApplicationConfigurationController": {
-          "controllerName": "AbpApplicationConfiguration",
-          "controllerGroupName": "AbpApplicationConfiguration",
-          "isRemoteService": true,
-          "apiVersion": null,
-          "type": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.AbpApplicationConfigurationController",
-          "interfaces": [
-            {
-              "type": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.IAbpApplicationConfigurationAppService"
-            }
-          ],
-          "actions": {
-            "GetAsync": {
-              "uniqueName": "GetAsync",
-              "name": "GetAsync",
-              "httpMethod": "GET",
-              "url": "api/abp/application-configuration",
-              "supportedVersions": [],
-              "parametersOnMethod": [],
-              "parameters": [],
-              "returnValue": {
-                "type": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.ApplicationConfigurationDto",
-                "typeSimple": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.ApplicationConfigurationDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.IAbpApplicationConfigurationAppService"
-            }
-          }
-        },
-        "Volo.Abp.AspNetCore.Mvc.ApiExploring.AbpApiDefinitionController": {
-          "controllerName": "AbpApiDefinition",
-          "controllerGroupName": "AbpApiDefinition",
-          "isRemoteService": true,
-          "apiVersion": null,
-          "type": "Volo.Abp.AspNetCore.Mvc.ApiExploring.AbpApiDefinitionController",
-          "interfaces": [],
-          "actions": {
-            "GetByModel": {
-              "uniqueName": "GetByModel",
-              "name": "Get",
-              "httpMethod": "GET",
-              "url": "api/abp/api-definition",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "model",
-                  "typeAsString": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModelRequestDto, Volo.Abp.Http",
-                  "type": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModelRequestDto",
-                  "typeSimple": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModelRequestDto",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "model",
-                  "name": "IncludeTypes",
-                  "jsonName": null,
-                  "type": "System.Boolean",
-                  "typeSimple": "boolean",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "model"
-                }
-              ],
-              "returnValue": {
-                "type": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModel",
-                "typeSimple": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModel"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.AspNetCore.Mvc.ApiExploring.AbpApiDefinitionController"
+              "implementFrom": "Volo.Abp.FeatureManagement.IFeatureAppService"
             }
           }
         }
@@ -962,7 +792,7 @@
               "uniqueName": "GetTeamLookupAsyncByIds",
               "name": "GetTeamLookupAsync",
               "httpMethod": "POST",
-              "url": "api/task/get-team-lookup",
+              "url": "api/task/get-team-lookup/{ids}",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -984,7 +814,19 @@
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "Form",
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "ids",
+                  "name": "ids",
+                  "jsonName": null,
+                  "type": null,
+                  "typeSimple": null,
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
                   "descriptorName": ""
                 }
               ],
@@ -1028,6 +870,104 @@
               "returnValue": {
                 "type": "Vayu.Tasks.TaskViewDto",
                 "typeSimple": "Vayu.Tasks.TaskViewDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Vayu.Tasks.ITaskService"
+            },
+            "UpdateTaskStatusAsyncByInput": {
+              "uniqueName": "UpdateTaskStatusAsyncByInput",
+              "name": "UpdateTaskStatusAsync",
+              "httpMethod": "POST",
+              "url": "api/task/update-task-status/{input}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "Vayu.Tasks.TaskStatusDto, Vayu.Application.Contracts",
+                  "type": "Vayu.Tasks.TaskStatusDto",
+                  "typeSimple": "Vayu.Tasks.TaskStatusDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "Vayu.Tasks.TaskStatusDto",
+                  "typeSimple": "Vayu.Tasks.TaskStatusDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": null,
+                  "typeSimple": null,
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Vayu.Tasks.ITaskService"
+            },
+            "GetStaffManyAsyncByIds": {
+              "uniqueName": "GetStaffManyAsyncByIds",
+              "name": "GetStaffManyAsync",
+              "httpMethod": "POST",
+              "url": "api/task/get-staff-many/{ids}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "ids",
+                  "typeAsString": "System.Collections.Generic.List`1[[System.Guid, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.Collections.Generic.List<System.Guid>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "ids",
+                  "name": "ids",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<System.Guid>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "ids",
+                  "name": "ids",
+                  "jsonName": null,
+                  "type": null,
+                  "typeSimple": null,
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<Vayu.Staffs.StaffDto>",
+                "typeSimple": "[Vayu.Staffs.StaffDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "Vayu.Tasks.ITaskService"
@@ -1587,160 +1527,6 @@
               },
               "allowAnonymous": null,
               "implementFrom": "Vayu.Roles.IRoleService"
-            }
-          }
-        }
-      }
-    },
-    "featureManagement": {
-      "rootPath": "featureManagement",
-      "remoteServiceName": "AbpFeatureManagement",
-      "controllers": {
-        "Volo.Abp.FeatureManagement.FeaturesController": {
-          "controllerName": "Features",
-          "controllerGroupName": "Features",
-          "isRemoteService": true,
-          "apiVersion": null,
-          "type": "Volo.Abp.FeatureManagement.FeaturesController",
-          "interfaces": [
-            {
-              "type": "Volo.Abp.FeatureManagement.IFeatureAppService"
-            }
-          ],
-          "actions": {
-            "GetAsyncByProviderNameAndProviderKey": {
-              "uniqueName": "GetAsyncByProviderNameAndProviderKey",
-              "name": "GetAsync",
-              "httpMethod": "GET",
-              "url": "api/feature-management/features",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "providerName",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "providerKey",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "providerName",
-                  "name": "providerName",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "providerKey",
-                  "name": "providerKey",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "Volo.Abp.FeatureManagement.GetFeatureListResultDto",
-                "typeSimple": "Volo.Abp.FeatureManagement.GetFeatureListResultDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.FeatureManagement.IFeatureAppService"
-            },
-            "UpdateAsyncByProviderNameAndProviderKeyAndInput": {
-              "uniqueName": "UpdateAsyncByProviderNameAndProviderKeyAndInput",
-              "name": "UpdateAsync",
-              "httpMethod": "PUT",
-              "url": "api/feature-management/features",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "providerName",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "providerKey",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "input",
-                  "typeAsString": "Volo.Abp.FeatureManagement.UpdateFeaturesDto, Volo.Abp.FeatureManagement.Application.Contracts",
-                  "type": "Volo.Abp.FeatureManagement.UpdateFeaturesDto",
-                  "typeSimple": "Volo.Abp.FeatureManagement.UpdateFeaturesDto",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "providerName",
-                  "name": "providerName",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "providerKey",
-                  "name": "providerKey",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "input",
-                  "jsonName": null,
-                  "type": "Volo.Abp.FeatureManagement.UpdateFeaturesDto",
-                  "typeSimple": "Volo.Abp.FeatureManagement.UpdateFeaturesDto",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "Body",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "System.Void",
-                "typeSimple": "System.Void"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.FeatureManagement.IFeatureAppService"
             }
           }
         }
@@ -2658,19 +2444,107 @@
         }
       }
     },
-    "settingManagement": {
-      "rootPath": "settingManagement",
-      "remoteServiceName": "SettingManagement",
+    "abp": {
+      "rootPath": "abp",
+      "remoteServiceName": "abp",
       "controllers": {
-        "Volo.Abp.SettingManagement.EmailSettingsController": {
-          "controllerName": "EmailSettings",
-          "controllerGroupName": "EmailSettings",
+        "Pages.Abp.MultiTenancy.AbpTenantController": {
+          "controllerName": "AbpTenant",
+          "controllerGroupName": "AbpTenant",
           "isRemoteService": true,
           "apiVersion": null,
-          "type": "Volo.Abp.SettingManagement.EmailSettingsController",
+          "type": "Pages.Abp.MultiTenancy.AbpTenantController",
           "interfaces": [
             {
-              "type": "Volo.Abp.SettingManagement.IEmailSettingsAppService"
+              "type": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.IAbpTenantAppService"
+            }
+          ],
+          "actions": {
+            "FindTenantByNameAsyncByName": {
+              "uniqueName": "FindTenantByNameAsyncByName",
+              "name": "FindTenantByNameAsync",
+              "httpMethod": "GET",
+              "url": "api/abp/multi-tenancy/tenants/by-name/{name}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "name",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "name",
+                  "name": "name",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.FindTenantResultDto",
+                "typeSimple": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.FindTenantResultDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.IAbpTenantAppService"
+            },
+            "FindTenantByIdAsyncById": {
+              "uniqueName": "FindTenantByIdAsyncById",
+              "name": "FindTenantByIdAsync",
+              "httpMethod": "GET",
+              "url": "api/abp/multi-tenancy/tenants/by-id/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.FindTenantResultDto",
+                "typeSimple": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.FindTenantResultDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Volo.Abp.AspNetCore.Mvc.MultiTenancy.IAbpTenantAppService"
+            }
+          }
+        },
+        "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.AbpApplicationConfigurationController": {
+          "controllerName": "AbpApplicationConfiguration",
+          "controllerGroupName": "AbpApplicationConfiguration",
+          "isRemoteService": true,
+          "apiVersion": null,
+          "type": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.AbpApplicationConfigurationController",
+          "interfaces": [
+            {
+              "type": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.IAbpApplicationConfigurationAppService"
             }
           ],
           "actions": {
@@ -2678,90 +2552,63 @@
               "uniqueName": "GetAsync",
               "name": "GetAsync",
               "httpMethod": "GET",
-              "url": "api/setting-management/emailing",
+              "url": "api/abp/application-configuration",
               "supportedVersions": [],
               "parametersOnMethod": [],
               "parameters": [],
               "returnValue": {
-                "type": "Volo.Abp.SettingManagement.EmailSettingsDto",
-                "typeSimple": "Volo.Abp.SettingManagement.EmailSettingsDto"
+                "type": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.ApplicationConfigurationDto",
+                "typeSimple": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.ApplicationConfigurationDto"
               },
               "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.SettingManagement.IEmailSettingsAppService"
-            },
-            "UpdateAsyncByInput": {
-              "uniqueName": "UpdateAsyncByInput",
-              "name": "UpdateAsync",
-              "httpMethod": "POST",
-              "url": "api/setting-management/emailing",
+              "implementFrom": "Volo.Abp.AspNetCore.Mvc.ApplicationConfigurations.IAbpApplicationConfigurationAppService"
+            }
+          }
+        },
+        "Volo.Abp.AspNetCore.Mvc.ApiExploring.AbpApiDefinitionController": {
+          "controllerName": "AbpApiDefinition",
+          "controllerGroupName": "AbpApiDefinition",
+          "isRemoteService": true,
+          "apiVersion": null,
+          "type": "Volo.Abp.AspNetCore.Mvc.ApiExploring.AbpApiDefinitionController",
+          "interfaces": [],
+          "actions": {
+            "GetByModel": {
+              "uniqueName": "GetByModel",
+              "name": "Get",
+              "httpMethod": "GET",
+              "url": "api/abp/api-definition",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
-                  "name": "input",
-                  "typeAsString": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto, Volo.Abp.SettingManagement.Application.Contracts",
-                  "type": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto",
-                  "typeSimple": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto",
+                  "name": "model",
+                  "typeAsString": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModelRequestDto, Volo.Abp.Http",
+                  "type": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModelRequestDto",
+                  "typeSimple": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModelRequestDto",
                   "isOptional": false,
                   "defaultValue": null
                 }
               ],
               "parameters": [
                 {
-                  "nameOnMethod": "input",
-                  "name": "input",
+                  "nameOnMethod": "model",
+                  "name": "IncludeTypes",
                   "jsonName": null,
-                  "type": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto",
-                  "typeSimple": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto",
+                  "type": "System.Boolean",
+                  "typeSimple": "boolean",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "Body",
-                  "descriptorName": ""
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "model"
                 }
               ],
               "returnValue": {
-                "type": "System.Void",
-                "typeSimple": "System.Void"
+                "type": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModel",
+                "typeSimple": "Volo.Abp.Http.Modeling.ApplicationApiDescriptionModel"
               },
               "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.SettingManagement.IEmailSettingsAppService"
-            },
-            "SendTestEmailAsyncByInput": {
-              "uniqueName": "SendTestEmailAsyncByInput",
-              "name": "SendTestEmailAsync",
-              "httpMethod": "POST",
-              "url": "api/setting-management/emailing/send-test-email",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "input",
-                  "typeAsString": "Volo.Abp.SettingManagement.SendTestEmailInput, Volo.Abp.SettingManagement.Application.Contracts",
-                  "type": "Volo.Abp.SettingManagement.SendTestEmailInput",
-                  "typeSimple": "Volo.Abp.SettingManagement.SendTestEmailInput",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "input",
-                  "name": "input",
-                  "jsonName": null,
-                  "type": "Volo.Abp.SettingManagement.SendTestEmailInput",
-                  "typeSimple": "Volo.Abp.SettingManagement.SendTestEmailInput",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "Body",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "System.Void",
-                "typeSimple": "System.Void"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.SettingManagement.IEmailSettingsAppService"
+              "implementFrom": "Volo.Abp.AspNetCore.Mvc.ApiExploring.AbpApiDefinitionController"
             }
           }
         }
@@ -3095,6 +2942,160 @@
               },
               "allowAnonymous": null,
               "implementFrom": "Volo.Abp.Account.IProfileAppService"
+            }
+          }
+        }
+      }
+    },
+    "permissionManagement": {
+      "rootPath": "permissionManagement",
+      "remoteServiceName": "AbpPermissionManagement",
+      "controllers": {
+        "Volo.Abp.PermissionManagement.PermissionsController": {
+          "controllerName": "Permissions",
+          "controllerGroupName": "Permissions",
+          "isRemoteService": true,
+          "apiVersion": null,
+          "type": "Volo.Abp.PermissionManagement.PermissionsController",
+          "interfaces": [
+            {
+              "type": "Volo.Abp.PermissionManagement.IPermissionAppService"
+            }
+          ],
+          "actions": {
+            "GetAsyncByProviderNameAndProviderKey": {
+              "uniqueName": "GetAsyncByProviderNameAndProviderKey",
+              "name": "GetAsync",
+              "httpMethod": "GET",
+              "url": "api/permission-management/permissions",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "providerName",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerKey",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "providerName",
+                  "name": "providerName",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "providerKey",
+                  "name": "providerKey",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.PermissionManagement.GetPermissionListResultDto",
+                "typeSimple": "Volo.Abp.PermissionManagement.GetPermissionListResultDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Volo.Abp.PermissionManagement.IPermissionAppService"
+            },
+            "UpdateAsyncByProviderNameAndProviderKeyAndInput": {
+              "uniqueName": "UpdateAsyncByProviderNameAndProviderKeyAndInput",
+              "name": "UpdateAsync",
+              "httpMethod": "PUT",
+              "url": "api/permission-management/permissions",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "providerName",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "providerKey",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "Volo.Abp.PermissionManagement.UpdatePermissionsDto, Volo.Abp.PermissionManagement.Application.Contracts",
+                  "type": "Volo.Abp.PermissionManagement.UpdatePermissionsDto",
+                  "typeSimple": "Volo.Abp.PermissionManagement.UpdatePermissionsDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "providerName",
+                  "name": "providerName",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "providerKey",
+                  "name": "providerKey",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "Volo.Abp.PermissionManagement.UpdatePermissionsDto",
+                  "typeSimple": "Volo.Abp.PermissionManagement.UpdatePermissionsDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Volo.Abp.PermissionManagement.IPermissionAppService"
             }
           }
         }
@@ -3487,6 +3488,115 @@
               },
               "allowAnonymous": null,
               "implementFrom": "Volo.Abp.TenantManagement.ITenantAppService"
+            }
+          }
+        }
+      }
+    },
+    "settingManagement": {
+      "rootPath": "settingManagement",
+      "remoteServiceName": "SettingManagement",
+      "controllers": {
+        "Volo.Abp.SettingManagement.EmailSettingsController": {
+          "controllerName": "EmailSettings",
+          "controllerGroupName": "EmailSettings",
+          "isRemoteService": true,
+          "apiVersion": null,
+          "type": "Volo.Abp.SettingManagement.EmailSettingsController",
+          "interfaces": [
+            {
+              "type": "Volo.Abp.SettingManagement.IEmailSettingsAppService"
+            }
+          ],
+          "actions": {
+            "GetAsync": {
+              "uniqueName": "GetAsync",
+              "name": "GetAsync",
+              "httpMethod": "GET",
+              "url": "api/setting-management/emailing",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "Volo.Abp.SettingManagement.EmailSettingsDto",
+                "typeSimple": "Volo.Abp.SettingManagement.EmailSettingsDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Volo.Abp.SettingManagement.IEmailSettingsAppService"
+            },
+            "UpdateAsyncByInput": {
+              "uniqueName": "UpdateAsyncByInput",
+              "name": "UpdateAsync",
+              "httpMethod": "POST",
+              "url": "api/setting-management/emailing",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto, Volo.Abp.SettingManagement.Application.Contracts",
+                  "type": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto",
+                  "typeSimple": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto",
+                  "typeSimple": "Volo.Abp.SettingManagement.UpdateEmailSettingsDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Volo.Abp.SettingManagement.IEmailSettingsAppService"
+            },
+            "SendTestEmailAsyncByInput": {
+              "uniqueName": "SendTestEmailAsyncByInput",
+              "name": "SendTestEmailAsync",
+              "httpMethod": "POST",
+              "url": "api/setting-management/emailing/send-test-email",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "Volo.Abp.SettingManagement.SendTestEmailInput, Volo.Abp.SettingManagement.Application.Contracts",
+                  "type": "Volo.Abp.SettingManagement.SendTestEmailInput",
+                  "typeSimple": "Volo.Abp.SettingManagement.SendTestEmailInput",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "Volo.Abp.SettingManagement.SendTestEmailInput",
+                  "typeSimple": "Volo.Abp.SettingManagement.SendTestEmailInput",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Volo.Abp.SettingManagement.IEmailSettingsAppService"
             }
           }
         }
@@ -4121,7 +4231,7 @@
         {
           "name": "OverAllDuration",
           "jsonName": null,
-          "type": "System.String",
+          "type": "System.TimeSpan",
           "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
@@ -4363,6 +4473,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "AvailableStatus",
+          "jsonName": null,
+          "type": "[Vayu.Tasks.AvailableStatusDto]",
+          "typeSimple": "[Vayu.Tasks.AvailableStatusDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -4546,6 +4668,51 @@
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "Vayu.Tasks.AvailableStatusDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "Vayu.Tasks.Status",
+          "typeSimple": "Vayu.Tasks.Status",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RequiredNote",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -4836,6 +5003,18 @@
           "regex": null
         },
         {
+          "name": "OverAllTimeSpan",
+          "jsonName": null,
+          "type": "System.TimeSpan",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "OverAllDuration",
           "jsonName": null,
           "type": "System.String",
@@ -5014,6 +5193,51 @@
         },
         {
           "name": "Id",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "Vayu.Tasks.TaskStatusDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "TaskId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "Vayu.Tasks.Status",
+          "typeSimple": "Vayu.Tasks.Status",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Note",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",

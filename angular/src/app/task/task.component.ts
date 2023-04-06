@@ -1,19 +1,22 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
+import {ConfigStateService, ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
 import {NgbDateAdapter, NgbDateNativeAdapter, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
-import {phonePattern} from '../shared/pattern';
+import {getTimeSpan, phonePattern} from '../shared/pattern';
 import {
+  AvailableStatusDto,
   Status,
   TaskCreateUpdateDto,
   TaskDto,
   TaskFilterDto,
-  TaskService, TaskViewDto,
+  TaskService, TaskStatusDto, TaskViewDto,
   TaskWithNavigatePropertiesDto
 } from "@proxy/tasks";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {Confirmation} from "@abp/ng.theme.shared";
 import {StaffDto, StaffService} from "@proxy/staffs";
+import {Observable, switchMap} from "rxjs";
+import {loadTranslations} from "@angular/localize";
 
 @Component({
   selector: 'app-task',
@@ -46,12 +49,21 @@ export class TaskComponent implements OnInit {
   contactPersonControl: FormControl;
   contactNumberControl: FormControl;
   teamMemberIdsControl: FormControl;
-  selectStaffControl: FormControl = new FormControl<StaffDto>(null);
+  selectTeamMemberControl: FormControl = new FormControl<StaffDto>(null);
   teamMembers: StaffDto[] = [];
-  teamMemberSelected: StaffDto;
-  staffOptions: StaffDto[] = [];
   snackBarMessage: string;
   taskViewDto: TaskViewDto;
+  expandAll: boolean;
+  updateStatusOption: NgbModalOptions;
+  isUpdateStatusModalOpen = false;
+  statusOptions: AvailableStatusDto[] = [];
+  selectStatusControl: FormControl;
+  selectStatusNoteControl: FormControl;
+  formStatus: FormGroup;
+  selectedTaskUpdateStatus: TaskWithNavigatePropertiesDto;
+  requiredNote: boolean;
+  selectedTeamMemberIds: string[] = [];
+  teamMemberOptions: StaffDto[] = [];
 
     constructor(public readonly list: ListService,
                 public taskService: TaskService,
@@ -59,25 +71,26 @@ export class TaskComponent implements OnInit {
                 private vayuServiceService: VayuServiceService,
                 private localizationService: LocalizationService,
                 private permissionService: PermissionService,
-                private staffService: StaffService) { }
+                private staffService: StaffService,
+                private config: ConfigStateService) { }
 
   ngOnInit(): void {
     this.createUpdateOptions = { size:'lg',  backdrop: 'static'};
     this.taskInfoOptions = { size:'lg'};
+    this.updateStatusOption = {size:'sm', backdrop: 'static'};
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
     this.list.hookToQuery(streamCreator)?.subscribe((response) => {
       this.tasks = response;
       setTimeout(() => {
-        this.toggleGroup();
-      }, 1500);
+        this.toggleGroup(true);
+      }, 1000);
     });
 
     this.localizationService.get('::AreYouSureDeleteTask').subscribe(s => this.confirmationTitle = s);
     this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.Tasks.Edit') || this.permissionService.getGrantedPolicy('Vayu.Tasks.Delete')
-    this.taskService.getTeamLookup([]).subscribe(x => this.staffOptions = x);
 
-    this.selectStaffControl.valueChanges.subscribe((x) => {
+    this.selectTeamMemberControl.valueChanges.subscribe((x) => {
       this.addTeamMember(x);
     });
   }
@@ -100,16 +113,21 @@ export class TaskComponent implements OnInit {
     this.contactNumberControl = new FormControl(this.selectedTask.contactNumber || null, [Validators.pattern(this.phonePattern)]);
     this.teamMemberIdsControl = new FormControl(this.selectedTask.teamMemberIds || null, [Validators.required]);
 
+    if (this.selectedTask) {
+      this.selectedTeamMemberIds = this.selectedTask.teamMemberIds;
+      this.taskService.getTeamLookup(this.selectedTeamMemberIds).subscribe(x => this.teamMemberOptions = x);
+      this.taskService.getStaffMany(this.selectedTask.teamMemberIds)
+        .subscribe(x => this.teamMembers = x);
+    }
+
     this.form = this.fb.group({
       taskTypeId: this.taskTypeIdControl,
       status: this.statusControl,
       description: this.descriptionControl,
-      //createDateTime: this.createDateTimeControl,
-      //completeDateTime: this.completeDateTimeControl,
       note: this.noteControl,
       leaderId: this.leaderIdControl,
       contactPerson: this.contactPersonControl,
-      contactNumber: this.contactPersonControl,
+      contactNumber: this.contactNumberControl,
       teamMemberIds: this.teamMemberIdsControl
     });
   }
@@ -145,7 +163,8 @@ export class TaskComponent implements OnInit {
 
     if (!this.selectedTask.id) {
       this.statusControl.setValue(Status.Initial, {emitEvent: false});
-      //this.createDateTimeControl.setValue(new Date(), {emitEvent: false});
+    } else {
+      this.statusControl.setValue(this.selectedTask.status, {emitEvent: false});
     }
 
     let dto = <TaskCreateUpdateDto>this.form.value;
@@ -178,10 +197,12 @@ export class TaskComponent implements OnInit {
     if (id) {
       this.staffService.get(id).subscribe((x) => {
         this.teamMembers.push(x);
-        this.selectStaffControl.setValue(null,{emitEvent: false});
-        let ids = this.teamMemberIdsControl.value ?? [];
-        ids.push(id);
-        this.teamMemberIdsControl.setValue(ids, {emitEvent: false});
+        this.selectTeamMemberControl.setValue(null,{emitEvent: false});
+        this.selectedTeamMemberIds = <string[]>this.teamMemberIdsControl.value ?? [];
+        this.selectedTeamMemberIds.push(id);
+        this.teamMemberIdsControl.setValue(this.selectedTeamMemberIds, {emitEvent: false});
+
+        this.taskService.getTeamLookup(this.selectedTeamMemberIds).subscribe(x => this.teamMemberOptions = x);
       });
     }
   }
@@ -193,7 +214,81 @@ export class TaskComponent implements OnInit {
     this.table.groupHeader.toggleExpandGroup(group);
   }
 
-  toggleGroup() {
+  toggleGroup(toggle: boolean) {
+    if (toggle == this.expandAll) return;
     this.table.groupedRows.forEach(x => this.table.groupHeader.toggleExpandGroup(x));
+    this.expandAll = toggle;
+  }
+
+  getDurationText(start: string, end: string): Observable<string> {
+    const startDate = new Date(start);
+    const completeDate = end ? new Date(end) : new Date();
+    const timeSpan = getTimeSpan(startDate, completeDate);
+    if (timeSpan.day == 0 || !timeSpan.day) {
+      return this.localizationService.get('::DurationHM', ...[timeSpan.hour.toString(), timeSpan.minute.toString()]);
+    } else {
+      return this.localizationService.get('::DurationDH', ...[timeSpan.day.toString(), timeSpan.hour.toString(), timeSpan.minute.toString()]);
+    }
+  }
+
+  canUpdateStatus(userId: string) : boolean {
+    const currentUserId = this.config.getDeep("currentUser.id");
+    return this.permissionService.getGrantedPolicy('Vayu.Tasks.UpdateStatus') || currentUserId == userId;
+  }
+
+  openUpdateStatus(task: TaskWithNavigatePropertiesDto) {
+    this.selectedTaskUpdateStatus = task;
+    this.statusOptions = task.availableStatus;
+
+    this.selectStatusControl = new FormControl(this.statusOptions[0].status, [Validators.required]);
+    this.selectStatusControl.valueChanges.subscribe((x) => {
+      const availableStatus = this.selectedTaskUpdateStatus.availableStatus.find(f => f.status == x);
+      this.requiredNote = availableStatus.requiredNote;
+      this.selectStatusNoteControl.setValue(null,{emitEvent: false});
+      if (this.requiredNote == true )
+        this.selectStatusNoteControl.setValidators([Validators.required]);
+      else
+        this.selectStatusNoteControl.clearValidators();
+
+      this.selectStatusNoteControl.updateValueAndValidity();
+    });
+
+    this.requiredNote = this.statusOptions.find(x => x.status == this.selectStatusControl.value).requiredNote;
+    this.selectStatusNoteControl = this.requiredNote == true ? new FormControl(null,[Validators.required]) : new FormControl();
+    this.formStatus = this.fb.group({
+      status: this.selectStatusControl,
+      note: this.selectStatusNoteControl
+    });
+
+    this.isUpdateStatusModalOpen = true;
+  }
+
+  getUpdateStatusHeader(): Observable<string> {
+    return this.localizationService.get('::Enum:Status:' + this.selectedTaskUpdateStatus.task.status)
+      .pipe(switchMap((x) => {
+        return this.localizationService.get('::UpdateStatusFrom', ...[x])
+      }));
+  }
+
+  updateStatus(){
+    if (this.formStatus.invalid) {
+      return;
+    }
+
+    let input = <TaskStatusDto>this.formStatus.value;
+    input.taskId = this.selectedTaskUpdateStatus.task.id;
+    let isError: boolean;
+    this.taskService.updateTaskStatus(input).subscribe(() => {
+      this.snackBarMessage = 'UpdateStatusComplete';
+    }, (error) => {
+      this.snackBarMessage = `UpdateStatusFail ${error.message}`;
+      isError = true;
+    },() =>{
+      console.log('complete')
+      this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
+      this.isUpdateStatusModalOpen = false;
+      this.formStatus.reset();
+      this.list.get();
+    });
   }
 }

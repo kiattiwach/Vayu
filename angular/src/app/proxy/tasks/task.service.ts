@@ -1,4 +1,4 @@
-import type { TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskViewDto, TaskWithNavigatePropertiesDto } from './models';
+import type { TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskStatusDto, TaskViewDto, TaskWithNavigatePropertiesDto } from './models';
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
@@ -55,6 +55,15 @@ export class TaskService {
     { apiName: this.apiName });
   
 
+  getStaffMany = (ids: string[]) =>
+    this.restService.request<any, StaffDto[]>({
+      method: 'POST',
+      url: `/api/task/get-staff-many/${ids}`,
+      body: ids,
+    },
+    { apiName: this.apiName });
+  
+
   getTaskInfo = (id: string) =>
     this.restService.request<any, TaskViewDto>({
       method: 'GET',
@@ -76,7 +85,8 @@ export class TaskService {
   getTeamLookup = (ids: string[]) =>
     this.restService.request<any, StaffDto[]>({
       method: 'POST',
-      url: '/api/task/get-team-lookup',
+      url: `/api/task/get-team-lookup/${ids}`,
+      body: ids,
     },
     { apiName: this.apiName });
   
@@ -85,6 +95,15 @@ export class TaskService {
     this.restService.request<any, TaskDto>({
       method: 'POST',
       url: `/api/task/update/${input}`,
+      body: input,
+    },
+    { apiName: this.apiName });
+  
+
+  updateTaskStatus = (input: TaskStatusDto) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: `/api/task/update-task-status/${input}`,
       body: input,
     },
     { apiName: this.apiName });
