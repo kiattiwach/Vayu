@@ -254,7 +254,7 @@
                 <i class="fa fa-tasks me-1"></i>
                 {{ '::ViewTaskInfo' | abpLocalization }}
               </button>
-              <button *ngIf="canUpdateStatus(row.staff.userId)" ngbDropdownItem (click)="openUpdateStatus(row)">
+              <button *ngIf="canUpdateStatus(row.staff.userId, row.task.creatorId)" ngbDropdownItem (click)="openUpdateStatus(row)">
                 <i class="fa fa-history fa-flip-horizontal me-1"></i>
                 {{ '::UpdateStatus' | abpLocalization }}
               </button>
@@ -265,7 +265,10 @@
       <ngx-datatable-column [name]="'::TaskType' | abpLocalization" prop="taskType.name"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="task.status">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ '::Enum:Status:' + row.task.status | abpLocalization }}
+          <div [ngStyle]="{'border-bottom':getColor(row.statusColor)}">
+            {{ '::Enum:Status:' + row.task.status | abpLocalization }}:
+            {{getLastStatusDurationText(row.taskStatuses) | async}}
+          </div>
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column [name]="'::TaskOverAllDuration' | abpLocalization" prop="task.overAllDuration">

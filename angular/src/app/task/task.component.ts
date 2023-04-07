@@ -13,9 +13,8 @@ import {
 } from "@proxy/tasks";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
-import {Confirmation} from "@abp/ng.theme.shared";
 import {StaffDto, StaffService} from "@proxy/staffs";
-import {Observable, switchMap} from "rxjs";
+import {Observable, of, switchMap} from "rxjs";
 import { Guid } from "guid-typescript";
 import {TaskTypeService} from "@proxy/task-types";
 
@@ -236,6 +235,13 @@ export class TaskComponent implements OnInit {
     this.expandAll = toggle;
   }
 
+  getLastStatusDurationText(taskStatuses: TaskStatusDto[]): Observable<string> {
+      const taskStatus = taskStatuses[taskStatuses.length - 1];
+      if (taskStatus == null) return of('');
+
+      return this.getDurationText(taskStatus.creationTime.toString(),null);
+  }
+
   getDurationText(start: string, end: string): Observable<string> {
     const startDate = new Date(start);
     const completeDate = end ? new Date(end) : new Date();
@@ -247,9 +253,10 @@ export class TaskComponent implements OnInit {
     }
   }
 
-  canUpdateStatus(userId: string) : boolean {
+  canUpdateStatus(userId: string, creatorId: string) : boolean {
     const currentUserId = this.config.getDeep("currentUser.id");
-    return this.permissionService.getGrantedPolicy('Vayu.Tasks.UpdateStatus') || currentUserId == userId;
+    return this.permissionService.getGrantedPolicy('Vayu.Tasks.UpdateStatus') || currentUserId == userId
+      || currentUserId == creatorId;
   }
 
   openUpdateStatus(task: TaskWithNavigatePropertiesDto) {
@@ -306,5 +313,9 @@ export class TaskComponent implements OnInit {
       this.formStatus.reset();
       this.list.get();
     });
+  }
+
+  getColor(color: any) {
+    return '5px solid #'+color;
   }
 }

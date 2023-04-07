@@ -73,11 +73,10 @@ public class TaskService : VayuAppService, ITaskService
             input.Status, input.MinCreateDateTime, input.MaxCreateDateTime, input.MinCompleteDateTime,
             input.MaxCompleteDateTime, input.Note, input.StaffId, input.ContactPerson, input.ContactNumber,
             new List<Guid>() { input.StaffId ?? Guid.Empty }, input.MaxResultCount, input.SkipCount, input.Sorting);
+        var result = ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items);
+        
 
-        var x = ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items);
-
-        return new PagedResultDto<TaskWithNavigatePropertiesDto>(count,
-            ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items));
+        return new PagedResultDto<TaskWithNavigatePropertiesDto>(count, result);
     }
 
     [Authorize(VayuPermissions.Tasks.Create)]
@@ -194,7 +193,7 @@ public class TaskService : VayuAppService, ITaskService
                 Active = true,//i == taskStatus.Count - 1,
                 Label = GetLabel(i),
                 Icon = GetIcon(x.Status),
-                Color =  GetColor(x.Status)
+                Color =  x.Status.GetColor()
             }).ToList();
 
         result.LatestStatusDuration = result.StatusTimeliness?.LastOrDefault()?.Label;
@@ -225,15 +224,6 @@ public class TaskService : VayuAppService, ITaskService
                 .GetProperty(status.ToString())?
                 .GetValue(instance)?
                 .ToString();
-        }
-
-        string GetColor(Status status)
-        {
-            var instance = Activator.CreateInstance(typeof(StatusColor));
-            var color = (Color)instance?.GetType()?
-                .GetProperty(status.ToString())?
-                .GetValue(instance)!;
-            return $"{color.R:X2}{color.G:X2}{color.B:X2}";
         }
     }
 
