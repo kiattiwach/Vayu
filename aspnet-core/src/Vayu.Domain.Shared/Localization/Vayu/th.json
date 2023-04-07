@@ -176,6 +176,10 @@
     "TaskOverAllDuration": "ระยะเวลาการดำเนินงาน",
     "ViewTaskInfo": "ดูรายละเอียดงาน",
     "UpdateStatus": "ปรับปรุงสถานะ",
-    "UpdateStatusFrom": "เปลี่ยนสถานะจาก {0}"
+    "UpdateStatusFrom": "เปลี่ยนสถานะจาก {0}",
+    "CreateDateTimeBegin": "เริ่มต้น ตั้งแต่",
+    "CreateDateTimeEnd": "เริ่มต้น ถึง",
+    "CompleteDateTimeBegin": "สิ้นสุด ตั้งแต่",
+    "CompleteDateTimeEnd": "สิ้นสุด ถึง"
   }
 }

@@ -209,10 +209,7 @@ public class TaskService : VayuAppService, ITaskService
             if (taskStatus.Count == 1 || taskStatus.Count - 1 == index)
             {
                 timeSpan = DateTime.Now.Subtract(taskStatus[index].CreationTime);
-            }/* else if (taskStatus.Count - 1 == index)
-            {
-                return string.Empty;
-            }*/
+            }
             else
             {
                 timeSpan = taskStatus[index + 1].CreationTime.Subtract(taskStatus[index].CreationTime);
@@ -262,6 +259,24 @@ public class TaskService : VayuAppService, ITaskService
     public async Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids)
     {
         return ObjectMapper.Map<List<Staff>, List<StaffDto>>(await _staffRepository.GetListAsync(x => ids.Contains(x.Id)));
+    }
+
+    public Task<PagedResultDto<LookupDto<Status>>> GetTaskStatusListAsync(LookupRequestDto input)
+    {
+        var taskStatus = Enum.GetValues(typeof(Status))
+            .Cast<Status>()
+            .WhereIf(input.Filter != null, x => _stringLocalize["Enum:Status:" + x.ToString()].ToString().Contains(input.Filter))
+            .Select(s => new LookupDto<Status>()
+            {
+                Id = s,
+                DisplayName = _stringLocalize["Enum:Status:" + s.ToString()]
+            }).ToList();
+
+        return System.Threading.Tasks.Task.FromResult(new PagedResultDto<LookupDto<Status>>()
+        {
+            TotalCount = taskStatus.Count,
+            Items = taskStatus
+        });
     }
 
     private string GetDuration(TimeSpan timeSpan)

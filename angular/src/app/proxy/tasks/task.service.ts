@@ -1,4 +1,5 @@
 import type { TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskStatusDto, TaskViewDto, TaskWithNavigatePropertiesDto } from './models';
+import type { Status } from './status.enum';
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
@@ -39,8 +40,9 @@ export class TaskService {
 
   getAvailableStaffs = (ids: string[]) =>
     this.restService.request<any, StaffDto[]>({
-      method: 'GET',
+      method: 'POST',
       url: `/api/task/get-available-staffs/${ids}`,
+      body: ids,
     },
     { apiName: this.apiName });
   
@@ -76,6 +78,15 @@ export class TaskService {
     this.restService.request<any, TaskViewDto>({
       method: 'GET',
       url: `/api/task/get-task-info/${id}`,
+    },
+    { apiName: this.apiName });
+  
+
+  getTaskStatusList = (input: LookupRequestDto) =>
+    this.restService.request<any, PagedResultDto<LookupDto<Status>>>({
+      method: 'GET',
+      url: '/api/task/get-task-status-list',
+      params: { filter: input.filter, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName });
   

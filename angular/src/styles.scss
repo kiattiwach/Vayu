@@ -9,6 +9,7 @@
   }
 }
 :root  {
+  --invalid-color: #a94442;
   --lpx-logo: url('/assets/images/logo/logo-light.png');
   --lpx-logo-icon: url('/assets/images/logo/logo-light-thumbnail.png');
   //--lpx-brand: #edae53;
@@ -32,7 +33,7 @@
 }
 
 .ng-invalid:not(form),  {
-  border-left: 5px solid #a94442; /* red */
+  border-left: 5px solid var(--invalid-color); /* red */
 }
 
 .snackbar-error {

@@ -17,6 +17,7 @@ import {Confirmation} from "@abp/ng.theme.shared";
 import {StaffDto, StaffService} from "@proxy/staffs";
 import {Observable, switchMap} from "rxjs";
 import { Guid } from "guid-typescript";
+import {TaskTypeService} from "@proxy/task-types";
 
 @Component({
   selector: 'app-task',
@@ -72,6 +73,7 @@ export class TaskComponent implements OnInit {
                 private localizationService: LocalizationService,
                 private permissionService: PermissionService,
                 private staffService: StaffService,
+                private taskTypeService: TaskTypeService,
                 private config: ConfigStateService) { }
 
   ngOnInit(): void {
@@ -109,7 +111,10 @@ export class TaskComponent implements OnInit {
     this.completeDateTimeControl = new FormControl(this.selectedTask.completeDateTime ? new Date(this.selectedTask.completeDateTime) : null);
     this.noteControl = new FormControl(this.selectedTask.note || null);
     this.leaderIdControl = new FormControl(this.selectedTask.leaderId || null, [Validators.required]);
-    this.leaderIdControl.valueChanges.subscribe(() => this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x))
+    this.leaderIdControl.valueChanges.subscribe((id) => {
+      this.teamMembers = this.teamMembers.filter(x => x.id != id);
+      this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
+    })
     this.contactPersonControl = new FormControl(this.selectedTask.contactPerson || null);
     this.contactNumberControl = new FormControl(this.selectedTask.contactNumber || null, [Validators.pattern(this.phonePattern)]);
     this.teamMemberIdsControl = new FormControl(this.selectedTask.teamMemberIds || null, [Validators.required]);
@@ -137,17 +142,16 @@ export class TaskComponent implements OnInit {
   }
 
   private getUnavailableStaffs(): string[] {
-      let result: string[]=[];
-      if (this.leaderIdControl.value)
-        result.push(this.leaderIdControl.value);
+    let result: string[] = [];
+    if (this.leaderIdControl.value)
+      result.push(this.leaderIdControl.value);
 
-      if (this.selectedTeamMemberIds?.length > 0)
-        result.push(...this.selectedTeamMemberIds);
+    if (this.selectedTeamMemberIds?.length > 0)
+      result.push(...this.selectedTeamMemberIds);
 
-      if (result.length == 0)
-        result.push(Guid.EMPTY);
-
-      return result;
+    if (result.length == 0)
+      result.push(Guid.EMPTY);
+    return result;
   }
 
   edit(id: string){
@@ -207,7 +211,7 @@ export class TaskComponent implements OnInit {
       this.staffService.get(id).subscribe((x) => {
         this.teamMembers.push(x);
         this.selectTeamMemberControl.setValue(null,{emitEvent: false});
-        this.selectedTeamMemberIds = <string[]>this.teamMemberIdsControl.value ?? [Guid.EMPTY];
+        this.selectedTeamMemberIds = <string[]>this.teamMemberIdsControl.value ?? [];
         this.selectedTeamMemberIds.push(id);
         this.teamMemberIdsControl.setValue(this.selectedTeamMemberIds, {emitEvent: false});
 
@@ -215,8 +219,11 @@ export class TaskComponent implements OnInit {
       });
     }
   }
+
   teamChange(event: string[]) {
     this.teamMembers = this.teamMembers.filter(x => event?.some(id => id == x.id));
+    this.selectedTeamMemberIds = this.teamMembers.map(x => x.id);
+    this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
   }
 
   toggleExpandGroup(group) {

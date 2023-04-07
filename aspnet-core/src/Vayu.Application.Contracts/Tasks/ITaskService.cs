@@ -21,4 +21,5 @@ public interface ITaskService : IApplicationService
     Task<TaskViewDto> GetTaskInfoAsync(Guid id);
     Task UpdateTaskStatusAsync(TaskStatusDto input);
     Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids);
+    Task<PagedResultDto<LookupDto<Status>>> GetTaskStatusListAsync(LookupRequestDto input);
 }

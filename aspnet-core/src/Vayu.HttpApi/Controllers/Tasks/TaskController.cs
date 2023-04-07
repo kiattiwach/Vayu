@@ -62,7 +62,7 @@ public class TaskController : VayuController, ITaskService
         return _taskService.GetStaffLookupAsync(input);
     }
 
-    [HttpGet("get-available-staffs/{ids}")]
+    [HttpPost("get-available-staffs/{ids}")]
     public Task<List<StaffDto>> GetAvailableStaffsAsync(Guid[] ids)
     {
         return _taskService.GetAvailableStaffsAsync(ids);
@@ -84,5 +84,11 @@ public class TaskController : VayuController, ITaskService
     public Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids)
     {
         return _taskService.GetStaffManyAsync(ids);
+    }
+
+    [HttpGet("get-task-status-list")]
+    public Task<PagedResultDto<LookupDto<Status>>> GetTaskStatusListAsync(LookupRequestDto input)
+    {
+        return _taskService.GetTaskStatusListAsync(input);
     }
 }
