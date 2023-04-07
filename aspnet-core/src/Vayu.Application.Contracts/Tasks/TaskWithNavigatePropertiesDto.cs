@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using Vayu.Shared;
 using Vayu.Staffs;
 using Vayu.TaskTypes;
 
@@ -72,5 +75,9 @@ public class TaskWithNavigatePropertiesDto
     public TaskTypeDto TaskType { get; set; }
     public StaffDto Staff { get; set; }
     public List<StaffDto> TeamMembers { get; set; }
+    public List<TaskStatusDto> TaskStatuses { get; set; }
     public AvailableStatusDto[] AvailableStatus => _availableStatus[Task.Status];
+    public string StatusColor => Task.Status.GetColor();
+
+
 }

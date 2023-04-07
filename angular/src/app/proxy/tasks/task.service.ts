@@ -1,4 +1,5 @@
 import type { TaskCreateUpdateDto, TaskDto, TaskFilterDto, TaskStatusDto, TaskViewDto, TaskWithNavigatePropertiesDto } from './models';
+import type { Status } from './status.enum';
 import { RestService } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
@@ -37,6 +38,15 @@ export class TaskService {
     { apiName: this.apiName });
   
 
+  getAvailableStaffs = (ids: string[]) =>
+    this.restService.request<any, StaffDto[]>({
+      method: 'POST',
+      url: `/api/task/get-available-staffs/${ids}`,
+      body: ids,
+    },
+    { apiName: this.apiName });
+  
+
   getList = (input: TaskFilterDto) =>
     this.restService.request<any, PagedResultDto<TaskWithNavigatePropertiesDto>>({
       method: 'POST',
@@ -67,8 +77,16 @@ export class TaskService {
   getTaskInfo = (id: string) =>
     this.restService.request<any, TaskViewDto>({
       method: 'GET',
-      url: '/api/task/get-task-info',
-      params: { id },
+      url: `/api/task/get-task-info/${id}`,
+    },
+    { apiName: this.apiName });
+  
+
+  getTaskStatusList = (input: LookupRequestDto) =>
+    this.restService.request<any, PagedResultDto<LookupDto<Status>>>({
+      method: 'GET',
+      url: '/api/task/get-task-status-list',
+      params: { filter: input.filter, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName });
   
@@ -78,15 +96,6 @@ export class TaskService {
       method: 'POST',
       url: `/api/task/get-task-type-lookup/${input}`,
       body: input,
-    },
-    { apiName: this.apiName });
-  
-
-  getTeamLookup = (ids: string[]) =>
-    this.restService.request<any, StaffDto[]>({
-      method: 'POST',
-      url: `/api/task/get-team-lookup/${ids}`,
-      body: ids,
     },
     { apiName: this.apiName });
   

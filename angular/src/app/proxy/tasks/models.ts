@@ -1,5 +1,5 @@
 import type { Status } from './status.enum';
-import type { EntityDto, FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
+import type { AuditedEntityDto, EntityDto, FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { TaskTypeDto } from '../task-types/models';
 import type { StaffDto } from '../staffs/models';
 
@@ -51,7 +51,7 @@ export interface TaskFilterDto extends PagedAndSortedResultRequestDto {
   contactNumber?: string;
 }
 
-export interface TaskStatusDto extends EntityDto<string> {
+export interface TaskStatusDto extends AuditedEntityDto<string> {
   taskId?: string;
   status: Status;
   note?: string;
@@ -96,5 +96,7 @@ export interface TaskWithNavigatePropertiesDto {
   taskType: TaskTypeDto;
   staff: StaffDto;
   teamMembers: StaffDto[];
+  taskStatuses: TaskStatusDto[];
   availableStatus: AvailableStatusDto[];
+  statusColor?: string;
 }

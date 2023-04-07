@@ -4,7 +4,7 @@ using Volo.Abp.Application.Dtos;
 
 namespace Vayu.Tasks;
 
-public class TaskStatusDto : EntityDto<Guid>
+public class TaskStatusDto : AuditedEntityDto<Guid>
 {
     public Guid TaskId { get; set; }
     public Status Status { get; set; }

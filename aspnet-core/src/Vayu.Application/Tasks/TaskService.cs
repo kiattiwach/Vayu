@@ -73,11 +73,10 @@ public class TaskService : VayuAppService, ITaskService
             input.Status, input.MinCreateDateTime, input.MaxCreateDateTime, input.MinCompleteDateTime,
             input.MaxCompleteDateTime, input.Note, input.StaffId, input.ContactPerson, input.ContactNumber,
             new List<Guid>() { input.StaffId ?? Guid.Empty }, input.MaxResultCount, input.SkipCount, input.Sorting);
+        var result = ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items);
+        
 
-        var x = ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items);
-
-        return new PagedResultDto<TaskWithNavigatePropertiesDto>(count,
-            ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items));
+        return new PagedResultDto<TaskWithNavigatePropertiesDto>(count, result);
     }
 
     [Authorize(VayuPermissions.Tasks.Create)]
@@ -158,7 +157,7 @@ public class TaskService : VayuAppService, ITaskService
         return new PagedResultDto<LookupDto<Guid>>(items.Count, ObjectMapper.Map<List<Staff>, List<LookupDto<Guid>>>(items));
     }
 
-    public async Task<List<StaffDto>> GetTeamLookupAsync(List<Guid> ids)
+    public async Task<List<StaffDto>> GetAvailableStaffsAsync(Guid[] ids)
     {
         var query = (await _staffRepository.GetQueryableAsync())
             .WhereIf(ids.Any(), x => !ids.Contains(x.Id));
@@ -194,7 +193,7 @@ public class TaskService : VayuAppService, ITaskService
                 Active = true,//i == taskStatus.Count - 1,
                 Label = GetLabel(i),
                 Icon = GetIcon(x.Status),
-                Color =  GetColor(x.Status)
+                Color =  x.Status.GetColor()
             }).ToList();
 
         result.LatestStatusDuration = result.StatusTimeliness?.LastOrDefault()?.Label;
@@ -209,10 +208,7 @@ public class TaskService : VayuAppService, ITaskService
             if (taskStatus.Count == 1 || taskStatus.Count - 1 == index)
             {
                 timeSpan = DateTime.Now.Subtract(taskStatus[index].CreationTime);
-            }/* else if (taskStatus.Count - 1 == index)
-            {
-                return string.Empty;
-            }*/
+            }
             else
             {
                 timeSpan = taskStatus[index + 1].CreationTime.Subtract(taskStatus[index].CreationTime);
@@ -228,15 +224,6 @@ public class TaskService : VayuAppService, ITaskService
                 .GetProperty(status.ToString())?
                 .GetValue(instance)?
                 .ToString();
-        }
-
-        string GetColor(Status status)
-        {
-            var instance = Activator.CreateInstance(typeof(StatusColor));
-            var color = (Color)instance?.GetType()?
-                .GetProperty(status.ToString())?
-                .GetValue(instance)!;
-            return $"{color.R:X2}{color.G:X2}{color.B:X2}";
         }
     }
 
@@ -262,6 +249,24 @@ public class TaskService : VayuAppService, ITaskService
     public async Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids)
     {
         return ObjectMapper.Map<List<Staff>, List<StaffDto>>(await _staffRepository.GetListAsync(x => ids.Contains(x.Id)));
+    }
+
+    public Task<PagedResultDto<LookupDto<Status>>> GetTaskStatusListAsync(LookupRequestDto input)
+    {
+        var taskStatus = Enum.GetValues(typeof(Status))
+            .Cast<Status>()
+            .WhereIf(input.Filter != null, x => _stringLocalize["Enum:Status:" + x.ToString()].ToString().Contains(input.Filter))
+            .Select(s => new LookupDto<Status>()
+            {
+                Id = s,
+                DisplayName = _stringLocalize["Enum:Status:" + s.ToString()]
+            }).ToList();
+
+        return System.Threading.Tasks.Task.FromResult(new PagedResultDto<LookupDto<Status>>()
+        {
+            TotalCount = taskStatus.Count,
+            Items = taskStatus
+        });
     }
 
     private string GetDuration(TimeSpan timeSpan)

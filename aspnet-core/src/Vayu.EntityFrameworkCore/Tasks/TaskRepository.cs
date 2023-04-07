@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Microsoft.EntityFrameworkCore;
 using Vayu.EntityFrameworkCore;
 using Vayu.Staffs;
@@ -74,6 +75,10 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             where teamMemberIds.Contains(taskStaff.StaffId)
                 select staff;
 
+        var taskStatuses = from taskStatus in (await GetDbContextAsync()).Set<TaskStatus>()
+            join task in taskQuery on taskStatus.TaskId equals task.Id
+            select taskStatus;
+
         var result = from task in taskQuery
             join taskType in (await GetDbContextAsync()).Set<TaskType>() on task.TaskTypeId equals taskType.Id
             join leader in (await GetDbContextAsync()).Set<Staff>() on task.LeaderId equals leader.Id
@@ -83,7 +88,8 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
                 Task = task,
                 TaskType = taskType,
                 Reader = leader,
-                TeamMembers = taskStaffs.ToList()
+                TeamMembers = taskStaffs.ToList(),
+                TaskStatuses = taskStatuses.OrderBy(x => x.CreationTime).ToList()
             };
 
         return result;

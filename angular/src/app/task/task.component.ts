@@ -13,10 +13,10 @@ import {
 } from "@proxy/tasks";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
-import {Confirmation} from "@abp/ng.theme.shared";
 import {StaffDto, StaffService} from "@proxy/staffs";
-import {Observable, switchMap} from "rxjs";
-import {loadTranslations} from "@angular/localize";
+import {Observable, of, switchMap} from "rxjs";
+import { Guid } from "guid-typescript";
+import {TaskTypeService} from "@proxy/task-types";
 
 @Component({
   selector: 'app-task',
@@ -72,6 +72,7 @@ export class TaskComponent implements OnInit {
                 private localizationService: LocalizationService,
                 private permissionService: PermissionService,
                 private staffService: StaffService,
+                private taskTypeService: TaskTypeService,
                 private config: ConfigStateService) { }
 
   ngOnInit(): void {
@@ -109,16 +110,23 @@ export class TaskComponent implements OnInit {
     this.completeDateTimeControl = new FormControl(this.selectedTask.completeDateTime ? new Date(this.selectedTask.completeDateTime) : null);
     this.noteControl = new FormControl(this.selectedTask.note || null);
     this.leaderIdControl = new FormControl(this.selectedTask.leaderId || null, [Validators.required]);
+    this.leaderIdControl.valueChanges.subscribe((id) => {
+      this.teamMembers = this.teamMembers.filter(x => x.id != id);
+      this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
+    })
     this.contactPersonControl = new FormControl(this.selectedTask.contactPerson || null);
     this.contactNumberControl = new FormControl(this.selectedTask.contactNumber || null, [Validators.pattern(this.phonePattern)]);
     this.teamMemberIdsControl = new FormControl(this.selectedTask.teamMemberIds || null, [Validators.required]);
 
-    if (this.selectedTask) {
+    if (this.selectedTask.id) {
       this.selectedTeamMemberIds = this.selectedTask.teamMemberIds;
-      this.taskService.getTeamLookup(this.selectedTeamMemberIds).subscribe(x => this.teamMemberOptions = x);
       this.taskService.getStaffMany(this.selectedTask.teamMemberIds)
         .subscribe(x => this.teamMembers = x);
+    } else {
+      this.selectedTeamMemberIds = [];
     }
+
+    this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
 
     this.form = this.fb.group({
       taskTypeId: this.taskTypeIdControl,
@@ -130,6 +138,19 @@ export class TaskComponent implements OnInit {
       contactNumber: this.contactNumberControl,
       teamMemberIds: this.teamMemberIdsControl
     });
+  }
+
+  private getUnavailableStaffs(): string[] {
+    let result: string[] = [];
+    if (this.leaderIdControl.value)
+      result.push(this.leaderIdControl.value);
+
+    if (this.selectedTeamMemberIds?.length > 0)
+      result.push(...this.selectedTeamMemberIds);
+
+    if (result.length == 0)
+      result.push(Guid.EMPTY);
+    return result;
   }
 
   edit(id: string){
@@ -144,15 +165,6 @@ export class TaskComponent implements OnInit {
     this.taskService.getTaskInfo(id).subscribe((s) => {
       this.isViewModalOpen = true;
       this.taskViewDto = s;
-    });
-  }
-
-  //todo-remove
-  delete(id: string, name: string) {
-    this.vayuServiceService.displayConfirmDelete(this.confirmationTitle,name).subscribe((status) =>{
-      if (status === Confirmation.Status.confirm) {
-        this.taskService.delete(id).subscribe(() => this.list.get());
-      }
     });
   }
 
@@ -202,12 +214,15 @@ export class TaskComponent implements OnInit {
         this.selectedTeamMemberIds.push(id);
         this.teamMemberIdsControl.setValue(this.selectedTeamMemberIds, {emitEvent: false});
 
-        this.taskService.getTeamLookup(this.selectedTeamMemberIds).subscribe(x => this.teamMemberOptions = x);
+        this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
       });
     }
   }
+
   teamChange(event: string[]) {
     this.teamMembers = this.teamMembers.filter(x => event?.some(id => id == x.id));
+    this.selectedTeamMemberIds = this.teamMembers.map(x => x.id);
+    this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
   }
 
   toggleExpandGroup(group) {
@@ -218,6 +233,13 @@ export class TaskComponent implements OnInit {
     if (toggle == this.expandAll) return;
     this.table.groupedRows.forEach(x => this.table.groupHeader.toggleExpandGroup(x));
     this.expandAll = toggle;
+  }
+
+  getLastStatusDurationText(taskStatuses: TaskStatusDto[]): Observable<string> {
+      const taskStatus = taskStatuses[taskStatuses.length - 1];
+      if (taskStatus == null) return of('');
+
+      return this.getDurationText(taskStatus.creationTime.toString(),null);
   }
 
   getDurationText(start: string, end: string): Observable<string> {
@@ -231,9 +253,10 @@ export class TaskComponent implements OnInit {
     }
   }
 
-  canUpdateStatus(userId: string) : boolean {
+  canUpdateStatus(userId: string, creatorId: string) : boolean {
     const currentUserId = this.config.getDeep("currentUser.id");
-    return this.permissionService.getGrantedPolicy('Vayu.Tasks.UpdateStatus') || currentUserId == userId;
+    return this.permissionService.getGrantedPolicy('Vayu.Tasks.UpdateStatus') || currentUserId == userId
+      || currentUserId == creatorId;
   }
 
   openUpdateStatus(task: TaskWithNavigatePropertiesDto) {
@@ -290,5 +313,9 @@ export class TaskComponent implements OnInit {
       this.formStatus.reset();
       this.list.get();
     });
+  }
+
+  getColor(color: any) {
+    return '5px solid #'+color;
   }
 }
