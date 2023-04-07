@@ -75,21 +75,16 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             where teamMemberIds.Contains(taskStaff.StaffId)
                 select staff;
 
-        var taskStatuses = from taskStatus in (await GetDbContextAsync()).Set<TaskStatus>()
-            join task in taskQuery on taskStatus.TaskId equals task.Id
-            select taskStatus;
-
         var result = from task in taskQuery
             join taskType in (await GetDbContextAsync()).Set<TaskType>() on task.TaskTypeId equals taskType.Id
             join leader in (await GetDbContextAsync()).Set<Staff>() on task.LeaderId equals leader.Id
-
+            
             select new TaskWithNavigateProperties()
             {
                 Task = task,
                 TaskType = taskType,
                 Reader = leader,
-                TeamMembers = taskStaffs.ToList(),
-                TaskStatuses = taskStatuses.OrderBy(x => x.CreationTime).ToList()
+                TeamMembers = taskStaffs.ToList()
             };
 
         return result;

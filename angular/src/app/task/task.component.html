@@ -216,7 +216,8 @@
     </i>
     <ngx-datatable [rows]="tasks?.items" [count]="tasks?.totalCount" [list]="list" default
                    #taskTable
-                   [groupRowsBy]="'task.createDateTime'">
+                   [groupRowsBy]="'groupKey'"
+                   [columnMode]="'force'">
       <!-- Group Header Template -->
       <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader>
         <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
@@ -263,9 +264,9 @@
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column [name]="'::TaskType' | abpLocalization" prop="taskType.name"></ngx-datatable-column>
-      <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="task.status">
+      <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="task.status" width="250">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <div [ngStyle]="{'border-bottom':getColor(row.statusColor)}">
+          <div [ngStyle]="{'border-bottom':getColor(row.statusColor)}" class="text-nowrap">
             {{ '::Enum:Status:' + row.task.status | abpLocalization }}:
             {{getLastStatusDurationText(row.taskStatuses) | async}}
           </div>

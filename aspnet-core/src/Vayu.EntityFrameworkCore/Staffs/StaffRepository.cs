@@ -50,7 +50,9 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
     {
         return (await GetDbSetAsync())
             .WhereIf(id != null, x => x.Id != id)
-            .FirstOrDefault(x => x.RadioCode.Equals(radioCode));
+            .WhereIf(radioCode == null, x => false)
+            .WhereIf(radioCode != null, x => x.RadioCode.Equals(radioCode))
+            .FirstOrDefault();
     }
 
     public async Task<Staff> GetByCodeName(string codeName, Guid? id = null)

@@ -99,4 +99,5 @@ export interface TaskWithNavigatePropertiesDto {
   taskStatuses: TaskStatusDto[];
   availableStatus: AvailableStatusDto[];
   statusColor?: string;
+  groupKey?: string;
 }

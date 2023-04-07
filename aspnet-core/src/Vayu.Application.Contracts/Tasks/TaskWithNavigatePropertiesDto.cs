@@ -78,6 +78,5 @@ public class TaskWithNavigatePropertiesDto
     public List<TaskStatusDto> TaskStatuses { get; set; }
     public AvailableStatusDto[] AvailableStatus => _availableStatus[Task.Status];
     public string StatusColor => Task.Status.GetColor();
-
-
+    public string GroupKey => Task.CreateDateTime.ToShortDateString();
 }

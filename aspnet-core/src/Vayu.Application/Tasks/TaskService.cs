@@ -75,6 +75,11 @@ public class TaskService : VayuAppService, ITaskService
             new List<Guid>() { input.StaffId ?? Guid.Empty }, input.MaxResultCount, input.SkipCount, input.Sorting);
         var result = ObjectMapper.Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(items);
         
+        foreach (var taskWithNavigatePropertiesDto in result)
+        {
+            taskWithNavigatePropertiesDto.TaskStatuses = ObjectMapper.Map<List<TaskStatus>, List<TaskStatusDto>>(
+                (await _taskStatusRepository.GetListAsync(ts => ts.TaskId == taskWithNavigatePropertiesDto.Task.Id)));
+        }
 
         return new PagedResultDto<TaskWithNavigatePropertiesDto>(count, result);
     }
@@ -189,8 +194,8 @@ public class TaskService : VayuAppService, ITaskService
         result.StatusTimeliness = taskStatus
             .Select((x, i) => new TaskStatusTimelineDto()
             {
-                Title = _stringLocalize[$"Enum:Status:{x.Status}"],
-                Active = true,//i == taskStatus.Count - 1,
+                Title = GetTitle(x),
+                Active = true,
                 Label = GetLabel(i),
                 Icon = GetIcon(x.Status),
                 Color =  x.Status.GetColor()
@@ -201,6 +206,11 @@ public class TaskService : VayuAppService, ITaskService
         result.FinalStatus = result.CompleteDateTime == null ? null : taskStatus?.LastOrDefault()?.Status;
 
         return result;
+
+        string GetTitle(TaskStatus status)
+        {
+            return $"{_stringLocalize[$"Enum:Status:{status.Status}"]} {status.Note}";
+        }
 
         string GetLabel(int index)
         {

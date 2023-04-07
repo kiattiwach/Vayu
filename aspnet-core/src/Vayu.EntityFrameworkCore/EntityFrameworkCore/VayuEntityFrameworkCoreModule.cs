@@ -52,6 +52,7 @@ public class VayuEntityFrameworkCoreModule : AbpModule
             options.AddRepository<Staff, StaffRepository>();
             options.AddRepository<Task, TaskRepository>();
             options.AddRepository<TaskStaff, TaskStaffRepository>();
+            options.AddRepository<TaskStatus, TaskStatusRepository>();
         });
 
         Configure<AbpDbContextOptions>(options =>

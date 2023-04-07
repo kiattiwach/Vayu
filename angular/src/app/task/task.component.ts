@@ -8,15 +8,18 @@ import {
   TaskCreateUpdateDto,
   TaskDto,
   TaskFilterDto,
-  TaskService, TaskStatusDto, TaskViewDto,
+  TaskService,
+  TaskStatusDto,
+  TaskViewDto,
   TaskWithNavigatePropertiesDto
 } from "@proxy/tasks";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {StaffDto, StaffService} from "@proxy/staffs";
 import {Observable, of, switchMap} from "rxjs";
-import { Guid } from "guid-typescript";
+import {Guid} from "guid-typescript";
 import {TaskTypeService} from "@proxy/task-types";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-task',
@@ -73,7 +76,8 @@ export class TaskComponent implements OnInit {
                 private permissionService: PermissionService,
                 private staffService: StaffService,
                 private taskTypeService: TaskTypeService,
-                private config: ConfigStateService) { }
+                private config: ConfigStateService,
+                private datePip: DatePipe) { }
 
   ngOnInit(): void {
     this.createUpdateOptions = { size:'lg',  backdrop: 'static'};
@@ -236,10 +240,13 @@ export class TaskComponent implements OnInit {
   }
 
   getLastStatusDurationText(taskStatuses: TaskStatusDto[]): Observable<string> {
-      const taskStatus = taskStatuses[taskStatuses.length - 1];
-      if (taskStatus == null) return of('');
+    const taskStatus = taskStatuses[taskStatuses.length - 1];
+    if (taskStatus == null) return of('');
+    if (taskStatus.status == Status.Cancel || taskStatus.status == Status.Suspended || taskStatus.status == Status.Done) {
+        return of(this.datePip.transform(taskStatus.creationTime,'d MMM YYYY HH:mm'));
+    }
 
-      return this.getDurationText(taskStatus.creationTime.toString(),null);
+    return this.getDurationText(taskStatus.creationTime.toString(), null);
   }
 
   getDurationText(start: string, end: string): Observable<string> {

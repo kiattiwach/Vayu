@@ -11,6 +11,7 @@ import {
 import {Confirmation} from "@abp/ng.theme.shared";
 import {emailPattern, phonePattern} from "../shared/pattern";
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
+import {filter, switchMap, tap} from "rxjs";
 
 @Component({
   selector: 'app-staff',
@@ -183,4 +184,11 @@ export class StaffComponent implements OnInit {
     }
   }
 
+  //todo - make generic method for removing Guid and Enum which are empty or null
+  test(event: any) {
+    console.log(this.filters);
+    if (this.filters?.roleId=='') {
+      delete this.filters['roleId'];
+    }
+  }
 }

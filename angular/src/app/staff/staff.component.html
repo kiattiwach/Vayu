@@ -14,6 +14,7 @@
               id="roleFilter"
               (ngModelChange)="list.get()"
               [getFn]="staffService.getRoleLookup"
+              (change)="test($event)"
               [(ngModel)]="filters.roleId"
               [ngModelOptions]="{ standalone: true }">
             </abp-lookup-select>
