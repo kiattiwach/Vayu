@@ -32,6 +32,7 @@
     "@angular/router": "^14.2.1",
     "@volo/abp.commercial.ng.ui": "^6.0.2",
     "bootstrap-icons": "~1.8.3",
+    "guid-typescript": "^1.0.9",
     "ngx-horizontal-timeline": "^0.0.6",
     "rxjs": "7.5.6",
     "tslib": "^2.1.0",

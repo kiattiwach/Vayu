@@ -37,6 +37,14 @@ export class TaskService {
     { apiName: this.apiName });
   
 
+  getAvailableStaffs = (ids: string[]) =>
+    this.restService.request<any, StaffDto[]>({
+      method: 'GET',
+      url: `/api/task/get-available-staffs/${ids}`,
+    },
+    { apiName: this.apiName });
+  
+
   getList = (input: TaskFilterDto) =>
     this.restService.request<any, PagedResultDto<TaskWithNavigatePropertiesDto>>({
       method: 'POST',
@@ -67,8 +75,7 @@ export class TaskService {
   getTaskInfo = (id: string) =>
     this.restService.request<any, TaskViewDto>({
       method: 'GET',
-      url: '/api/task/get-task-info',
-      params: { id },
+      url: `/api/task/get-task-info/${id}`,
     },
     { apiName: this.apiName });
   
@@ -78,15 +85,6 @@ export class TaskService {
       method: 'POST',
       url: `/api/task/get-task-type-lookup/${input}`,
       body: input,
-    },
-    { apiName: this.apiName });
-  
-
-  getTeamLookup = (ids: string[]) =>
-    this.restService.request<any, StaffDto[]>({
-      method: 'POST',
-      url: `/api/task/get-team-lookup/${ids}`,
-      body: ids,
     },
     { apiName: this.apiName });
   

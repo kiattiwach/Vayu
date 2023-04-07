@@ -16,7 +16,7 @@ import {VayuServiceService} from "../services/vayu-service.service";
 import {Confirmation} from "@abp/ng.theme.shared";
 import {StaffDto, StaffService} from "@proxy/staffs";
 import {Observable, switchMap} from "rxjs";
-import {loadTranslations} from "@angular/localize";
+import { Guid } from "guid-typescript";
 
 @Component({
   selector: 'app-task',
@@ -109,16 +109,20 @@ export class TaskComponent implements OnInit {
     this.completeDateTimeControl = new FormControl(this.selectedTask.completeDateTime ? new Date(this.selectedTask.completeDateTime) : null);
     this.noteControl = new FormControl(this.selectedTask.note || null);
     this.leaderIdControl = new FormControl(this.selectedTask.leaderId || null, [Validators.required]);
+    this.leaderIdControl.valueChanges.subscribe(() => this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x))
     this.contactPersonControl = new FormControl(this.selectedTask.contactPerson || null);
     this.contactNumberControl = new FormControl(this.selectedTask.contactNumber || null, [Validators.pattern(this.phonePattern)]);
     this.teamMemberIdsControl = new FormControl(this.selectedTask.teamMemberIds || null, [Validators.required]);
 
-    if (this.selectedTask) {
+    if (this.selectedTask.id) {
       this.selectedTeamMemberIds = this.selectedTask.teamMemberIds;
-      this.taskService.getTeamLookup(this.selectedTeamMemberIds).subscribe(x => this.teamMemberOptions = x);
       this.taskService.getStaffMany(this.selectedTask.teamMemberIds)
         .subscribe(x => this.teamMembers = x);
+    } else {
+      this.selectedTeamMemberIds = [];
     }
+
+    this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
 
     this.form = this.fb.group({
       taskTypeId: this.taskTypeIdControl,
@@ -130,6 +134,20 @@ export class TaskComponent implements OnInit {
       contactNumber: this.contactNumberControl,
       teamMemberIds: this.teamMemberIdsControl
     });
+  }
+
+  private getUnavailableStaffs(): string[] {
+      let result: string[]=[];
+      if (this.leaderIdControl.value)
+        result.push(this.leaderIdControl.value);
+
+      if (this.selectedTeamMemberIds?.length > 0)
+        result.push(...this.selectedTeamMemberIds);
+
+      if (result.length == 0)
+        result.push(Guid.EMPTY);
+
+      return result;
   }
 
   edit(id: string){
@@ -144,15 +162,6 @@ export class TaskComponent implements OnInit {
     this.taskService.getTaskInfo(id).subscribe((s) => {
       this.isViewModalOpen = true;
       this.taskViewDto = s;
-    });
-  }
-
-  //todo-remove
-  delete(id: string, name: string) {
-    this.vayuServiceService.displayConfirmDelete(this.confirmationTitle,name).subscribe((status) =>{
-      if (status === Confirmation.Status.confirm) {
-        this.taskService.delete(id).subscribe(() => this.list.get());
-      }
     });
   }
 
@@ -198,11 +207,11 @@ export class TaskComponent implements OnInit {
       this.staffService.get(id).subscribe((x) => {
         this.teamMembers.push(x);
         this.selectTeamMemberControl.setValue(null,{emitEvent: false});
-        this.selectedTeamMemberIds = <string[]>this.teamMemberIdsControl.value ?? [];
+        this.selectedTeamMemberIds = <string[]>this.teamMemberIdsControl.value ?? [Guid.EMPTY];
         this.selectedTeamMemberIds.push(id);
         this.teamMemberIdsControl.setValue(this.selectedTeamMemberIds, {emitEvent: false});
 
-        this.taskService.getTeamLookup(this.selectedTeamMemberIds).subscribe(x => this.teamMemberOptions = x);
+        this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
       });
     }
   }

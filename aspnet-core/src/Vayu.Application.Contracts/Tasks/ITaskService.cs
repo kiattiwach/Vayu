@@ -17,7 +17,7 @@ public interface ITaskService : IApplicationService
     Task DeleteAsync(Guid id);
     Task<PagedResultDto<LookupDto<Guid>>> GetTaskTypeLookupAsync(LookupRequestDto input);
     Task<PagedResultDto<LookupDto<Guid>>> GetStaffLookupAsync(LookupRequestDto input);
-    Task<List<StaffDto>> GetTeamLookupAsync(List<Guid> ids);
+    Task<List<StaffDto>> GetAvailableStaffsAsync(Guid[] ids);
     Task<TaskViewDto> GetTaskInfoAsync(Guid id);
     Task UpdateTaskStatusAsync(TaskStatusDto input);
     Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids);

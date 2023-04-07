@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Vayu.Shared;
 using Vayu.Staffs;
@@ -61,13 +62,13 @@ public class TaskController : VayuController, ITaskService
         return _taskService.GetStaffLookupAsync(input);
     }
 
-    [HttpPost("get-team-lookup/{ids}")]
-    public Task<List<StaffDto>> GetTeamLookupAsync(List<Guid> ids)
+    [HttpGet("get-available-staffs/{ids}")]
+    public Task<List<StaffDto>> GetAvailableStaffsAsync(Guid[] ids)
     {
-        return _taskService.GetTeamLookupAsync(ids);
+        return _taskService.GetAvailableStaffsAsync(ids);
     }
 
-    [HttpGet("get-task-info")]
+    [HttpGet("get-task-info/{id}")]
     public Task<TaskViewDto> GetTaskInfoAsync(Guid id)
     {
         return _taskService.GetTaskInfoAsync(id);

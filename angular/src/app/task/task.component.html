@@ -411,12 +411,11 @@
                   {{member.name}}
                 </mat-list-option>
               </mat-selection-list>
-              {{selectedTeamMemberIds}}
+
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>{{'::SelectTeamMember' | abpLocalization}}</mat-label>
                 <select matNativeControl [formControl]="selectTeamMemberControl">
-                  <option [value]="null"></option>
-                  <option *ngFor="let staff of taskService.getTeamLookup(selectedTeamMemberIds) | async" [value]="staff.id">{{staff.name}}</option>
+                  <option *ngFor="let staff of teamMemberOptions" [value]="staff.id">{{staff.name}}</option>
                 </select>
               </mat-form-field>
             </div>

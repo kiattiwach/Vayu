@@ -158,7 +158,7 @@ public class TaskService : VayuAppService, ITaskService
         return new PagedResultDto<LookupDto<Guid>>(items.Count, ObjectMapper.Map<List<Staff>, List<LookupDto<Guid>>>(items));
     }
 
-    public async Task<List<StaffDto>> GetTeamLookupAsync(List<Guid> ids)
+    public async Task<List<StaffDto>> GetAvailableStaffsAsync(Guid[] ids)
     {
         var query = (await _staffRepository.GetQueryableAsync())
             .WhereIf(ids.Any(), x => !ids.Contains(x.Id));
