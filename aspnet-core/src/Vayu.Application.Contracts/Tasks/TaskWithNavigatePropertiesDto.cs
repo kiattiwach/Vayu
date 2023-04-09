@@ -74,7 +74,6 @@ public class TaskWithNavigatePropertiesDto
     public TaskDto Task { get; set; }
     public TaskTypeDto TaskType { get; set; }
     public StaffDto Staff { get; set; }
-    public List<StaffDto> TeamMembers { get; set; }
     public List<TaskStatusDto> TaskStatuses { get; set; }
     public AvailableStatusDto[] AvailableStatus => _availableStatus[Task.Status];
     public string StatusColor => Task.Status.GetColor();

@@ -14,7 +14,7 @@
               id="roleFilter"
               (ngModelChange)="list.get()"
               [getFn]="staffService.getRoleLookup"
-              (change)="test($event)"
+              (change)="vayuServiceService.removeEmptyGuidProp(filters, 'roleId')"
               [(ngModel)]="filters.roleId"
               [ngModelOptions]="{ standalone: true }">
             </abp-lookup-select>
@@ -172,11 +172,11 @@
             </label>
             <input
               id="minStartDateFilter"
-              #datepicker="ngbDatepicker"
+              #minStartDate="ngbDatepicker"
               class="form-control"
               name="datepicker"
               ngbDatepicker
-              (click)="datepicker.toggle()"
+              (click)="minStartDate.toggle()"
               [(ngModel)]="filters.minStartDate"
               (dateSelect)="list.get()"/>
           </div>
@@ -188,11 +188,11 @@
             </label>
             <input
               id="maxStartDateFilter"
-              #datepicker="ngbDatepicker"
+              #maxStartDate="ngbDatepicker"
               class="form-control"
               name="datepicker"
               ngbDatepicker
-              (click)="datepicker.toggle()"
+              (click)="maxStartDate.toggle()"
               [(ngModel)]="filters.maxStartDate"
               (dateSelect)="list.get()"/>
           </div>
@@ -206,11 +206,11 @@
             </label>
             <input
               id="minPassDateFilter"
-              #datepicker="ngbDatepicker"
+              #minPassDate="ngbDatepicker"
               class="form-control"
               name="datepicker"
               ngbDatepicker
-              (click)="datepicker.toggle()"
+              (click)="minPassDate.toggle()"
               [(ngModel)]="filters.minPassAssessmentDate"
               (dateSelect)="list.get()"/>
           </div>
@@ -222,11 +222,11 @@
             </label>
             <input
               id="maxPassDateFilter"
-              #datepicker="ngbDatepicker"
+              #maxPassDate="ngbDatepicker"
               class="form-control"
               name="datepicker"
               ngbDatepicker
-              (click)="datepicker.toggle()"
+              (click)="maxPassDate.toggle()"
               [(ngModel)]="filters.maxPassAssessmentDate"
               (dateSelect)="list.get()"/>
           </div>

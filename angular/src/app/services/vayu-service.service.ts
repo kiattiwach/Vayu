@@ -41,4 +41,10 @@ export class VayuServiceService {
     this.localizationService.get('::Close').subscribe(s => action = s);
     this.snackBar.open(message, action, isError ? snackBarErrorConfig : snackBarConfig);
   }
+
+  removeEmptyGuidProp(object: any, propName: string){
+    if (object.hasOwnProperty(propName) && object[propName] == '') {
+     delete object[propName];
+   }
+  }
 }

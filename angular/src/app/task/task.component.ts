@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ConfigStateService, ListService, LocalizationService, PagedResultDto, PermissionService} from "@abp/ng.core";
 import {NgbDateAdapter, NgbDateNativeAdapter, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import {getTimeSpan, phonePattern} from '../shared/pattern';
@@ -16,7 +16,7 @@ import {
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {StaffDto, StaffService} from "@proxy/staffs";
-import {Observable, of, switchMap} from "rxjs";
+import {Observable, of, Subscription, switchMap} from "rxjs";
 import {Guid} from "guid-typescript";
 import {TaskTypeService} from "@proxy/task-types";
 import {DatePipe} from "@angular/common";
@@ -28,7 +28,7 @@ import {DatePipe} from "@angular/common";
   providers: [ListService,
     { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
 })
-export class TaskComponent implements OnInit {
+export class TaskComponent implements OnInit, OnDestroy {
   @ViewChild('taskTable') table: any;
   @ViewChild('myGroupHeader') groupHeader: any;
   phonePattern = phonePattern;
@@ -67,11 +67,12 @@ export class TaskComponent implements OnInit {
   requiredNote: boolean;
   selectedTeamMemberIds: string[] = [];
   teamMemberOptions: StaffDto[] = [];
+  subscription: Subscription;
 
     constructor(public readonly list: ListService,
                 public taskService: TaskService,
                 private fb: FormBuilder,
-                private vayuServiceService: VayuServiceService,
+                public vayuServiceService: VayuServiceService,
                 private localizationService: LocalizationService,
                 private permissionService: PermissionService,
                 private staffService: StaffService,
@@ -85,17 +86,17 @@ export class TaskComponent implements OnInit {
     this.updateStatusOption = {size:'sm', backdrop: 'static'};
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
-    this.list.hookToQuery(streamCreator)?.subscribe((response) => {
+    this.subscription = this.list.hookToQuery(streamCreator)?.subscribe((response) => {
       this.tasks = response;
       setTimeout(() => {
         this.toggleGroup(true);
       }, 1000);
     });
 
-    this.localizationService.get('::AreYouSureDeleteTask').subscribe(s => this.confirmationTitle = s);
+    this.subscription = this.localizationService.get('::AreYouSureDeleteTask').subscribe(s => this.confirmationTitle = s);
     this.isDisplayActionMenu = this.permissionService.getGrantedPolicy('Vayu.Tasks.Edit') || this.permissionService.getGrantedPolicy('Vayu.Tasks.Delete')
 
-    this.selectTeamMemberControl.valueChanges.subscribe((x) => {
+    this.subscription = this.selectTeamMemberControl.valueChanges.subscribe((x) => {
       this.addTeamMember(x);
     });
   }
@@ -114,9 +115,9 @@ export class TaskComponent implements OnInit {
     this.completeDateTimeControl = new FormControl(this.selectedTask.completeDateTime ? new Date(this.selectedTask.completeDateTime) : null);
     this.noteControl = new FormControl(this.selectedTask.note || null);
     this.leaderIdControl = new FormControl(this.selectedTask.leaderId || null, [Validators.required]);
-    this.leaderIdControl.valueChanges.subscribe((id) => {
+    this.subscription = this.leaderIdControl.valueChanges.subscribe((id) => {
       this.teamMembers = this.teamMembers.filter(x => x.id != id);
-      this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
+      this.subscription = this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
     })
     this.contactPersonControl = new FormControl(this.selectedTask.contactPerson || null);
     this.contactNumberControl = new FormControl(this.selectedTask.contactNumber || null, [Validators.pattern(this.phonePattern)]);
@@ -124,13 +125,13 @@ export class TaskComponent implements OnInit {
 
     if (this.selectedTask.id) {
       this.selectedTeamMemberIds = this.selectedTask.teamMemberIds;
-      this.taskService.getStaffMany(this.selectedTask.teamMemberIds)
+      this.subscription = this.taskService.getStaffMany(this.selectedTask.teamMemberIds)
         .subscribe(x => this.teamMembers = x);
     } else {
       this.selectedTeamMemberIds = [];
     }
 
-    this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
+    this.subscription = this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
 
     this.form = this.fb.group({
       taskTypeId: this.taskTypeIdControl,
@@ -158,7 +159,7 @@ export class TaskComponent implements OnInit {
   }
 
   edit(id: string){
-    this.taskService.get(id).subscribe(s => {
+    this.subscription = this.taskService.get(id).subscribe(s => {
       this.selectedTask = s;
       this.buildForm();
       this.isCreateUpdateModalOpen  = true;
@@ -166,7 +167,7 @@ export class TaskComponent implements OnInit {
   }
 
   view(id: string){
-    this.taskService.getTaskInfo(id).subscribe((s) => {
+    this.subscription = this.taskService.getTaskInfo(id).subscribe((s) => {
       this.isViewModalOpen = true;
       this.taskViewDto = s;
     });
@@ -190,7 +191,7 @@ export class TaskComponent implements OnInit {
       :this.taskService.create(this.form.value);
 
     let isError: boolean;
-    request.subscribe(() => {
+    this.subscription = request.subscribe(() => {
       this.snackBarMessage = this.selectedTask.id ? 'EditTaskCompleted' : 'AddTaskCompleted';
     }, (error) => {
       this.snackBarMessage = `${this.selectedTask.id ? 'EditTaskFail' : 'AddTaskFail'} ${error.message}`;
@@ -211,14 +212,14 @@ export class TaskComponent implements OnInit {
 
   addTeamMember(id: string){
     if (id) {
-      this.staffService.get(id).subscribe((x) => {
+      this.subscription = this.staffService.get(id).subscribe((x) => {
         this.teamMembers.push(x);
         this.selectTeamMemberControl.setValue(null,{emitEvent: false});
         this.selectedTeamMemberIds = <string[]>this.teamMemberIdsControl.value ?? [];
         this.selectedTeamMemberIds.push(id);
         this.teamMemberIdsControl.setValue(this.selectedTeamMemberIds, {emitEvent: false});
 
-        this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
+        this.subscription = this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
       });
     }
   }
@@ -226,7 +227,7 @@ export class TaskComponent implements OnInit {
   teamChange(event: string[]) {
     this.teamMembers = this.teamMembers.filter(x => event?.some(id => id == x.id));
     this.selectedTeamMemberIds = this.teamMembers.map(x => x.id);
-    this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
+    this.subscription = this.taskService.getAvailableStaffs(this.getUnavailableStaffs()).subscribe(x => this.teamMemberOptions = x);
   }
 
   toggleExpandGroup(group) {
@@ -271,7 +272,7 @@ export class TaskComponent implements OnInit {
     this.statusOptions = task.availableStatus;
 
     this.selectStatusControl = new FormControl(this.statusOptions[0].status, [Validators.required]);
-    this.selectStatusControl.valueChanges.subscribe((x) => {
+    this.subscription = this.selectStatusControl.valueChanges.subscribe((x) => {
       const availableStatus = this.selectedTaskUpdateStatus.availableStatus.find(f => f.status == x);
       this.requiredNote = availableStatus.requiredNote;
       this.selectStatusNoteControl.setValue(null,{emitEvent: false});
@@ -308,7 +309,7 @@ export class TaskComponent implements OnInit {
     let input = <TaskStatusDto>this.formStatus.value;
     input.taskId = this.selectedTaskUpdateStatus.task.id;
     let isError: boolean;
-    this.taskService.updateTaskStatus(input).subscribe(() => {
+    this.subscription = this.taskService.updateTaskStatus(input).subscribe(() => {
       this.snackBarMessage = 'UpdateStatusComplete';
     }, (error) => {
       this.snackBarMessage = `UpdateStatusFail ${error.message}`;
@@ -324,5 +325,9 @@ export class TaskComponent implements OnInit {
 
   getColor(color: any) {
     return '5px solid #'+color;
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

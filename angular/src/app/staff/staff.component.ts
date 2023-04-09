@@ -53,7 +53,7 @@ export class StaffComponent implements OnInit {
   constructor(public readonly list: ListService,
               public staffService: StaffService,
               private fb: FormBuilder,
-              private vayuServiceService: VayuServiceService,
+              public vayuServiceService: VayuServiceService,
               private localizationService: LocalizationService,
               private permissionService: PermissionService,
               private config: ConfigStateService) { }
@@ -181,14 +181,6 @@ export class StaffComponent implements OnInit {
       this.staffService.testSendMail(email)
         .subscribe(() => this.vayuServiceService.displaySnackBar('TestSendMailComplete'),
           (error => this.vayuServiceService.displaySnackBar('TestSendMailFail')));
-    }
-  }
-
-  //todo - make generic method for removing Guid and Enum which are empty or null
-  test(event: any) {
-    console.log(this.filters);
-    if (this.filters?.roleId=='') {
-      delete this.filters['roleId'];
     }
   }
 }

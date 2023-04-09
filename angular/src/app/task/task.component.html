@@ -15,6 +15,7 @@
               (ngModelChange)="list.get()"
               [getFn]="taskService.getTaskTypeLookup"
               [(ngModel)]="filters.taskTypeId"
+              (change)="vayuServiceService.removeEmptyGuidProp(filters, 'taskTypeId')"
               [ngModelOptions]="{ standalone: true }">
             </abp-lookup-select>
           </div>
@@ -29,6 +30,7 @@
               (ngModelChange)="list.get()"
               [getFn]="taskService.getTaskStatusList"
               [(ngModel)]="filters.status"
+              (change)="vayuServiceService.removeEmptyGuidProp(filters, 'status')"
               [ngModelOptions]="{ standalone: true }">
             </abp-lookup-select>
           </div>
@@ -43,6 +45,7 @@
               (ngModelChange)="list.get()"
               [getFn]="taskService.getStaffLookup"
               [(ngModel)]="filters.staffId"
+              (change)="vayuServiceService.removeEmptyGuidProp(filters, 'staffId')"
               [ngModelOptions]="{ standalone: true }">
             </abp-lookup-select>
           </div>
@@ -110,11 +113,11 @@
             </label>
             <input
               id="minCreateDateTime"
-              #datepicker="ngbDatepicker"
+              #minCreateDateTime="ngbDatepicker"
               class="form-control"
               name="datepicker"
               ngbDatepicker
-              (click)="datepicker.toggle()"
+              (click)="minCreateDateTime.toggle()"
               [(ngModel)]="filters.minCreateDateTime"
               (dateSelect)="list.get()"/>
           </div>
@@ -126,11 +129,11 @@
             </label>
             <input
               id="maxCreateDateTime"
-              #datepicker="ngbDatepicker"
+              #maxCreateDateTime="ngbDatepicker"
               class="form-control"
               name="datepicker"
               ngbDatepicker
-              (click)="datepicker.toggle()"
+              (click)="maxCreateDateTime.toggle()"
               [(ngModel)]="filters.maxCreateDateTime"
               (dateSelect)="list.get()"/>
           </div>
@@ -144,11 +147,11 @@
             </label>
             <input
               id="minCompleteDateTime"
-              #datepicker="ngbDatepicker"
+              #minCompleteDateTime="ngbDatepicker"
               class="form-control"
               name="datepicker"
               ngbDatepicker
-              (click)="datepicker.toggle()"
+              (click)="minCompleteDateTime.toggle()"
               [(ngModel)]="filters.minCompleteDateTime"
               (dateSelect)="list.get()"/>
           </div>
@@ -160,11 +163,11 @@
             </label>
             <input
               id="maxCompleteDateTime"
-              #datepicker="ngbDatepicker"
+              #maxCompleteDateTime="ngbDatepicker"
               class="form-control"
               name="datepicker"
               ngbDatepicker
-              (click)="datepicker.toggle()"
+              (click)="maxCompleteDateTime.toggle()"
               [(ngModel)]="filters.maxCompleteDateTime"
               (dateSelect)="list.get()"/>
           </div>
@@ -235,7 +238,7 @@
 
       <ngx-datatable-column *ngIf="isDisplayActionMenu"
                             [name]="'::Actions' | abpLocalization"
-                            [maxWidth]="150"
+                            [maxWidth]="130"
                             [sortable]="false">
         <ng-template let-row="row" ngx-datatable-cell-template>
           <div ngbDropdown container="body" class="d-inline-block">
@@ -263,6 +266,11 @@
           </div>
         </ng-template>
       </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::CreateTime' | abpLocalization" prop="task.createDateTime" width="100">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.task.createDateTime | date: 'HH:mm' }}
+        </ng-template>
+      </ngx-datatable-column>
       <ngx-datatable-column [name]="'::TaskType' | abpLocalization" prop="taskType.name"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="task.status" width="250">
         <ng-template let-row="row" ngx-datatable-cell-template>
@@ -288,11 +296,6 @@
       <ngx-datatable-column [name]="'::Note' | abpLocalization" prop="task.note">
         <ng-template let-row="row" ngx-datatable-cell-template>
           <div class="text-limit" >{{row.task.note}}</div>
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column [name]="'::CreateDateTime' | abpLocalization" prop="task.createDateTime">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ row.task.createDateTime | date }}
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column [name]="'::CompleteDateTime' | abpLocalization" prop="task.completeDateTime">
@@ -413,9 +416,9 @@
               <label *ngFor="let staff of taskViewDto.teamMembers">{{staff.name}}/{{staff.contactNumber}}</label>
             </div>
           </div>
-          <label>{{'::CreateDateTime' | abpLocalization}}: {{taskViewDto.createDateTime | date}}</label>
+          <label>{{'::CreateDateTime' | abpLocalization}}: {{taskViewDto.createDateTime | date : 'dd/MM/YY HH:mm'}}</label>
           <div class="d-flex flex-row justify-content-start">
-            <label>{{'::CompleteDateTime' | abpLocalization}}: {{taskViewDto.completeDateTime | date}}</label>
+            <label>{{'::CompleteDateTime' | abpLocalization}}: {{taskViewDto.completeDateTime | date : 'dd/MM/YY HH:mm'}}</label>
             <label *ngIf="taskViewDto?.finalStatus">:{{'::Enum:Status:' + taskViewDto.finalStatus | abpLocalization}}</label>
           </div>
           <label>{{'::TaskOverAllDuration' | abpLocalization}}: {{taskViewDto.overAllDuration}}</label>

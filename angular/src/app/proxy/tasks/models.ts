@@ -95,7 +95,6 @@ export interface TaskWithNavigatePropertiesDto {
   task: TaskDto;
   taskType: TaskTypeDto;
   staff: StaffDto;
-  teamMembers: StaffDto[];
   taskStatuses: TaskStatusDto[];
   availableStatus: AvailableStatusDto[];
   statusColor?: string;

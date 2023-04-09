@@ -15,6 +15,7 @@
               (ngModelChange)="list.get()"
               [getFn]="taskTypeService.getTaskCategoryList"
               [(ngModel)]="filters.taskCategory"
+              (change)="vayuServiceService.removeEmptyGuidProp(filters, 'taskCategory')"
               [ngModelOptions]="{ standalone: true }">
             </abp-lookup-select>
           </div>

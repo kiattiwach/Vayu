@@ -54,6 +54,7 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
         List<Guid> teamMemberIds = null)
     {
+        var taskStaffDbSet = (await GetDbContextAsync()).Set<TaskStaff>();
         var taskQuery = (await GetDbSetAsync())
             .WhereIf(!filter.IsNullOrWhiteSpace(), x => x.Description.Contains(filter)
                 || x.Note.Contains(filter) || x.ContactPerson.Contains(filter) || x.ContactNumber.Contains(filter))
@@ -65,15 +66,10 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .WhereIf(minCompleteDateTime != null, x => x.CompleteDateTime > minCompleteDateTime)
             .WhereIf(maxCompleteDateTime != null, x => x.CreateDateTime < maxCompleteDateTime)
             .WhereIf(!note.IsNullOrWhiteSpace(), x => x.Note.Contains(note))
-            .WhereIf(leaderId != Guid.Empty && leaderId != null, x => x.LeaderId == leaderId)
+            .WhereIf(leaderId != Guid.Empty && leaderId != null, x => x.LeaderId == leaderId 
+                                                                      || ( taskStaffDbSet.Any(ts => ts.StaffId == leaderId && ts.TaskId == x.Id)))
             .WhereIf(!contactPerson.IsNullOrWhiteSpace(), x => x.ContactPerson.Contains(contactPerson))
             .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber));
-
-        var taskStaffs = from taskStaff in (await GetDbContextAsync()).Set<TaskStaff>()
-            join staff in (await GetDbContextAsync()).Set<Staff>() on taskStaff.StaffId equals staff.Id
-            join task in taskQuery on taskStaff.TaskId equals task.Id
-            where teamMemberIds.Contains(taskStaff.StaffId)
-                select staff;
 
         var result = from task in taskQuery
             join taskType in (await GetDbContextAsync()).Set<TaskType>() on task.TaskTypeId equals taskType.Id
@@ -83,8 +79,7 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             {
                 Task = task,
                 TaskType = taskType,
-                Reader = leader,
-                TeamMembers = taskStaffs.ToList()
+                Reader = leader
             };
 
         return result;

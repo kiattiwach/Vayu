@@ -33,7 +33,7 @@ export class TaskTypeComponent implements OnInit {
   constructor(public readonly list: ListService,
               public taskTypeService: TaskTypeService,
               private fb: FormBuilder,
-              private vayuServiceService: VayuServiceService,
+              public vayuServiceService: VayuServiceService,
               private localizationService: LocalizationService,
               private permissionService: PermissionService) {
   }
