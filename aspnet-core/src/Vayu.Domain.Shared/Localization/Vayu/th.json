@@ -181,6 +181,12 @@
     "CreateDateTimeBegin": "เริ่มต้น ตั้งแต่",
     "CreateDateTimeEnd": "เริ่มต้น ถึง",
     "CompleteDateTimeBegin": "สิ้นสุด ตั้งแต่",
-    "CompleteDateTimeEnd": "สิ้นสุด ถึง"
+    "CompleteDateTimeEnd": "สิ้นสุด ถึง",
+    "CreateTaskEmailSubject": "งานใหม่ {0}",
+    "CreateTaskEmailMessage": "{0}<br>{1}<br>{2}<br>{3}<br>{4}<br>{5}<br>",
+    "ChangeTaskSubject": "เปลี่ยนรายละเอียดงาน",
+    "ChangeTaskMessage": "{0}<br>{1}<br>{2}<br>{3}<br>{4}<br>{5}<br>",
+    "UpdateTaskStatusEmailSubject": "{0} เปลี่ยนสถานะ",
+    "UpdateTaskStatusEmailMessage": "เปลี่ยนสถานะจาก {0} เป้น {1}"
   }
 }

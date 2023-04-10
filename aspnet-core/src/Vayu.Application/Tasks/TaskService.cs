@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Reflection;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 using Vayu.Localization;
 using Vayu.Permissions;
 using Vayu.Shared;
@@ -15,7 +13,7 @@ using Vayu.Staffs;
 using Vayu.TaskTypes;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.ObjectMapping;
+using Volo.Abp.Users;
 
 namespace Vayu.Tasks;
 
@@ -27,13 +25,17 @@ public class TaskService : VayuAppService, ITaskService
     private readonly IRepository<TaskType, Guid> _taskTypeRepository;
     private readonly IRepository<Staff, Guid> _staffRepository;
     private readonly IStringLocalizer<VayuResource> _stringLocalize;
+    private readonly EmailService _emailService;
+    private readonly ICurrentUser _currentUser;
 
     public TaskService(ITaskRepository taskRepository,
         ITaskStaffRepository taskStaffRepository,
         ITaskStatusRepository taskStatusRepository,
         IRepository<TaskType, Guid> taskTypeRepository,
         IRepository<Staff, Guid> staffRepository,
-        IStringLocalizer<VayuResource> stringLocalize)
+        IStringLocalizer<VayuResource> stringLocalize,
+        EmailService emailService,
+        ICurrentUser currentUser)
     {
         _taskRepository = taskRepository;
         _taskStaffRepository = taskStaffRepository;
@@ -41,6 +43,8 @@ public class TaskService : VayuAppService, ITaskService
         _taskTypeRepository = taskTypeRepository;
         _staffRepository = staffRepository;
         _stringLocalize = stringLocalize;
+        _emailService = emailService;
+        _currentUser = currentUser;
     }
 
     [Authorize(VayuPermissions.Tasks.Default)]
@@ -101,7 +105,103 @@ public class TaskService : VayuAppService, ITaskService
 
         await AddTaskStatus(new TaskStatusDto() { TaskId = result.Id, Status = result.Status, Note = null});
 
+        await SendCreateTaskEmail(input);
+
         return await ToDto(result);
+    }
+
+    private async System.Threading.Tasks.Task SendCreateTaskEmail(TaskCreateUpdateDto input)
+    {
+        var teamMembers = await _staffRepository.GetListAsync(x => input.TeamMemberIds.Contains(x.Id));
+        var leader = await _staffRepository.GetAsync(input.LeaderId);
+        var to = new List<Staff>(teamMembers);
+        to.Add(leader);
+        var taskType = await _taskTypeRepository.GetAsync(input.TaskTypeId);
+        var message = _stringLocalize["CreateTaskEmailMessage",
+            input.Description,
+            input.Note,
+            $"{_stringLocalize["ContactInfo"]}-{input.ContactPerson}/{input.ContactNumber}",
+            $"{_stringLocalize["Leader"]}-{leader.Name}/{leader.ContactNumber}",
+            $"{_stringLocalize["TeamMember"]}-{string.Join(",", teamMembers.Select(x => x.Name))}",
+            $"{_stringLocalize["ReceiveDate"]}-{input.CreateDateTime:dd/MM/YY HH:mm}"];
+
+        await _emailService.SendCreateUpdateTaskAsync(to.Select(x => x.Email).ToList(),
+            new List<string>() { _currentUser.Email },
+            _stringLocalize["CreateTaskEmailSubject", taskType.Name],
+            message);
+    }
+
+    private async System.Threading.Tasks.Task SendChangeTaskEmail(TaskCreateUpdateDto input, Task oldTask, List<Staff> oldTeamMembers)
+    {
+        var teamMembers = await _staffRepository.GetListAsync(x => input.TeamMemberIds.Contains(x.Id));
+        var leader = await _staffRepository.GetAsync(input.LeaderId);
+        var oldLeader = await _staffRepository.GetAsync(oldTask.LeaderId);
+
+        bool hasChangeLeader = false;
+        bool hasChangeTeamMember = false;
+        bool hasChangeDescription = false;
+        bool hasChangeNote = false;
+        bool hasChangeContact = false;
+
+        var changeLeader = $"{_stringLocalize["Leader"]}-{leader.Name}/{leader.ContactNumber}";
+        hasChangeLeader = oldLeader.Id != input.LeaderId;
+        if (hasChangeLeader)
+        {
+            changeLeader =
+                $"{_stringLocalize["Leader"]}-<del>{oldLeader.Name}/{oldLeader.ContactNumber}</del> -> {leader.Name}/{leader.ContactNumber}";
+        }
+
+        var changeTeamMember = $"{_stringLocalize["TeamMember"]}-{string.Join(",", teamMembers.Select(x => x.Name))}";
+        hasChangeTeamMember = teamMembers.All(t => oldTeamMembers.Any(o => t.Id == o.Id));
+        if (hasChangeTeamMember)
+        {
+            changeTeamMember =
+                $"{_stringLocalize["TeamMember"]}-<del>{string.Join(",", oldTeamMembers.Select(x => x.Name))}</del> -> {string.Join(",", teamMembers.Select(x => x.Name))}";
+        }
+
+        var changeDescription = input.Description;
+        hasChangeDescription = input.Description != oldTask.Description;
+        if (hasChangeDescription)
+        {
+            changeDescription = $"<del>{oldTask.Description}</del> -> {input.Description}";
+        }
+
+        var changeNote = input.Note;
+        hasChangeNote = input.Note != oldTask.Note;
+        if (hasChangeNote)
+        {
+            changeNote = $"<del>{oldTask.Note}</del> -> {input.Note}";
+        }
+
+        var changeContact = $"{_stringLocalize["ContactInfo"]}-{input.ContactPerson}/{input.ContactNumber}";
+        hasChangeContact = (input.ContactPerson != oldTask.ContactPerson) || (input.ContactNumber != oldTask.ContactNumber);
+        if (hasChangeContact)
+        {
+            changeContact =
+                $"{_stringLocalize["ContactInfo"]}-<del>{oldTask.ContactPerson}/{oldTask.ContactNumber}</del> -> {input.ContactPerson}/{input.ContactNumber}";
+        }
+
+        if (!hasChangeDescription && !hasChangeNote && !hasChangeContact && !hasChangeLeader && !hasChangeTeamMember)
+        {
+            return;
+        }
+
+        var to = new List<string>(teamMembers.Select(x => x.Email)) { leader.Email };
+        to.AddRange(oldTeamMembers.Select(x => x.Email));
+        to = to.Distinct().ToList();
+
+        var message = _stringLocalize["ChangeTaskMessage",
+            changeDescription,
+            changeNote,
+            changeContact,
+            changeLeader,
+            changeTeamMember,
+            $"{_stringLocalize["ReceiveDate"]}-{oldTask.CreateDateTime:dd/MM/YY HH:mm}"];
+
+        await _emailService.SendCreateUpdateTaskAsync(to,
+            new List<string>() { _currentUser.Email },
+            _stringLocalize["ChangeTaskSubject"],
+            message);
     }
 
     [Authorize(VayuPermissions.Tasks.Edit)]
@@ -116,7 +216,11 @@ public class TaskService : VayuAppService, ITaskService
         task.ContactNumber = input.ContactNumber;
         
         var result = await _taskRepository.UpdateAsync(task);
-        
+
+        var oldTeamMembers =
+            (await _taskStaffRepository.GetListAsync(input.Id)).Select(x =>
+                _staffRepository.GetAsync(x.StaffId).Result);
+
         var taskStaffs = await _taskStaffRepository.GetListAsync(taskId:input.Id);
         var toDelete = taskStaffs.Where(x => input.TeamMemberIds.All(id => id != x.StaffId));
         await _taskStaffRepository.DeleteManyAsync(toDelete);
@@ -128,6 +232,8 @@ public class TaskService : VayuAppService, ITaskService
                 TaskId = input.Id
             });
         await _taskStaffRepository.InsertManyAsync(toInsert);
+
+        await SendChangeTaskEmail(input, task, oldTeamMembers.ToList());
 
         return await ToDto(result);
     }
@@ -240,6 +346,8 @@ public class TaskService : VayuAppService, ITaskService
     public async System.Threading.Tasks.Task UpdateTaskStatusAsync(TaskStatusDto input)
     {
         var task = await _taskRepository.GetAsync(input.TaskId);
+        var oldStatus = task.Status;
+
         if (input.Status == Status.Done)
         {
             task.CompleteDateTime = DateTime.Now;
@@ -251,9 +359,26 @@ public class TaskService : VayuAppService, ITaskService
 
         task.Status = input.Status;
 
-        await _taskRepository.UpdateAsync(task);
-
+        var result = await _taskRepository.UpdateAsync(task);
         await _taskStatusRepository.InsertAsync(new TaskStatus(input.TaskId, input.Status, input.Note));
+
+        await SendChangeStatusEmail(input, task, oldStatus);
+    }
+
+    private async System.Threading.Tasks.Task SendChangeStatusEmail(TaskStatusDto input, Task task, Status oldStatus)
+    {
+        var teamMembers =
+            (await _taskStaffRepository.GetListAsync(task.Id)).SelectMany(x =>
+                _staffRepository.GetListAsync(s => s.Id == x.StaffId).Result).ToList();
+        var leader = await _staffRepository.GetAsync(task.LeaderId);
+        var to = new List<Staff>(teamMembers) { leader };
+        var message = _stringLocalize["UpdateTaskStatusEmailMessage", _stringLocalize["Enum:Status:" + oldStatus],
+            _stringLocalize["Enum:Status:" + input.Status]];
+
+        await _emailService.SendCreateUpdateTaskAsync(to.Select(x => x.Email).ToList(),
+            new List<string>() { _currentUser.Email },
+            _stringLocalize["UpdateTaskStatusEmailSubject", task.Description],
+            message);
     }
 
     public async Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids)

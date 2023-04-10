@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using PasswordGenerator;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
@@ -7,6 +8,7 @@ using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
+using Volo.Abp.Settings;
 using Volo.Abp.TenantManagement;
 
 namespace Vayu;
@@ -31,5 +33,12 @@ public class VayuApplicationModule : AbpModule
         });
 
         context.Services.AddScoped<IPassword, Password>();
+        
+        /*Configure<VayuSetting>(option =>
+        {
+            option.Bcc = context.Services.GetConfiguration().GetSection(nameof(VayuSetting)).Get<VayuSetting>().Bcc;
+        });*/
+
+        context.Services.Configure<VayuSetting>(context.Services.GetConfiguration().GetSection(nameof(VayuSetting)));
     }
 }

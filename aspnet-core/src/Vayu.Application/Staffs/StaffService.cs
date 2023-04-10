@@ -116,7 +116,7 @@ public class StaffService : VayuAppService, IStaffService
 
         var emailBody = GetRegistrationEmailBody(input.Name, input.Surname , input.Email, password);
         
-        await _emailService.SendAsync(new List<string>() { input.Email }, _stringLocalize["CreateStaffMailSubject"], emailBody);
+        await _emailService.SendCreateStaffAsync(new List<string>() { input.Email }, _stringLocalize["CreateStaffMailSubject"], emailBody);
 
         var result = await _staffRepository.InsertAsync(new Staff(input.Code, input.Name,input.Surname, input.CodeName, input.Email,
             input.Address, input.RadioCode, input.ContactNumber, input.ContactPerson, input.ContactPersonNumber,
@@ -212,7 +212,7 @@ public class StaffService : VayuAppService, IStaffService
     [Authorize(VayuPermissions.Staffs.Default)]
     public async Task TestSendMailAsync(string to)
     {
-        await _emailService.SendAsync(new List<string>() { to }, "Test mail service",
+        await _emailService.SendCreateStaffAsync(new List<string>() { to }, "Test mail service",
             @" <button type=""button"">TEST</button>");
     }
 }

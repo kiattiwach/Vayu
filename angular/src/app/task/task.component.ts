@@ -87,9 +87,10 @@ export class TaskComponent implements OnInit, OnDestroy {
     const streamCreator = (query) => this.taskService.getList({...query,
       ...this.filters});
     this.subscription = this.list.hookToQuery(streamCreator)?.subscribe((response) => {
+      const isAddNew = this.tasks?.items?.length > 0 && (this.tasks?.items?.length != response?.items?.length) ;
       this.tasks = response;
       setTimeout(() => {
-        this.toggleGroup(true);
+        this.toggleGroup(true, isAddNew);
       }, 1000);
     });
 
@@ -234,10 +235,17 @@ export class TaskComponent implements OnInit, OnDestroy {
     this.table.groupHeader.toggleExpandGroup(group);
   }
 
-  toggleGroup(toggle: boolean) {
-    if (toggle == this.expandAll) return;
-    this.table.groupedRows.forEach(x => this.table.groupHeader.toggleExpandGroup(x));
-    this.expandAll = toggle;
+  toggleGroup(toggle: boolean, isAddNew = false) {
+    if (toggle == this.expandAll && isAddNew == false) return;
+    if (isAddNew == true) {
+      this.table.groupedRows.forEach(x => this.table.groupHeader.toggleExpandGroup(x));
+      this.table.groupedRows.forEach(x => this.table.groupHeader.toggleExpandGroup(x));
+      this.expandAll = true;
+    } else {
+      this.table.groupedRows.forEach(x => this.table.groupHeader.toggleExpandGroup(x));
+      this.expandAll = toggle;
+    }
+
   }
 
   getLastStatusDurationText(taskStatuses: TaskStatusDto[]): Observable<string> {
