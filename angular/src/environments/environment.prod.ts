@@ -1,6 +1,6 @@
 import { Environment } from '@abp/ng.core';
 
-const baseUrl = 'http://localhost:4200';
+const baseUrl = 'https://vayu-service.azurewebsites.net';
 
 export const environment = {
   production: true,
@@ -10,7 +10,7 @@ export const environment = {
     logoUrl: '',
   },
   oAuthConfig: {
-    issuer: 'https://localhost:44375/',
+    issuer: 'https://vayu-api.azurewebsites.net/',
     redirectUri: baseUrl,
     clientId: 'Vayu_App',
     responseType: 'code',
@@ -19,7 +19,7 @@ export const environment = {
   },
   apis: {
     default: {
-      url: 'https://localhost:44375',
+      url: 'https://vayu-api.azurewebsites.net',
       rootNamespace: 'Vayu',
     },
   },

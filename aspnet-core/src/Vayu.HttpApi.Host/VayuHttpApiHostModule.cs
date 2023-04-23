@@ -28,6 +28,7 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Vayu;
 
@@ -55,6 +56,36 @@ public class VayuHttpApiHostModule : AbpModule
                 options.UseAspNetCore();
             });
         });
+
+        PreConfigure<OpenIddictServerBuilder>(options =>
+        {
+            var hostingEnvironment = context.Services.GetHostingEnvironment();
+            if (hostingEnvironment.IsProduction())
+            {
+                var configuration = context.Services.GetConfiguration();
+                options.AddEncryptionCertificate(LoadCertificate(
+                    configuration["AuthServer:EncryptionCertificateThumbprint"]));
+
+                //TODO - Why no need SigningCertificate???
+                /*options.AddSigningCertificate(LoadCertificate(
+                    configuration["AuthServer:SigningCertificateThumbprint"]));*/
+            }
+        });
+
+        X509Certificate2 LoadCertificate(string thumbprint)
+        {
+            using X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+            certStore.Open(OpenFlags.ReadOnly);
+
+            X509Certificate2Collection certCollection = certStore.Certificates.Find(
+                X509FindType.FindByThumbprint,thumbprint, false);
+            X509Certificate2 cert = certCollection.FirstOrDefault();
+            if (cert is null)
+            {
+                throw new Exception($"Certificate with thumbprint {thumbprint} was not found");
+            }
+            return cert;
+        }
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)
