@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Vayu.Permissions;
 using Vayu.Roles;
 using Vayu.Shared;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using MailKit.Net.Smtp;
 using Microsoft.Extensions.Localization;
 using PasswordGenerator;
 using Vayu.Localization;
