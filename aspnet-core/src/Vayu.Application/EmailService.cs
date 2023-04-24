@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using MimeKit.Text;
 using MimeKit;
 using Vayu.Localization;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Vayu;
 
@@ -54,10 +56,16 @@ public class EmailService : ITransientDependency
 
         if (bccList != null && bccList.Any())
         {
-            email.Bcc.AddRange(ccList.Select(MailboxAddress.Parse));
+            email.Bcc.AddRange(bccList.Select(MailboxAddress.Parse));
         }
         email.Subject = subject;
         email.Body = new TextPart(TextFormat.Html) { Text = message };
+
+        Log.Information(@$"From: {sender}
+                                        To: {string.Join(",", toList)}
+                                        bcc: {string.Join(",", bccList ?? new List<string>())}
+                                        subject: {subject}
+                                        message: {message}");
 
         using var smtp = new SmtpClient();
         await smtp.ConnectAsync(host, port, enableSsl ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.Auto);

@@ -262,7 +262,7 @@
       </div>
       <div class="text-end col col-md-6">
         <div class="text-lg-end pt-2">
-          <button *ngIf="isAdmin" id="TestSendMail" class="btn btn-primary me-3" type="button" (click)="testSendMail()">
+          <button *ngIf="isAdmin" id="TestSendMail" class="btn btn-primary me-3" type="button" (click)="openTestSendMail()">
             <i class="fa fa-mail-bulk me-1"></i>
             <span>Test Send Mail</span>
           </button>
@@ -435,6 +435,30 @@
     <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
       <i class="fa fa-check mr-1"></i>
       {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>
+
+<abp-modal [(visible)]="isTestSendMailOpen">
+  <ng-template #abpHeader>
+    <h3>Enter mail for test</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <div class="form-group">
+      <label for="TestEmail">Email</label>
+      <input type="text" id="TestEmail" class="form-control" [(ngModel)]="testEmail"/>
+    </div>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" abpClose>
+      {{ '::Close' | abpLocalization }}
+    </button>
+
+    <button class="btn btn-primary" (click)="testSendMail()">
+      <i class="fa fa-check mr-1"></i>
+      {{ '::Send' | abpLocalization }}
     </button>
   </ng-template>
 </abp-modal>

@@ -17,10 +17,7 @@ using PasswordGenerator;
 using Vayu.Localization;
 using Volo.Abp;
 using Volo.Abp.Identity;
-using MailKit.Security;
-using MimeKit;
-using MimeKit.Text;
-using Volo.Abp.Settings;
+using Microsoft.Extensions.Options;
 
 namespace Vayu.Staffs;
 
@@ -34,6 +31,7 @@ public class StaffService : VayuAppService, IStaffService
     private readonly IRepository<IdentityRole, Guid> _identityRoleRepository;
     private readonly EmailService _emailService;
     private readonly IPassword _password;
+    private readonly VayuSetting _vayuSetting;
 
     public StaffService(IStaffRepository staffRepository, 
         IRepository<Role,Guid> roleRepository,
@@ -42,7 +40,8 @@ public class StaffService : VayuAppService, IStaffService
         IdentityUserManager identityUserManager,
         IPassword password,
         IRepository<IdentityRole, Guid> identityRoleRepository,
-        EmailService emailService)
+        EmailService emailService,
+        IOptions<VayuSetting> options)
 
     {
         _staffRepository = staffRepository;
@@ -56,7 +55,8 @@ public class StaffService : VayuAppService, IStaffService
                             .IncludeUppercase()
                             .IncludeLowercase()
                             .IncludeNumeric()
-                            .IncludeSpecial(); ;
+                            .IncludeSpecial();
+        _vayuSetting = options.Value;
     }
 
     [Authorize(VayuPermissions.Staffs.Default)]
@@ -130,7 +130,7 @@ public class StaffService : VayuAppService, IStaffService
         return $"{_stringLocalize["RegisterStaffInfo", name, surname]}<br>" +
                     $"{_stringLocalize["UserName"]}: {email} <br>" +
                     $"{_stringLocalize["Password"]}: {password} <br>" +
-                    $"<a href='https://www.google.co.th/'>{_stringLocalize["ClickHereToLogin {0}", VayuRemoteServiceConsts.ModuleName]}</a>";
+                    $"<a href='{_vayuSetting.HomePage}'>{_stringLocalize["ClickHereToLogin", VayuRemoteServiceConsts.ModuleName]}</a>";
     }
 
     [Authorize(VayuPermissions.Staffs.Edit)]

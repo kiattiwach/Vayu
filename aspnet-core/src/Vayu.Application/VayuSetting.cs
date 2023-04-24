@@ -7,4 +7,5 @@ namespace Vayu;
 public class VayuSetting
 {
     public List<string> Bcc { get; set; }
+    public string HomePage { get; set; }
 }

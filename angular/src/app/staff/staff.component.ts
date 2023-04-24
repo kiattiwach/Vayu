@@ -11,7 +11,6 @@ import {
 import {Confirmation} from "@abp/ng.theme.shared";
 import {emailPattern, phonePattern} from "../shared/pattern";
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
-import {filter, switchMap, tap} from "rxjs";
 
 @Component({
   selector: 'app-staff',
@@ -49,6 +48,8 @@ export class StaffComponent implements OnInit {
   isDisplayActionMenu: boolean;
   snackBarMessage: string;
   isAdmin: boolean;
+  isTestSendMailOpen: boolean;
+  testEmail: string;
 
   constructor(public readonly list: ListService,
               public staffService: StaffService,
@@ -175,12 +176,16 @@ export class StaffComponent implements OnInit {
       this.passAssessmentDateControl.setValue(null,{emitEvent: false});
   }
 
+  openTestSendMail() {
+    this.isTestSendMailOpen = true;
+  }
+
   testSendMail() {
-    const email = this.config.getDeep("currentUser.email");
-    if (email){
-      this.staffService.testSendMail(email)
+    if (this.testEmail){
+      this.staffService.testSendMail(this.testEmail)
         .subscribe(() => this.vayuServiceService.displaySnackBar('TestSendMailComplete'),
           (error => this.vayuServiceService.displaySnackBar('TestSendMailFail')));
+      this.isTestSendMailOpen = false;
     }
   }
 }

@@ -33,11 +33,6 @@ public class VayuApplicationModule : AbpModule
         });
 
         context.Services.AddScoped<IPassword, Password>();
-        
-        /*Configure<VayuSetting>(option =>
-        {
-            option.Bcc = context.Services.GetConfiguration().GetSection(nameof(VayuSetting)).Get<VayuSetting>().Bcc;
-        });*/
 
         context.Services.Configure<VayuSetting>(context.Services.GetConfiguration().GetSection(nameof(VayuSetting)));
     }
