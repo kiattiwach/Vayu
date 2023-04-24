@@ -11,7 +11,6 @@ using Microsoft.Extensions.Options;
 using MimeKit.Text;
 using MimeKit;
 using Vayu.Localization;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Vayu;
