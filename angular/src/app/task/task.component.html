@@ -203,6 +203,10 @@
       </div>
       <div class="text-end col col-md-6">
         <div class="text-lg-end pt-2">
+          <button *ngIf="isAdmin" id="testSignalR" class="btn btn-primary" type="button" (click)="testSignalR()">
+            <i class="fa fa-signal me-1"></i>
+            <span>Test SignalR</span>
+          </button>
           <button *abpPermission="'Vayu.Tasks.Create'" id="create" class="btn btn-primary" type="button" (click)="create()">
             <i class="fa fa-plus me-1"></i>
             <span>{{ "::NewTask" | abpLocalization }}</span>

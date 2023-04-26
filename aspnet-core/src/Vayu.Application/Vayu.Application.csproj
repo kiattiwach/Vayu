@@ -21,6 +21,7 @@
     <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="6.0.2" />
     <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="6.0.2" />
     <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="6.0.2" />
+    <PackageReference Include="Volo.Abp.AspNetCore.SignalR" Version="6.0.2" />
     <PackageReference Include="PasswordGenerator" Version="2.1.0" />
   </ItemGroup>
 

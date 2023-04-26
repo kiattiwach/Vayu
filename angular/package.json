@@ -30,6 +30,7 @@
     "@angular/platform-browser": "^14.2.1",
     "@angular/platform-browser-dynamic": "^14.2.1",
     "@angular/router": "^14.2.1",
+    "@microsoft/signalr": "^8.0.0-preview.3.23177.8",
     "@volo/abp.commercial.ng.ui": "^6.0.2",
     "bootstrap-icons": "~1.8.3",
     "guid-typescript": "^1.0.9",

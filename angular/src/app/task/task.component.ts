@@ -68,6 +68,7 @@ export class TaskComponent implements OnInit, OnDestroy {
   selectedTeamMemberIds: string[] = [];
   teamMemberOptions: StaffDto[] = [];
   subscription: Subscription;
+  isAdmin: boolean;
 
     constructor(public readonly list: ListService,
                 public taskService: TaskService,
@@ -99,6 +100,18 @@ export class TaskComponent implements OnInit, OnDestroy {
 
     this.subscription = this.selectTeamMemberControl.valueChanges.subscribe((x) => {
       this.addTeamMember(x);
+    });
+    this.isAdmin = this.config.getDeep("currentUser.roles")?.some(x => x == 'admin');
+
+    const userId = this.config.getDeep("currentUser.id");
+    this.vayuServiceService.reloadTask$.asObservable().subscribe((s) => {
+      if(userId && s.senderId && userId != s.senderId){
+        this.taskService.getWithNavigate(s.taskId).subscribe((s) => {
+          if (this.tasks.items.some(x=> x.task.id == s.task.id)){
+            this.tasks.items.filter(x=> x.task.id == s.task.id)[0] = s;
+          }
+        });
+      }
     });
   }
 
@@ -337,5 +350,9 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  testSignalR() {
+      this.taskService.testSignalR().subscribe();
   }
 }

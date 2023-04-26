@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {HubService} from "./services/hub.service";
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,8 @@ import { Component } from '@angular/core';
     <abp-dynamic-layout></abp-dynamic-layout>
   `,
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor(private hubService: HubService) {
+    this.hubService.init();
+  }
+}

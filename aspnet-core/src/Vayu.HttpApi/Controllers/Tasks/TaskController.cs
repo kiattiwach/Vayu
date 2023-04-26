@@ -91,4 +91,16 @@ public class TaskController : VayuController, ITaskService
     {
         return _taskService.GetTaskStatusListAsync(input);
     }
+
+    [HttpGet("test-signal-r")]
+    public Task TestSignalR()
+    {
+        return _taskService.TestSignalR();
+    }
+
+    [HttpGet("get-with-navigate/{id}")]
+    public Task<TaskWithNavigatePropertiesDto> GetWithNavigateAsync(Guid id)
+    {
+        return _taskService.GetWithNavigateAsync(id);
+    }
 }

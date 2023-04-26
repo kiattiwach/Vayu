@@ -40,4 +40,6 @@ public interface ITaskRepository : IBasicRepository<Task, Guid>
         int skipCount = 0,
         string sorting = null,
         CancellationToken cancellationToken = default);
+
+    Task<TaskWithNavigateProperties> GetWithNaviagate(Guid id, CancellationToken cancellationToken = default);
 }

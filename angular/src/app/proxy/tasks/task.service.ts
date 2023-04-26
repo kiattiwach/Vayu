@@ -100,6 +100,22 @@ export class TaskService {
     { apiName: this.apiName });
   
 
+  getWithNavigate = (id: string) =>
+    this.restService.request<any, TaskWithNavigatePropertiesDto>({
+      method: 'GET',
+      url: `/api/task/get-with-navigate/${id}`,
+    },
+    { apiName: this.apiName });
+  
+
+  testSignalR = () =>
+    this.restService.request<any, void>({
+      method: 'GET',
+      url: '/api/task/test-signal-r',
+    },
+    { apiName: this.apiName });
+  
+
   update = (input: TaskCreateUpdateDto) =>
     this.restService.request<any, TaskDto>({
       method: 'POST',

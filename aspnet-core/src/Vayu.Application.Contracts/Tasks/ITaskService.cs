@@ -22,4 +22,6 @@ public interface ITaskService : IApplicationService
     Task UpdateTaskStatusAsync(TaskStatusDto input);
     Task<List<StaffDto>> GetStaffManyAsync(List<Guid> ids);
     Task<PagedResultDto<LookupDto<Status>>> GetTaskStatusListAsync(LookupRequestDto input);
+    Task TestSignalR();
+    Task<TaskWithNavigatePropertiesDto> GetWithNavigateAsync(Guid id);
 }

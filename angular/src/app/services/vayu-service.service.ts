@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {Confirmation, ConfirmationService} from "@abp/ng.theme.shared";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {LocalizationService} from "@abp/ng.core";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {snackBarConfig, snackBarErrorConfig} from "../shared/snack-bar-config";
+import {ReloadTaskModel} from "../shared/ReloadTaskModel";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import {snackBarConfig, snackBarErrorConfig} from "../shared/snack-bar-config";
 export class VayuServiceService {
   private confirmationYesText: string;
   private confirmationNoText: string;
+  reloadTask$: Subject<ReloadTaskModel> = new Subject<ReloadTaskModel>();
   constructor( private confirmation: ConfirmationService,
                private localizationService: LocalizationService,
                private snackBar: MatSnackBar) {

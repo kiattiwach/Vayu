@@ -27,6 +27,7 @@ public class TaskService : VayuAppService, ITaskService
     private readonly IStringLocalizer<VayuResource> _stringLocalize;
     private readonly EmailService _emailService;
     private readonly ICurrentUser _currentUser;
+    private readonly MessagingHub _messagingHub;
 
     public TaskService(ITaskRepository taskRepository,
         ITaskStaffRepository taskStaffRepository,
@@ -35,7 +36,8 @@ public class TaskService : VayuAppService, ITaskService
         IRepository<Staff, Guid> staffRepository,
         IStringLocalizer<VayuResource> stringLocalize,
         EmailService emailService,
-        ICurrentUser currentUser)
+        ICurrentUser currentUser,
+        MessagingHub messagingHub)
     {
         _taskRepository = taskRepository;
         _taskStaffRepository = taskStaffRepository;
@@ -45,6 +47,7 @@ public class TaskService : VayuAppService, ITaskService
         _stringLocalize = stringLocalize;
         _emailService = emailService;
         _currentUser = currentUser;
+        _messagingHub = messagingHub;
     }
 
     [Authorize(VayuPermissions.Tasks.Default)]
@@ -106,6 +109,8 @@ public class TaskService : VayuAppService, ITaskService
         await AddTaskStatus(new TaskStatusDto() { TaskId = result.Id, Status = result.Status, Note = null});
 
         await SendCreateTaskEmail(input);
+
+        await _messagingHub.SendReloadTask(result.Id, _currentUser.Id??Guid.Empty);
 
         return await ToDto(result);
     }
@@ -235,6 +240,8 @@ public class TaskService : VayuAppService, ITaskService
 
         await SendChangeTaskEmail(input, task, oldTeamMembers.ToList());
 
+        await _messagingHub.SendReloadTask(result.Id, _currentUser.Id ?? Guid.Empty);
+
         return await ToDto(result);
     }
 
@@ -362,6 +369,8 @@ public class TaskService : VayuAppService, ITaskService
         var result = await _taskRepository.UpdateAsync(task);
         await _taskStatusRepository.InsertAsync(new TaskStatus(input.TaskId, input.Status, input.Note));
 
+        await _messagingHub.SendReloadTask(result.Id, _currentUser.Id ?? Guid.Empty);
+
         await SendChangeStatusEmail(input, task, oldStatus);
     }
 
@@ -409,5 +418,16 @@ public class TaskService : VayuAppService, ITaskService
         return timeSpan.Duration().Days > 0
             ? _stringLocalize["DurationDH", timeSpan.Duration().Days, timeSpan.Duration().Hours, timeSpan.Duration().Hours]
             : _stringLocalize["DurationHM", timeSpan.Duration().Hours, timeSpan.Duration().Minutes];
+    }
+
+    public async System.Threading.Tasks.Task TestSignalR()
+    {
+        await _messagingHub.SendTest(Guid.NewGuid(), Guid.NewGuid());
+    }
+
+    [Authorize(VayuPermissions.Tasks.Default)]
+    public async Task<TaskWithNavigatePropertiesDto> GetWithNavigateAsync(Guid id)
+    {
+        return ObjectMapper.Map<TaskWithNavigateProperties, TaskWithNavigatePropertiesDto>(await _taskRepository.GetWithNaviagate(id));
     }
 }

@@ -48,14 +48,21 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .ToListAsync(GetCancellationToken(cancellationToken));
     }
 
+    public async Task<TaskWithNavigateProperties> GetWithNaviagate(Guid id, CancellationToken cancellationToken = default)
+    {
+        var query = await GetQuery(id: id);
+        return await query.FirstOrDefaultAsync(GetCancellationToken(cancellationToken));
+    }
+
     private async Task<IQueryable<TaskWithNavigateProperties>> GetQuery(string filter = null, string description = null, Guid? taskTypeId = null,
         Status? status = null, DateTime? minCreateDateTime = null,
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
-        List<Guid> teamMemberIds = null)
+        List<Guid> teamMemberIds = null, Guid? id = null)
     {
         var taskStaffDbSet = (await GetDbContextAsync()).Set<TaskStaff>();
         var taskQuery = (await GetDbSetAsync())
+            .WhereIf(id != null && id != Guid.NewGuid(), x => x.Id == id)
             .WhereIf(!filter.IsNullOrWhiteSpace(), x => x.Description.Contains(filter)
                 || x.Note.Contains(filter) || x.ContactPerson.Contains(filter) || x.ContactNumber.Contains(filter))
             .WhereIf(!description.IsNullOrWhiteSpace(), x => x.Description.Contains(description))
