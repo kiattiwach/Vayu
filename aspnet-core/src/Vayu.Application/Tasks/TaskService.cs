@@ -428,6 +428,10 @@ public class TaskService : VayuAppService, ITaskService
     [Authorize(VayuPermissions.Tasks.Default)]
     public async Task<TaskWithNavigatePropertiesDto> GetWithNavigateAsync(Guid id)
     {
-        return ObjectMapper.Map<TaskWithNavigateProperties, TaskWithNavigatePropertiesDto>(await _taskRepository.GetWithNaviagate(id));
+        var result = ObjectMapper.Map<TaskWithNavigateProperties, TaskWithNavigatePropertiesDto>(await _taskRepository.GetWithNaviagate(id));
+        result.TaskStatuses = ObjectMapper.Map<List<TaskStatus>, List<TaskStatusDto>>(
+            (await _taskStatusRepository.GetListAsync(ts => ts.TaskId == result.Task.Id)));
+        var status = result.Task.Status;
+        return result;
     }
 }

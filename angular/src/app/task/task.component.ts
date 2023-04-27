@@ -16,7 +16,7 @@ import {
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {VayuServiceService} from "../services/vayu-service.service";
 import {StaffDto, StaffService} from "@proxy/staffs";
-import {Observable, of, Subscription, switchMap} from "rxjs";
+import {debounceTime, Observable, of, Subscription, switchMap} from "rxjs";
 import {Guid} from "guid-typescript";
 import {TaskTypeService} from "@proxy/task-types";
 import {DatePipe} from "@angular/common";
@@ -104,11 +104,20 @@ export class TaskComponent implements OnInit, OnDestroy {
     this.isAdmin = this.config.getDeep("currentUser.roles")?.some(x => x == 'admin');
 
     const userId = this.config.getDeep("currentUser.id");
-    this.vayuServiceService.reloadTask$.asObservable().subscribe((s) => {
+    this.subscription = this.vayuServiceService.reloadTask$.asObservable().pipe(debounceTime(3000)).subscribe((s) => {
       if(userId && s.senderId && userId != s.senderId){
         this.taskService.getWithNavigate(s.taskId).subscribe((s) => {
           if (this.tasks.items.some(x=> x.task.id == s.task.id)){
-            this.tasks.items.filter(x=> x.task.id == s.task.id)[0] = s;
+            let item = this.tasks.items.filter(x=> x.task.id == s.task.id)[0];
+            item.task = s.task;
+            item.taskStatuses = s.taskStatuses;
+            item.taskType = s.taskType
+            item.availableStatus = s.availableStatus;
+            item.staff = s.staff;
+            item.groupKey = s.groupKey;
+            item.statusColor = s.statusColor;
+
+            this.tasks = Object.assign([], this.tasks);
           }
         });
       }
@@ -295,7 +304,7 @@ export class TaskComponent implements OnInit, OnDestroy {
     this.selectStatusControl = new FormControl(this.statusOptions[0].status, [Validators.required]);
     this.subscription = this.selectStatusControl.valueChanges.subscribe((x) => {
       const availableStatus = this.selectedTaskUpdateStatus.availableStatus.find(f => f.status == x);
-      this.requiredNote = availableStatus.requiredNote;
+      this.requiredNote = availableStatus?.requiredNote;
       this.selectStatusNoteControl.setValue(null,{emitEvent: false});
       if (this.requiredNote == true )
         this.selectStatusNoteControl.setValidators([Validators.required]);
@@ -336,7 +345,6 @@ export class TaskComponent implements OnInit, OnDestroy {
       this.snackBarMessage = `UpdateStatusFail ${error.message}`;
       isError = true;
     },() =>{
-      console.log('complete')
       this.vayuServiceService.displaySnackBar(this.snackBarMessage, isError);
       this.isUpdateStatusModalOpen = false;
       this.formStatus.reset();
