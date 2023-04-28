@@ -9,10 +9,9 @@
     <h1>{{ '::Welcome' | abpLocalization }}</h1>
 
     <!--<p class="lead px-lg-5 mx-lg-5">{{ '::LongWelcomeMessage' | abpLocalization }}</p>-->
-    <app-public-chart></app-public-chart>
-    <a *ngIf="!hasLoggedIn" (click)="login()" class="mt-5 px-4 btn btn-primary ms-1" role="button">
-      <i class="fa fa-sign-in"></i> {{ 'AbpAccount::Login' | abpLocalization }}</a>
 
+    <a *ngIf="!hasLoggedIn" (click)="login()" class="px-4 btn btn-primary ms-1" role="button">
+      <i class="fa fa-sign-in"></i> {{ 'AbpAccount::Login' | abpLocalization }}</a>
   </div>
   <!--<div class="card">
     <div class="card-body">
