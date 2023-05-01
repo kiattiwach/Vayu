@@ -1,0 +1,11 @@
+<div class="d-flex flex-column justify-content-center align-self-center">
+  <p class="d-flex flex-row justify-content-center align-items-center gap-1">
+    <!--<span class="h4">{{'::Chart:SelectMonth' | abpLocalization}}</span>-->
+    <mat-button-toggle-group [(ngModel)]="selectedMonth" (change)="emitMonth()">
+      <mat-button-toggle *ngFor="let month of monthOption" [value]="month">{{'::Chart:Month:'+month.month | abpLocalization:month.year.toString()}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </p>
+  <canvas #publicChart style="height:10vh; width:20vw"></canvas>
+  <hr color="red">
+</div>

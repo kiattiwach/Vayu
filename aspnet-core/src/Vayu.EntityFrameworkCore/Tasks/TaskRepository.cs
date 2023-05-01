@@ -71,7 +71,7 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .WhereIf(minCreateDateTime != null, x => x.CreateDateTime > minCreateDateTime)
             .WhereIf(maxCreateDateTime != null, x => x.CreateDateTime < maxCreateDateTime)
             .WhereIf(minCompleteDateTime != null, x => x.CompleteDateTime > minCompleteDateTime)
-            .WhereIf(maxCompleteDateTime != null, x => x.CreateDateTime < maxCompleteDateTime)
+            .WhereIf(maxCompleteDateTime != null, x => x.CompleteDateTime < maxCompleteDateTime)
             .WhereIf(!note.IsNullOrWhiteSpace(), x => x.Note.Contains(note))
             .WhereIf(leaderId != Guid.Empty && leaderId != null, x => x.LeaderId == leaderId 
                                                                       || ( taskStaffDbSet.Any(ts => ts.StaffId == leaderId && ts.TaskId == x.Id)))

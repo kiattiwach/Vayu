@@ -62,6 +62,23 @@
     "Delete": "ลบ",
     "Edit": "แก้ไข",
 
+    //Chart
+    "Chart:PublicChartTitle": "งานแยกตามประเภท เดือน {0}",
+    "Chart:PublicChart:TotalTasks": "จำนวนงานทัั้งหมด {0}",
+    "Chart:Month:1": "มกราคม {0}",
+    "Chart:Month:2": "กุมภาพันธ์ {0}",
+    "Chart:Month:3": "มีนาคม {0}",
+    "Chart:Month:4": "เมษายน {0}",
+    "Chart:Month:5": "พฤษภาคม {0}",
+    "Chart:Month:6": "มิถุนายน {0}",
+    "Chart:Month:7": "กรกฎาคม {0}",
+    "Chart:Month:8": "สิงหาคม {0}",
+    "Chart:Month:9": "กันยายน {0}",
+    "Chart:Month:10": "ตุลาคม {0}",
+    "Chart:Month:11": "พฤศจิกายน {0}",
+    "Chart:Month:12": "ธันวาคม {0}",
+    "Chart:TaskTypeCount": "จำนวนงาน",
+
     //Enum
     "Enum:TaskCategory:1": "งานภายใน",
     "Enum:TaskCategory:2": "งานภายนอก",

@@ -33,6 +33,7 @@
     "@microsoft/signalr": "^8.0.0-preview.3.23177.8",
     "@volo/abp.commercial.ng.ui": "^6.0.2",
     "bootstrap-icons": "~1.8.3",
+    "chart.js": "^4.3.0",
     "guid-typescript": "^1.0.9",
     "ngx-horizontal-timeline": "^0.0.6",
     "rxjs": "7.5.6",

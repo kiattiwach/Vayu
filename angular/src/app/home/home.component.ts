@@ -11,10 +11,15 @@ export class HomeComponent {
   get hasLoggedIn(): boolean {
     return this.oAuthService.hasValidAccessToken();
   }
+  chartTitle: string;
 
   constructor(private oAuthService: OAuthService, private authService: AuthService) {}
 
   login() {
     this.authService.navigateToLogin();
+  }
+
+  getSelectedMonth(value: string) {
+    this.chartTitle = value
   }
 }
