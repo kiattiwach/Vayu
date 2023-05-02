@@ -56,6 +56,14 @@ export class TaskService {
     { apiName: this.apiName });
   
 
+  getOwnTasks = () =>
+    this.restService.request<any, TaskWithNavigatePropertiesDto[]>({
+      method: 'GET',
+      url: '/api/task/get-own-tasks',
+    },
+    { apiName: this.apiName });
+  
+
   getStaffLookup = (input: LookupRequestDto) =>
     this.restService.request<any, PagedResultDto<LookupDto<string>>>({
       method: 'POST',

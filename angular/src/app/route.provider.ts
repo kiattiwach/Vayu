@@ -21,7 +21,15 @@ function configureRoutes(routesService: RoutesService) {
         iconClass: 'fas fa-tasks',
         layout: eLayoutType.application,
         requiredPolicy: 'Vayu.Tasks',
-        order:1
+        order: 2
+      },
+      {
+        path: '/task-update-statuses',
+        name: '::Menu:TaskUpdateStatuses',
+        iconClass: 'fas fa-edit',
+        layout: eLayoutType.application,
+        requiredPolicy: 'Vayu.TaskUpdateStatuses',
+        order: 3
       },
       {
         name:'::Menu:Setting',

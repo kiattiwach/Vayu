@@ -29,6 +29,7 @@ const routes: Routes = [
   { path: 'roles', loadChildren: () => import('./role/role.module').then(m => m.RoleModule) },
   { path: 'staffs', loadChildren: () => import('./staff/staff.module').then(m => m.StaffModule) },
   { path: 'tasks', loadChildren: () => import('./task/task.module').then(m => m.TaskModule) },
+  { path: 'task-update-statuses', loadChildren: () => import('./task-update-status/task-update-status.module').then(m => m.TaskUpdateStatusModule) },
 ];
 
 @NgModule({

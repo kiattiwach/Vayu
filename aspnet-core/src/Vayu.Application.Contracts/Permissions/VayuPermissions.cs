@@ -50,4 +50,9 @@ public class VayuPermissions
         public const string Done = Default + ".Done";
         public const string Cancel = Default + ".Cancel";
     }
+
+    public static class TaskUpdateStatuses
+    {
+        public const string Default = GroupName + ".TaskUpdateStatuses";
+    }
 }

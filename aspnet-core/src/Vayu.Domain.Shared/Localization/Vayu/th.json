@@ -23,6 +23,7 @@
     "Permission:Tasks.Edit": "แก้ไขงาน",
     "Permission:Tasks.Delete": "ลบงาน",
     "Permission:Tasks.UpdateStatus": "ปรับปรุุงสถานะ",
+    "Permission:TaskUpdateStatuses": "ปรับปรุุงสถานะงานของตัวเอง",
 
     "Welcome": "ยินดีต้อนรับ",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
@@ -57,6 +58,7 @@
     "Menu:StaffRole": "เจ้าหน้าที่/หน้าที่",
     "Menu:Staffs": "เจ้าหน้าที่",
     "Menu:Tasks": "งาน",
+    "Menu:TaskUpdateStatuses": "ปรับปรุงสถานะงาน",
     "Actions": "ดำเนินการ",
     "Close": "ปิด",
     "Delete": "ลบ",
@@ -64,7 +66,7 @@
 
     //Chart
     "Chart:PublicChartTitle": "งานแยกตามประเภท เดือน {0}",
-    "Chart:PublicChart:TotalTasks": "จำนวนงานทัั้งหมด {0}",
+    "Chart:PublicChart:TotalTasks": "จำนวนงานทั้งหมด {0}",
     "Chart:Month:1": "มกราคม {0}",
     "Chart:Month:2": "กุมภาพันธ์ {0}",
     "Chart:Month:3": "มีนาคม {0}",

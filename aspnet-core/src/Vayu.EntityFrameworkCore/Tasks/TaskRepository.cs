@@ -25,10 +25,11 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
         Status? status = null, DateTime? minCreateDateTime = null,
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
-        List<Guid> teamMemberIds = null, CancellationToken cancellationToken = default)
+        List<Guid> teamMemberIds = null, CancellationToken cancellationToken = default, Guid? ownId = null,
+        List<Status> statuses = null)
     {
         var query = await GetQuery(filter, description, taskTypeId, status, minCreateDateTime, maxCreateDateTime,
-            minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds);
+            minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds, ownId:ownId, statuses:statuses);
         return await query.CountAsync(cancellationToken);
     }
 
@@ -38,10 +39,10 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
         List<Guid> teamMemberIds = null, int maxResultCount = 2147483647, int skipCount = 0, string sorting = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default, Guid? ownId = null, List<Status> statuses = null)
     {
         var query = await GetQuery(filter, description, taskTypeId, status, minCreateDateTime, maxCreateDateTime,
-            minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds);
+            minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds, ownId: ownId, statuses: statuses);
         query = query.OrderBy(sorting.IsNullOrEmpty() ? $"{nameof(Task)}.{nameof(Task.CreateDateTime)} desc" : sorting);
         return await query.Skip(skipCount)
             .Take(maxResultCount)
@@ -58,7 +59,7 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
         Status? status = null, DateTime? minCreateDateTime = null,
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
-        List<Guid> teamMemberIds = null, Guid? id = null)
+        List<Guid> teamMemberIds = null, Guid? id = null, Guid? ownId = null, List<Status> statuses = null)
     {
         var taskStaffDbSet = (await GetDbContextAsync()).Set<TaskStaff>();
         var taskQuery = (await GetDbSetAsync())
@@ -76,7 +77,9 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .WhereIf(leaderId != Guid.Empty && leaderId != null, x => x.LeaderId == leaderId 
                                                                       || ( taskStaffDbSet.Any(ts => ts.StaffId == leaderId && ts.TaskId == x.Id)))
             .WhereIf(!contactPerson.IsNullOrWhiteSpace(), x => x.ContactPerson.Contains(contactPerson))
-            .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber));
+            .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber))
+            .WhereIf(ownId != Guid.Empty && ownId != null, x => x.CreatorId == ownId && x.LeaderId == ownId)
+            .WhereIf(statuses != null, x => statuses.Any(s => s == x.Status));
 
         var result = from task in taskQuery
             join taskType in (await GetDbContextAsync()).Set<TaskType>() on task.TaskTypeId equals taskType.Id

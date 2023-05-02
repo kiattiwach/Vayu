@@ -21,7 +21,9 @@ public interface ITaskRepository : IBasicRepository<Task, Guid>
         string contactPerson = null,
         string contactNumber = null,
         List<Guid> teamMemberIds = null,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default,
+        Guid? ownId = null,
+        List<Status> statuses = null);
 
     Task<List<TaskWithNavigateProperties>> GetListAsync(string filter = null,
         string description = null,
@@ -39,7 +41,9 @@ public interface ITaskRepository : IBasicRepository<Task, Guid>
         int maxResultCount = int.MaxValue,
         int skipCount = 0,
         string sorting = null,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default,
+        Guid? ownId = null,
+        List<Status> statuses = null);
 
     Task<TaskWithNavigateProperties> GetWithNaviagate(Guid id, CancellationToken cancellationToken = default);
 }

@@ -13,6 +13,7 @@ using Vayu.Staffs;
 using Vayu.TaskTypes;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 
 namespace Vayu.Tasks;
@@ -350,6 +351,8 @@ public class TaskService : VayuAppService, ITaskService
         }
     }
 
+    [Authorize(VayuPermissions.Tasks.UpdateStatus)]
+    [Authorize(VayuPermissions.TaskUpdateStatuses.Default)]
     public async System.Threading.Tasks.Task UpdateTaskStatusAsync(TaskStatusDto input)
     {
         var task = await _taskRepository.GetAsync(input.TaskId);
@@ -432,6 +435,22 @@ public class TaskService : VayuAppService, ITaskService
         result.TaskStatuses = ObjectMapper.Map<List<TaskStatus>, List<TaskStatusDto>>(
             (await _taskStatusRepository.GetListAsync(ts => ts.TaskId == result.Task.Id)));
         var status = result.Task.Status;
+        return result;
+    }
+
+    [Authorize(VayuPermissions.TaskUpdateStatuses.Default)]
+    public async Task<List<TaskWithNavigatePropertiesDto>> GetOwnTasksAsync()
+    {
+        var result = ObjectMapper
+            .Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(await _taskRepository.GetListAsync(ownId: _currentUser.Id, statuses: new List<Status>()
+                {
+                    Status.InProgress, Status.InReview, Status.Initial,Status.Todo
+                }));
+        foreach (var taskWithNavigatePropertiesDto in result)
+        {
+            taskWithNavigatePropertiesDto.TaskStatuses = ObjectMapper.Map<List<TaskStatus>, List<TaskStatusDto>>(
+                (await _taskStatusRepository.GetListAsync(ts => ts.TaskId == taskWithNavigatePropertiesDto.Task.Id)));
+        }
         return result;
     }
 }
