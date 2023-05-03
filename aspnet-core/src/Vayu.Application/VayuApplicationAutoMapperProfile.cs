@@ -32,7 +32,8 @@ public class VayuApplicationAutoMapperProfile : Profile
         CreateMap<Staff, LookupDto<Guid>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));
         CreateMap<Staff, LookupDto<StaffDto>>().ForMember(x => x.DisplayName, option => option.MapFrom(s => s.Name));
         CreateMap<TaskWithNavigateProperties, LookupDto<TaskWithNavigatePropertiesDto>>()
-            .ForMember(x => x.DisplayName, option => option.MapFrom(s => $"{s.TaskType.Name}-{s.Task.Description}"));
+            .ForMember(x => x.DisplayName, option => option.MapFrom(s => $"{s.TaskType.Name}-{s.Task.Description}"))
+            .ForMember(x => x.Id, option => option.MapFrom(s => s));
     }
 
     private TimeSpan GetOverAllDuration(Task task)

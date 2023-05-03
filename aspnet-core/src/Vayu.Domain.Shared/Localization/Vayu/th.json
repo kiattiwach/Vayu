@@ -168,10 +168,12 @@
     "DeleteStaffFail": "ลบเจ้าหน้าที่ สำเร็จ!",
 
     //Task
+    "OwnTask": "งานของ {0}",
     "NewTaskShouldBeInitial": "สถานะของงานใหม่ต้องเป็น {0}",
     "TeamMemberShouldNotBeZero": "ต้องมีสมาชิกในทีมอย่างน้อย 1 คน",
     "AreYouSureDeleteTask": "คุณกำลังจะลยงาน",
     "Status": "สถานะ",
+    "NextStatus": "สถานะต่อไป",
     "Leader": "ผู้รับผิดชอบงาน",
     "NewTask": "งานใหม่",
     "TaskDetail": "รายละเอียดงาน",
@@ -207,6 +209,7 @@
     "ChangeTaskSubject": "เปลี่ยนรายละเอียดงาน",
     "ChangeTaskMessage": "{0}<br>{1}<br>{2}<br>{3}<br>{4}<br>{5}<br>",
     "UpdateTaskStatusEmailSubject": "{0} เปลี่ยนสถานะ",
-    "UpdateTaskStatusEmailMessage": "เปลี่ยนสถานะจาก {0} เป้น {1}"
+    "UpdateTaskStatusEmailMessage": "เปลี่ยนสถานะจาก {0} เป้น {1}",
+    "CurrentTaskStatus": "สถานะปัจุบัน: {0}"
   }
 }

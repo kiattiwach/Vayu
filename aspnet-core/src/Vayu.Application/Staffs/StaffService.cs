@@ -62,6 +62,11 @@ public class StaffService : VayuAppService, IStaffService
         return ObjectMapper.Map<Staff, StaffDto>(await _staffRepository.GetAsync(id));
     }
 
+    public async Task<StaffDto> GetByEmailAsync(string email)
+    {
+        return ObjectMapper.Map<Staff, StaffDto>((await _staffRepository.GetByEmail(email)));
+    }
+
     [Authorize(VayuPermissions.Staffs.Default)]
     public async Task<PagedResultDto<StaffWithNavigatePropertiesDto>> GetListAsync(StaffFilterDto input)
     {

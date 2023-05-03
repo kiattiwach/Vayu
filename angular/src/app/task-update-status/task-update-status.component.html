@@ -1,30 +1,33 @@
 <div class="card">
   <form [formGroup]="form" class="card-body d-flex flex-column gap-3">
     <div class="form-group">
-      <label for="Task">{{ '::Task'| abpLocalization}}</label><span> * </span>
-      <div class="row">
+      <label for="Task">{{ '::OwnTask'| abpLocalization:[userName]}}</label><span> * </span>
+      <div class="row" style="--bs-gutter-x: 0;">
         <abp-lookup-select
           id="Task"
           autofocus="true"
-          [getFn]="taskService.getOwnTasks()"
-          [formControl]="taskControl" >
+          [getFn]="taskService.getOwnTasks"
+          [formControl]="taskControl">
         </abp-lookup-select>
       </div>
     </div>
+    <div *ngIf="taskControl.value?.task.status">{{'::CurrentTaskStatus' | abpLocalization: ['::Enum:Status:' + taskControl.value?.task.status | abpLocalization]}}</div>
     <div class="form-group">
-      <label for="Status">{{ '::Status'| abpLocalization}}</label><span> * </span>
-      <!--todo-mat-select-->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{'::NextStatus' | abpLocalization}}  </mat-label>
+        <select matNativeControl [formControl]="statusControl">
+          <option *ngFor="let availableStatus of taskControl?.value?.availableStatus" [value]="availableStatus.status">
+            {{'::Enum:Status:'+availableStatus.status | abpLocalization}}
+          </option>
+        </select>
+      </mat-form-field>
     </div>
-    <div class="form-group">
-      <label for="StatusNote">{{ '::Note'| abpLocalization}}</label><span> * </span>
-      <input type="text" id="StatusNote" class="form-control" [formControl]="statusNoteControl" />
+    <div class="form-group" *ngIf="hasNote == true">
+      <label for="StatusNote">{{ '::Note'| abpLocalization}} <span> * </span></label>
+      <textarea rows="5"  id="StatusNote" class="form-control" [formControl]="statusNoteControl"></textarea>
     </div>
   </form>
-  <div>
-    <button type="button" class="btn btn-secondary" abpClose>
-      {{ '::Close' | abpLocalization }}
-    </button>
-
+  <div class="d-flex flex-row justify-content-end">
     <button class="btn btn-primary" (click)="save()" [disabled]="form?.invalid">
       <i class="fa fa-check mr-1"></i>
       {{ '::Save' | abpLocalization }}

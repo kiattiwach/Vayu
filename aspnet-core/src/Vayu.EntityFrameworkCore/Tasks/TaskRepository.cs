@@ -81,12 +81,14 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
                                                                       || ( taskStaffDbSet.Any(ts => ts.StaffId == leaderId && ts.TaskId == x.Id)))
             .WhereIf(!contactPerson.IsNullOrWhiteSpace(), x => x.ContactPerson.Contains(contactPerson))
             .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber))
-            .WhereIf(ownId != Guid.Empty && ownId != null, x => x.CreatorId == ownId && x.LeaderId == ownId)
-            .WhereIf(statuses != null, x => statuses.Any(s => s == x.Status))
+            .WhereIf(ownId != Guid.Empty && ownId != null, x => x.CreatorId == ownId || x.LeaderId == ownId)
+            .WhereIf(statuses != null, x => statuses.Contains(x.Status))
             .WhereIf(lookupFilter != null, x => x.Description.Contains(lookupFilter));
 
+        var taskTypeDbSet = (await GetDbContextAsync()).Set<TaskType>();
+
         var result = from task in taskQuery
-            join taskType in (await GetDbContextAsync()).Set<TaskType>().WhereIf(lookupFilter != null, x => x.Name.Contains(lookupFilter)) on task.TaskTypeId equals taskType.Id
+            join taskType in taskTypeDbSet on task.TaskTypeId equals taskType.Id
             join leader in (await GetDbContextAsync()).Set<Staff>() on task.LeaderId equals leader.Id
             
             select new TaskWithNavigateProperties()

@@ -30,6 +30,7 @@ public class TaskService : VayuAppService, ITaskService
     private readonly EmailService _emailService;
     private readonly ICurrentUser _currentUser;
     private readonly MessagingHub _messagingHub;
+    private readonly IStaffRepository _staffRepo;
 
     public TaskService(ITaskRepository taskRepository,
         ITaskStaffRepository taskStaffRepository,
@@ -39,7 +40,8 @@ public class TaskService : VayuAppService, ITaskService
         IStringLocalizer<VayuResource> stringLocalize,
         EmailService emailService,
         ICurrentUser currentUser,
-        MessagingHub messagingHub)
+        MessagingHub messagingHub,
+        IStaffRepository staffRepo)
     {
         _taskRepository = taskRepository;
         _taskStaffRepository = taskStaffRepository;
@@ -50,6 +52,7 @@ public class TaskService : VayuAppService, ITaskService
         _emailService = emailService;
         _currentUser = currentUser;
         _messagingHub = messagingHub;
+        _staffRepo = staffRepo;
     }
 
     [Authorize(VayuPermissions.Tasks.Default)]
@@ -442,16 +445,17 @@ public class TaskService : VayuAppService, ITaskService
     [Authorize(VayuPermissions.TaskUpdateStatuses.Default)]
     public async Task<PagedResultDto<LookupDto<TaskWithNavigatePropertiesDto>>> GetOwnTasksAsync(LookupRequestDto input)
     {
+        var staff = await _staffRepo.GetByEmail(_currentUser.Email);
         var result = ObjectMapper
             .Map<List<TaskWithNavigateProperties>, List<LookupDto<TaskWithNavigatePropertiesDto>>>(
-                await _taskRepository.GetListAsync(lookupFilter: input.Filter, ownId: _currentUser.Id, statuses: new List<Status>()
+                await _taskRepository.GetListAsync(lookupFilter: input.Filter, ownId: staff?.Id, statuses: new List<Status>()
                 {
                     Status.InProgress, Status.InReview, Status.Initial,Status.Todo
                 }));
         foreach (var lookupDto in result)
         {
-            lookupDto.Id.TaskStatuses = ObjectMapper.Map<List<TaskStatus>, List<TaskStatusDto>>(
-                (await _taskStatusRepository.GetListAsync(ts => ts.TaskId == lookupDto.Id.Task.Id)));
+            var x = (await _taskStatusRepository.GetListAsync(ts => ts.TaskId == lookupDto.Id.Task.Id));
+            lookupDto.Id.TaskStatuses = ObjectMapper.Map<List<TaskStatus>, List<TaskStatusDto>>(x);
         }
 
         return new PagedResultDto<LookupDto<TaskWithNavigatePropertiesDto>>(result.Count, result);

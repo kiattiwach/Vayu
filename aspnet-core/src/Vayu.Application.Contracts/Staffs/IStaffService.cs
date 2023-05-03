@@ -9,6 +9,7 @@ namespace Vayu.Staffs;
 public interface IStaffService : IApplicationService
 {
     Task<StaffDto> GetAsync(Guid id);
+    Task<StaffDto> GetByEmailAsync(string email);
 
     Task<PagedResultDto<StaffWithNavigatePropertiesDto>> GetListAsync(StaffFilterDto input);
 

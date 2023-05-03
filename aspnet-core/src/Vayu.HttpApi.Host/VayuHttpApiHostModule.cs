@@ -29,6 +29,7 @@ using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
 using System.Security.Cryptography.X509Certificates;
+using Volo.Abp.MultiTenancy;
 
 namespace Vayu;
 
@@ -90,6 +91,10 @@ public class VayuHttpApiHostModule : AbpModule
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        Configure<AbpMultiTenancyOptions>(options =>
+        {
+            options.IsEnabled = false;
+        });
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 

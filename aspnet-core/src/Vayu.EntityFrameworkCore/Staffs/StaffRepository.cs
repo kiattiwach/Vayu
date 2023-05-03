@@ -70,6 +70,11 @@ public class StaffRepository : EfCoreRepository<VayuDbContext, Staff,Guid>, ISta
             .FirstOrDefault(x => x.Code.Equals(code));
     }
 
+    public async Task<Staff> GetByEmail(string email)
+    {
+        return (await GetDbSetAsync()).FirstOrDefault(x => x.Email.Equals(email));
+    }
+
     public async Task<IQueryable<StaffWithNavigateProperties>> GetQuery(string filter = null, string code = null, string name = null, 
         string surName = null, string codeName = null,
         string email = null, string address = null, string radioCode = null, string contactNumber = null,

@@ -36,6 +36,15 @@ export class StaffService {
     { apiName: this.apiName });
   
 
+  getByEmail = (email: string) =>
+    this.restService.request<any, StaffDto>({
+      method: 'GET',
+      url: '/api/staff/get-by-email',
+      params: { email },
+    },
+    { apiName: this.apiName });
+  
+
   getList = (input: StaffFilterDto) =>
     this.restService.request<any, PagedResultDto<StaffWithNavigatePropertiesDto>>({
       method: 'POST',

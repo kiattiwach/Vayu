@@ -56,10 +56,11 @@ export class TaskService {
     { apiName: this.apiName });
   
 
-  getOwnTasks = () =>
-    this.restService.request<any, TaskWithNavigatePropertiesDto[]>({
+  getOwnTasks = (input: LookupRequestDto) =>
+    this.restService.request<any, PagedResultDto<LookupDto<TaskWithNavigatePropertiesDto>>>({
       method: 'GET',
       url: '/api/task/get-own-tasks',
+      params: { filter: input.filter, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName });
   

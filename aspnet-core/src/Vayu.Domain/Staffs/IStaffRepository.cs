@@ -55,4 +55,6 @@ public interface IStaffRepository : IBasicRepository<Staff,Guid>
     Task<Staff> GetByRadioCode(string radioCode, Guid? id = null);
     Task<Staff> GetByCodeName(string codeName, Guid? id = null);
     Task<Staff> GetByCode(string code, Guid? id = null);
+
+    Task<Staff> GetByEmail(string email);
 }

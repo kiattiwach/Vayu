@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {AvailableStatusDto, TaskService, TaskWithNavigatePropertiesDto} from "@proxy/tasks";
+import {AvailableStatusDto, Status, TaskService, TaskWithNavigatePropertiesDto} from "@proxy/tasks";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {ConfigStateService} from "@abp/ng.core";
+import {StaffFilterDto, StaffService} from "@proxy/staffs";
+import {LookupRequestDto} from "@proxy/shared";
 
 @Component({
   selector: 'app-task-update-status',
@@ -9,33 +12,49 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 })
 export class TaskUpdateStatusComponent implements OnInit {
   form: FormGroup;
-  taskControl: FormControl;
-  statusControl: FormControl;
-  statusNoteControl: FormControl;
+  taskControl: FormControl<TaskWithNavigatePropertiesDto>;
+  statusControl: FormControl<Status>;
+  statusNoteControl: FormControl<string> = new FormControl<string>(null);
+  userName: string;
+  hasNote: boolean;
 
   constructor(private fb: FormBuilder,
-              private taskService: TaskService) { }
+              public taskService: TaskService,
+              private config: ConfigStateService,
+              private staffService: StaffService) { }
 
   ngOnInit(): void {
-    this.taskControl.valueChanges.subscribe(s => console.log(s));
+    this.staffService.getByEmail(this.config.getDeep("currentUser.userName"))
+      .subscribe(s => this.userName = s.name);
+    this.buildForm();
   }
 
   buildForm() {
     this.taskControl = new FormControl<TaskWithNavigatePropertiesDto>(null, [Validators.required]);
-    this.statusControl = new FormControl<AvailableStatusDto>(null, [Validators.required]);
-    this.statusControl.valueChanges.subscribe((s: AvailableStatusDto) =>
-      this.statusNoteControl =
-        new FormControl<string>(null, [s.requiredNote == true ? Validators.required : null]));
+    this.statusControl = new FormControl<Status>(null, [Validators.required]);
+    this.statusControl.valueChanges.subscribe((s) => {
+      const statusInfo = this.taskControl.value.availableStatus?.find(x => x.status == s);
+      this.hasNote = statusInfo?.requiredNote;
+      this.statusNoteControl = statusInfo?.requiredNote == true ?
+        new FormControl<string>(null, [Validators.required]) :
+        new FormControl<string>(null)
+    });
+
+    this.taskControl.valueChanges.subscribe(s => {
+      const statusInfo = s.availableStatus ? s.availableStatus[0]: null;
+      this.statusControl.setValue(statusInfo?.status);
+      this.hasNote = statusInfo?.requiredNote;
+    });
 
     this.form = this.fb.group({
       task: this.taskControl,
-      status: this.statusControl,
+      //status: this.statusControl,
       statusNote: this.statusNoteControl
     });
   }
 
   save() {
-    
+
   }
 
 }

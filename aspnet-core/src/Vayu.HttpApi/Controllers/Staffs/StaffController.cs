@@ -23,6 +23,12 @@ public class StaffController : VayuController, IStaffService
         return _staffService.GetAsync(id);
     }
 
+    [HttpGet("get-by-email")]
+    public Task<StaffDto> GetByEmailAsync(string email)
+    {
+        return _staffService.GetByEmailAsync(email);
+    }
+
     [HttpPost("get-list/{input}")]
     public Task<PagedResultDto<StaffWithNavigatePropertiesDto>> GetListAsync(StaffFilterDto input)
     {
