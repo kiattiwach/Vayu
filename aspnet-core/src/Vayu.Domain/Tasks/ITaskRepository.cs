@@ -23,7 +23,8 @@ public interface ITaskRepository : IBasicRepository<Task, Guid>
         List<Guid> teamMemberIds = null,
         CancellationToken cancellationToken = default,
         Guid? ownId = null,
-        List<Status> statuses = null);
+        List<Status> statuses = null,
+        string lookupFilter = null);
 
     Task<List<TaskWithNavigateProperties>> GetListAsync(string filter = null,
         string description = null,
@@ -43,7 +44,8 @@ public interface ITaskRepository : IBasicRepository<Task, Guid>
         string sorting = null,
         CancellationToken cancellationToken = default,
         Guid? ownId = null,
-        List<Status> statuses = null);
+        List<Status> statuses = null,
+        string lookupFilter = null);
 
     Task<TaskWithNavigateProperties> GetWithNaviagate(Guid id, CancellationToken cancellationToken = default);
 }

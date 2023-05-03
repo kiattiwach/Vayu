@@ -1,1 +1,33 @@
-<p>task-update-status works!</p>
+<div class="card">
+  <form [formGroup]="form" class="card-body d-flex flex-column gap-3">
+    <div class="form-group">
+      <label for="Task">{{ '::Task'| abpLocalization}}</label><span> * </span>
+      <div class="row">
+        <abp-lookup-select
+          id="Task"
+          autofocus="true"
+          [getFn]="taskService.getOwnTasks()"
+          [formControl]="taskControl" >
+        </abp-lookup-select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="Status">{{ '::Status'| abpLocalization}}</label><span> * </span>
+      <!--todo-mat-select-->
+    </div>
+    <div class="form-group">
+      <label for="StatusNote">{{ '::Note'| abpLocalization}}</label><span> * </span>
+      <input type="text" id="StatusNote" class="form-control" [formControl]="statusNoteControl" />
+    </div>
+  </form>
+  <div>
+    <button type="button" class="btn btn-secondary" abpClose>
+      {{ '::Close' | abpLocalization }}
+    </button>
+
+    <button class="btn btn-primary" (click)="save()" [disabled]="form?.invalid">
+      <i class="fa fa-check mr-1"></i>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </div>
+</div>

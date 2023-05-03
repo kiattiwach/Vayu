@@ -26,10 +26,11 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
         List<Guid> teamMemberIds = null, CancellationToken cancellationToken = default, Guid? ownId = null,
-        List<Status> statuses = null)
+        List<Status> statuses = null, string lookupFilter = null)
     {
         var query = await GetQuery(filter, description, taskTypeId, status, minCreateDateTime, maxCreateDateTime,
-            minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds, ownId:ownId, statuses:statuses);
+            minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds, ownId:ownId, statuses:statuses,
+            lookupFilter: lookupFilter);
         return await query.CountAsync(cancellationToken);
     }
 
@@ -39,10 +40,11 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
         List<Guid> teamMemberIds = null, int maxResultCount = 2147483647, int skipCount = 0, string sorting = null,
-        CancellationToken cancellationToken = default, Guid? ownId = null, List<Status> statuses = null)
+        CancellationToken cancellationToken = default, Guid? ownId = null, List<Status> statuses = null, string lookupFilter = null)
     {
         var query = await GetQuery(filter, description, taskTypeId, status, minCreateDateTime, maxCreateDateTime,
-            minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds, ownId: ownId, statuses: statuses);
+            minCompleteDateTime, maxCompleteDateTime, note, leaderId, contactPerson, contactNumber, teamMemberIds, ownId: ownId, statuses: statuses,
+            lookupFilter: lookupFilter);
         query = query.OrderBy(sorting.IsNullOrEmpty() ? $"{nameof(Task)}.{nameof(Task.CreateDateTime)} desc" : sorting);
         return await query.Skip(skipCount)
             .Take(maxResultCount)
@@ -59,7 +61,8 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
         Status? status = null, DateTime? minCreateDateTime = null,
         DateTime? maxCreateDateTime = null, DateTime? minCompleteDateTime = null, DateTime? maxCompleteDateTime = null,
         string note = null, Guid? leaderId = null, string contactPerson = null, string contactNumber = null,
-        List<Guid> teamMemberIds = null, Guid? id = null, Guid? ownId = null, List<Status> statuses = null)
+        List<Guid> teamMemberIds = null, Guid? id = null, Guid? ownId = null, List<Status> statuses = null,
+        string lookupFilter = null)
     {
         var taskStaffDbSet = (await GetDbContextAsync()).Set<TaskStaff>();
         var taskQuery = (await GetDbSetAsync())
@@ -79,10 +82,11 @@ public class TaskRepository : EfCoreRepository<VayuDbContext, Task, Guid>, ITask
             .WhereIf(!contactPerson.IsNullOrWhiteSpace(), x => x.ContactPerson.Contains(contactPerson))
             .WhereIf(!contactNumber.IsNullOrWhiteSpace(), x => x.ContactNumber.Contains(contactNumber))
             .WhereIf(ownId != Guid.Empty && ownId != null, x => x.CreatorId == ownId && x.LeaderId == ownId)
-            .WhereIf(statuses != null, x => statuses.Any(s => s == x.Status));
+            .WhereIf(statuses != null, x => statuses.Any(s => s == x.Status))
+            .WhereIf(lookupFilter != null, x => x.Description.Contains(lookupFilter));
 
         var result = from task in taskQuery
-            join taskType in (await GetDbContextAsync()).Set<TaskType>() on task.TaskTypeId equals taskType.Id
+            join taskType in (await GetDbContextAsync()).Set<TaskType>().WhereIf(lookupFilter != null, x => x.Name.Contains(lookupFilter)) on task.TaskTypeId equals taskType.Id
             join leader in (await GetDbContextAsync()).Set<Staff>() on task.LeaderId equals leader.Id
             
             select new TaskWithNavigateProperties()

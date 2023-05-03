@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;
+using Org.BouncyCastle.Utilities;
 using Vayu.Localization;
 using Vayu.Permissions;
 using Vayu.Shared;
@@ -439,18 +440,20 @@ public class TaskService : VayuAppService, ITaskService
     }
 
     [Authorize(VayuPermissions.TaskUpdateStatuses.Default)]
-    public async Task<List<TaskWithNavigatePropertiesDto>> GetOwnTasksAsync()
+    public async Task<PagedResultDto<LookupDto<TaskWithNavigatePropertiesDto>>> GetOwnTasksAsync(LookupRequestDto input)
     {
         var result = ObjectMapper
-            .Map<List<TaskWithNavigateProperties>, List<TaskWithNavigatePropertiesDto>>(await _taskRepository.GetListAsync(ownId: _currentUser.Id, statuses: new List<Status>()
+            .Map<List<TaskWithNavigateProperties>, List<LookupDto<TaskWithNavigatePropertiesDto>>>(
+                await _taskRepository.GetListAsync(lookupFilter: input.Filter, ownId: _currentUser.Id, statuses: new List<Status>()
                 {
                     Status.InProgress, Status.InReview, Status.Initial,Status.Todo
                 }));
-        foreach (var taskWithNavigatePropertiesDto in result)
+        foreach (var lookupDto in result)
         {
-            taskWithNavigatePropertiesDto.TaskStatuses = ObjectMapper.Map<List<TaskStatus>, List<TaskStatusDto>>(
-                (await _taskStatusRepository.GetListAsync(ts => ts.TaskId == taskWithNavigatePropertiesDto.Task.Id)));
+            lookupDto.Id.TaskStatuses = ObjectMapper.Map<List<TaskStatus>, List<TaskStatusDto>>(
+                (await _taskStatusRepository.GetListAsync(ts => ts.TaskId == lookupDto.Id.Task.Id)));
         }
-        return result;
+
+        return new PagedResultDto<LookupDto<TaskWithNavigatePropertiesDto>>(result.Count, result);
     }
 }

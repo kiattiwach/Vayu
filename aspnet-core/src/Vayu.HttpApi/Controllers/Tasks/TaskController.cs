@@ -105,8 +105,8 @@ public class TaskController : VayuController, ITaskService
     }
 
     [HttpGet("get-own-tasks")]
-    public Task<List<TaskWithNavigatePropertiesDto>> GetOwnTasksAsync()
+    public Task<PagedResultDto<LookupDto<TaskWithNavigatePropertiesDto>>> GetOwnTasksAsync(LookupRequestDto input)
     {
-        return _taskService.GetOwnTasksAsync();
+        return _taskService.GetOwnTasksAsync(input);
     }
 }
